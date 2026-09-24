@@ -1,14 +1,17 @@
-# Architecture Documentation
+# Architecture Dokümantasyonu
 
-This directory contains system-level architecture documentation. Service-specific implementation design belongs inside each service's own `docs/DESIGN.md`.
+Bu klasör sistem seviyesindeki architecture dokümantasyonunu içerir. Service'e özel implementation design, ilgili service'in kendi `docs/DESIGN.md` dosyasında tutulur.
 
-## Documents
+## Dokümanlar
 
-- `service-catalog.md` — service responsibility and datastore ownership
-- `data-architecture.md` — database-per-service and datastore roles
-- `communication-architecture.md` — REST, OpenFeign, gRPC, RabbitMQ and Kafka responsibilities
-- `../adr/` — architecture decisions and trade-offs
+- `service-catalog.md` — service sorumlulukları ve data ownership
+- `data-architecture.md` — Database per Service ve datastore rolleri
+- `communication-architecture.md` — REST, OpenFeign, gRPC, RabbitMQ ve Kafka sorumlulukları
+- `../adr/` — Architecture Decision Record dokümanları
 
-## Documentation rule
+## Dokümantasyon kuralı
 
-Use the root `ROADMAP.md` for overall sequence, `docs/roadmap/day-XX-*.md` for milestone scope, service `ROADMAP.md` for service evolution, and service `docs/DESIGN.md` for technical design.
+- Root `ROADMAP.md` → projenin genel sırası
+- `docs/roadmap/day-XX-*.md` → milestone kapsamı
+- Service `ROADMAP.md` → service'in zaman içindeki gelişimi
+- Service `docs/DESIGN.md` → teknik tasarım

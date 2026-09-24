@@ -43,3 +43,7 @@ Day 8–13 service/datastore implementation'ları için build ve local infrastru
 
 ## Done
 Build green, secret hygiene corrected, all Day 8–13 datastore foundations available, no business service implemented yet.
+
+## Exact file-level plan
+
+Implementation source of truth: `docs/roadmap/day-07-exact-file-plan.md`

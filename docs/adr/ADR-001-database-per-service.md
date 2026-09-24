@@ -3,22 +3,22 @@
 **Status:** Accepted
 
 ## Context
-The laboratory needs clear service ownership and independent persistence decisions while preserving the stable Day 1-6 baseline.
+Laboratory projesinde service ownership sınırlarının net olması ve persistence kararlarının bağımsız verilebilmesi istenmektedir. Day 1–6 baseline korunmalıdır.
 
 ## Decision
-Each new business service owns its primary datastore. AuthService and UserProfileService remain on PostgreSQL because they are existing stable baseline services.
+Yeni business service'ler kendi primary datastore'larının sahibi olacaktır. AuthService ve UserProfileService mevcut stabil yapı oldukları için PostgreSQL üzerinde kalır.
 
-No service writes directly to another service's database.
+Hiçbir service başka bir service'in datastore'una doğrudan yazmaz.
 
 ## Rationale
-- teaches ownership boundaries
-- makes polyglot persistence explicit
-- supports independent evolution
-- creates realistic eventual-consistency problems to solve later
+- ownership sınırlarını öğretir
+- Polyglot Persistence yaklaşımını görünür kılar
+- independent evolution sağlar
+- Eventual Consistency gibi distributed systems problemlerini gerçek hale getirir
 
-## Alternatives considered
-- one shared relational database
-- schema-per-service inside one database
+## Alternatives Considered
+- tek shared relational database
+- tek database içinde schema-per-service
 
 ## Consequences
-Cross-service joins disappear. Integration occurs through APIs/events. Distributed consistency must be handled explicitly.
+Cross-service join yapılmaz. Integration API veya event üzerinden gerçekleşir. Distributed consistency açık biçimde ele alınmalıdır.

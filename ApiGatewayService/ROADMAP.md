@@ -1,12 +1,12 @@
 # ApiGatewayService Roadmap
 
-## Existing baseline
-Spring Cloud Gateway, Eureka/LoadBalancer routing, Circuit Breaker, fallback, Actuator and tracing.
+## Mevcut baseline
+Spring Cloud Gateway, Eureka/LoadBalancer routing, Circuit Breaker, fallback, Actuator ve tracing mevcut.
 
-## Planned
+## Planlanan
 - Day 8: OAuth2 Resource Server / edge authorization
-- Day 14: rate limiting and advanced resilience
-- Day 18: OpenTelemetry/metrics/logging
+- Day 14: Rate Limiting ve Advanced Resilience
+- Day 18: OpenTelemetry / metrics / logging
 - Day 20: E2E hardening
 
-Gateway is infrastructure/edge; it owns no business data.
+ApiGatewayService edge/infrastructure service'tir; business data ownership'i yoktur.

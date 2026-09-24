@@ -1,15 +1,15 @@
 # SellerService Design
 
-## Purpose
-Own seller profile, listing submission history and seller activity views.
+## Amaç
+Seller profile, listing submission history ve seller activity view'larının ownership'ini taşımak.
 
 ## Architecture
 Onion Architecture.
 
 ## Primary datastore
-Cassandra via Spring Data Cassandra.
+Cassandra + Spring Data Cassandra.
 
-## Target package structure
+## Hedef package structure
 ```text
 com.aydindemir.seller
 ├── domain
@@ -31,28 +31,28 @@ com.aydindemir.seller
     └── rest
 ```
 
-## Access patterns first
-- Q1: find seller by sellerId
-- Q2: list recent submissions for a seller
-- Q3: list seller activity over time
-- Q4: list seller submissions for a month
+## Önce Access Pattern
+- Q1: sellerId ile seller getir
+- Q2: bir seller'ın son listing submission kayıtlarını getir
+- Q3: seller activity geçmişini zaman sırasıyla getir
+- Q4: seller'ın belirli bir aya ait listing submission kayıtlarını getir
 
-## Candidate tables
+## Candidate table'lar
 - seller_by_id
 - listing_submissions_by_seller
 - listing_submissions_by_seller_and_month
 - seller_activity_by_seller_and_time
 
-Partition/clustering keys will be finalized before implementation.
+Partition key ve clustering key tasarımları implementation öncesinde kesinleştirilecek.
 
-## Important constraint
-Do not model Cassandra like JPA. Denormalization may be intentional.
+## Temel kısıt
+Cassandra JPA gibi modellenmeyecek. Denormalization bilinçli bir tasarım tercihi olabilir.
 
-## Day 7 dependency changes
-Use Spring Data Cassandra and remove unnecessary JPA/PostgreSQL dependencies from this module.
+## Day 7 dependency değişiklikleri
+Spring Data Cassandra kullanılacak; bu module için gereksiz JPA/PostgreSQL dependency'leri kaldırılacak.
 
-## Required infrastructure
+## Gerekli infrastructure
 Cassandra.
 
-## Planned tests
-Repository/query tests, partition-key behavior, ordering tests and Cassandra Testcontainers.
+## Planlanan testler
+Repository/query testleri, partition key davranışı, ordering testleri ve Cassandra Testcontainers.

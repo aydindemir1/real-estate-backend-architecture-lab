@@ -2,112 +2,293 @@
 
 ## Kapsam
 
-`main` branch'indeki Day 1–6 yapısı stabil baseline olarak kabul edilir. Bu roadmap Day 7 ile başlar ve backend tarafını yaklaşık Day 20 civarında tamamlamayı hedefler. Bir Day gerçek takvim günü olmak zorunda değildir; bir milestone birkaç oturum sürebilir.
+`main` branch'indeki Day 1–6 stabil baseline olarak kabul edilir.
 
-## Temel ilkeler
+Bu roadmap Day 7 sonrasında **küçük ve odaklı milestone** yaklaşımına geçer.
 
-- Day 1–6 kapsamında doğrulanmış teknolojileri yeniden uygulamayacağız.
-- AuthService ve UserProfileService üzerindeki çalışan PostgreSQL akışlarını koruyacağız.
-- Polyglot Persistence yalnızca farklı bir veri modeli veya distributed systems problemi öğrettiği yerde kullanılacak.
-- Her Day kendi branch'inde geliştirilecek.
-- Kod, test, service design ve roadmap durumu aynı Day branch'inde birlikte güncellenecek.
-- Tek bir çok uzun doküman yerine kısa ve odaklı dokümanlar kullanılacak.
+## Temel çalışma ilkesi
 
-## Service / datastore / architecture matrisi
+- Bir Day gerçek takvim günü olmak zorunda değildir.
+- Bir Day mümkün olduğunca **tek service** veya **tek ana infrastructure/architecture konusu** içerir.
+- Aynı Day içinde 4–5 service birden implement edilmez.
+- İçerik azaltılmaz; yalnızca daha fazla Day'e bölünür.
+- Küçük, anlamlı commit'ler kullanılır.
+- Her Day kendi branch'inde geliştirilebilir.
+- Her Day build + test + docs ile tamamlanır.
+- Bir Day bitmeden sonraki service implementation'ına geçilmez.
 
-| Service | Primary datastore | Spring data stack | Architecture |
-|---|---|---|---|
-| AuthService | PostgreSQL | Spring Data JPA + Hibernate | Mevcut N-Layer baseline |
-| UserProfileService | PostgreSQL | Spring Data JPA + Hibernate | Mevcut N-Layer baseline |
-| AgentService | MySQL | Spring Data JPA + Hibernate | Clean Architecture |
-| BuyerService | Couchbase | Spring Data Couchbase | Hexagonal Architecture |
-| SellerService | Cassandra | Spring Data Cassandra | Onion Architecture |
-| PropertyService | MongoDB | Spring Data MongoDB | Vertical Slice Architecture |
-| SearchService | Elasticsearch | Spring Data Elasticsearch | Vertical Slice + CQRS Query Side |
-| Shared infrastructure | Redis | Spring Data Redis | Cache / Idempotency / Rate Limiting / Ephemeral State |
+## Day 7–26
 
-## Day 7–20
+### Day 7 — Build & Local Data Infrastructure Foundation
+Branch: `day/07-build-data-infra`
 
-### Day 7 — Polyglot Persistence & Architecture Foundations
-Branch: `day/07-polyglot-persistence`
+Amaç:
+- Day 7+ datastore dependency alias'larını hazırlamak
+- SearchService module registration foundation
+- Docker Compose credential hygiene
+- .env / .env.example
+- MySQL, Couchbase, Cassandra, MongoDB, Elasticsearch, Redis container foundation
+- eski temporary PostgreSQL service'lerini kontrollü temizlemek
 
-MySQL, Couchbase, Cassandra, MongoDB, Elasticsearch ve Redis temelleri oluşturulacak; Clean Architecture, Hexagonal Architecture, Onion Architecture ve Vertical Slice Architecture sınırları kurulacak. SearchService foundation eklenecek.
+Business service implementation yapılmaz.
 
-### Day 8 — Spring Security + OAuth2 + OIDC + Keycloak
-Branch: `day/08-security-keycloak`
+### Day 8 — AgentService: MySQL + Clean Architecture
+Branch: `day/08-agent-mysql-clean`
 
-Keycloak tabanlı authentication/authorization, RBAC ve service-to-service authentication uygulanacak. Mevcut custom JWT yalnızca eğitimsel karşılaştırma için gerektiği ölçüde korunacak.
+- AgentService PostgreSQL -> MySQL
+- Clean Architecture
+- CreateAgent
+- GetAgent
+- ChangeAvailability
+- JPA adapter
+- migration
+- MySQL Testcontainers
+- architecture tests
 
-### Day 9 — REST + gRPC + GraphQL
-Branch: `day/09-grpc-graphql`
+### Day 9 — BuyerService: Couchbase + Hexagonal Architecture
+Branch: `day/09-buyer-couchbase-hexagonal`
 
-REST public API baseline olarak korunacak; internal service-to-service use-case'lerde gRPC, esnek query/read use-case'lerinde GraphQL uygulanacak.
+- BuyerService PostgreSQL/JPA -> Couchbase
+- Hexagonal Architecture
+- BuyerPreferences
+- SavedSearch foundation
+- inbound/outbound ports
+- Couchbase adapter
+- integration + architecture tests
 
-### Day 10 — Kafka + Spring Cloud Stream + Spring Cloud Function
-Branch: `day/10-kafka-stream-function`
+### Day 10 — SellerService: Cassandra + Onion Architecture
+Branch: `day/10-seller-cassandra-onion`
 
-RabbitMQ command/task messaging rolünde korunacak, Kafka domain-event streaming için eklenecek.
+- SellerService -> Cassandra
+- Onion Architecture
+- Seller
+- ListingSubmission
+- query-first table design
+- partition/clustering
+- Cassandra Testcontainers
+- RabbitMQ cross-service reliable dispatch henüz yok
 
-### Day 11 — Outbox + Inbox + Idempotency + Retry + DLQ
-Branch: `day/11-outbox-inbox-idempotency`
+### Day 11 — PropertyService: MongoDB + Vertical Slice Architecture
+Branch: `day/11-property-mongodb-vertical-slice`
 
-Reliable messaging pattern'leri uygulanacak. Cassandra'ya RDBMS ile aynı transactional semantics varmış gibi davranılmayacak.
+- Property canonical Aggregate
+- MongoDB
+- Vertical Slice
+- GetProperty
+- PublishProperty foundation
+- optimistic concurrency
+- Mongo integration tests
 
-### Day 12 — CQRS + Elasticsearch Search Projection
-Branch: `day/12-cqrs-search`
+### Day 12 — SearchService: Elasticsearch + CQRS Query Side Foundation
+Branch: `day/12-search-elasticsearch-cqrs`
 
-PropertyService/MongoDB source of truth olacak; property event'leri Kafka üzerinden SearchService/Elasticsearch projection'ına aktarılacak.
+- SearchService runtime module
+- Elasticsearch
+- explicit mapping
+- SearchProperties
+- basic text/filter/range query
+- Vertical Slice + CQRS Query Side
+- Elasticsearch integration tests
 
-### Day 13 — Saga + Eventual Consistency
-Branch: `day/13-saga`
+Kafka projection henüz yok.
 
-Property offer/reservation workflow'u Saga Choreography ve compensating action'larla uygulanacak.
+### Day 13 — Redis Infrastructure Foundation
+Branch: `day/13-redis-foundation`
 
-### Day 14 — Advanced Resilience
-Branch: `day/14-resilience`
+- Spring Data Redis
+- typed configuration
+- connectivity
+- key naming
+- TTL conventions
+- integration tests
 
-Mevcut Circuit Breaker yapısı Retry, TimeLimiter, Bulkhead ve Redis-backed Rate Limiting ile genişletilecek.
+Offer idempotency, Rate Limiting ve Saga state daha sonraki ilgili Day'lerde aktive edilir.
 
-### Day 15 — Spring Cloud Bus + Vault
-Branch: `day/15-bus-vault`
+### Day 14 — Spring Security + OAuth2 + OIDC + Keycloak
+Branch: `day/14-security-keycloak`
 
-Normal configuration için Spring Cloud Config, secret yönetimi için Vault, değişiklik yayılımı için Spring Cloud Bus kullanılacak.
+- Spring Security
+- Keycloak
+- OAuth2/OIDC
+- RBAC
+- scopes
+- ownership
+- service-to-service authentication
+- identity mapping
 
-### Day 16 — Unit + Integration + Testcontainers
-Branch: `day/16-testing`
+### Day 15 — REST + gRPC + GraphQL
+Branch: `day/15-grpc-graphql`
 
-Datastore, messaging, security ve architecture odaklı otomatik testler geliştirilecek.
+- REST baseline
+- BuyerService -> AgentService gRPC availability
+- GraphQL flexible read/query
+- protocol boundaries
+- contract tests
 
-### Day 17 — Contract + Failure-Path Testing
-Branch: `day/17-contract-testing`
+### Day 16 — Kafka + Spring Cloud Stream + Spring Cloud Function
+Branch: `day/16-kafka-stream-function`
 
-Contract verification ve sistematik negative/failure-path testleri eklenecek.
+- Kafka
+- property.events
+- offer.events foundation
+- Stream
+- Function
+- partition key / consumer group / offset
+- RabbitMQ command role korunur
 
-### Day 18 — OpenTelemetry + Prometheus + Grafana + Loki + Tempo
-Branch: `day/18-observability`
+### Day 17 — Outbox + Inbox + Idempotency + Retry + DLQ/DLT
+Branch: `day/17-reliable-messaging`
 
-Mevcut Micrometer/Zipkin baseline logs, metrics ve traces ile tam observability yapısına genişletilecek.
+- reliable messaging
+- Outbox
+- Inbox
+- Idempotent Consumer
+- retry
+- poison message
+- DLQ/DLT
+- SellerService Cassandra -> RabbitMQ reliable dispatch strategy finalize
 
-### Day 19 — Spring Cloud Task + Reindex / Reconciliation
-Branch: `day/19-cloud-task`
+### Day 18 — CQRS + Elasticsearch Event Projection
+Branch: `day/18-cqrs-search-projection`
 
-Elasticsearch reindex ve MongoDB → Elasticsearch reconciliation gibi kısa ömürlü maintenance job'ları uygulanacak.
+- Property Mongo source of truth
+- Kafka property events
+- Search Elasticsearch projection
+- Eventual Consistency
+- projection freshness
 
-### Day 20 — Architecture Fitness + E2E + Backend Completion
-Branch: `day/20-backend-completion`
+### Day 19 — Saga + Offer / Reservation Workflow
+Branch: `day/19-saga-offer-reservation`
 
-ArchUnit architecture fitness kuralları, end-to-end doğrulama, nihai ADR'ler ve backend completion dokümantasyonu tamamlanacak.
+- Offer lifecycle
+- Property hold
+- Seller decision
+- reserve/release
+- Saga Choreography
+- compensation
+- concurrency rules
+
+### Day 20 — Advanced Resilience
+Branch: `day/20-resilience`
+
+- Retry
+- Circuit Breaker
+- TimeLimiter
+- Bulkhead
+- Redis-backed Rate Limiting
+- timeout budgets
+- failure isolation
+
+### Day 21 — Spring Cloud Bus + Vault
+Branch: `day/21-bus-vault`
+
+- Config vs Secret separation
+- Vault
+- Bus
+- secret lifecycle
+- config refresh governance
+
+### Day 22 — Unit + Integration + Testcontainers Hardening
+Branch: `day/22-testing`
+
+- Unit
+- Application
+- Integration
+- Testcontainers
+- datastore/messaging/security tests
+- concurrency/idempotency hardening
+
+### Day 23 — Contract + Failure-Path Testing
+Branch: `day/23-contract-failure-testing`
+
+- Spring Cloud Contract
+- REST contracts
+- failure-path
+- dependency outage
+- DLQ/DLT
+- resilience negative tests
+
+### Day 24 — OpenTelemetry + Prometheus + Grafana + Loki + Tempo
+Branch: `day/24-observability`
+
+- logs
+- metrics
+- traces
+- OpenTelemetry
+- Prometheus
+- Grafana
+- Loki
+- Tempo
+- existing Zipkin comparison
+
+### Day 25 — Spring Cloud Task + Reindex / Reconciliation
+Branch: `day/25-cloud-task`
+
+- Spring Cloud Task
+- Elasticsearch reindex
+- reconciliation
+- rerunnable/idempotent maintenance job
+- recovery workflow
+
+### Day 26 — Architecture Fitness + E2E + Backend Completion
+Branch: `day/26-backend-completion`
+
+- ArchUnit
+- architecture fitness
+- E2E critical flows
+- final ADR review
+- final documentation
+- runbook verification
+- backend completion audit
+
+## Commit ilkesi
+
+Her Day küçük ve anlamlı commit'lere bölünür.
+
+Örnek service Day'i:
+
+1. `build(...): add datastore dependency`
+2. `refactor(...): establish architecture packages`
+3. `feat(...): add domain model`
+4. `feat(...): add application use case`
+5. `feat(...): add persistence adapter`
+6. `feat(...): expose minimal API`
+7. `test(...): add unit and integration tests`
+8. `docs(...): update design and roadmap`
+
+Tek devasa commit yapılmaz.
 
 ## Spring Cloud kapsamı
 
-Zaten mevcut: Gateway, Config, Eureka, OpenFeign, LoadBalancer, Circuit Breaker.
+Mevcut:
+- Gateway
+- Config
+- Eureka
+- OpenFeign
+- LoadBalancer
+- Circuit Breaker
 
-Planlanan: Stream, Function, Bus, Vault, Contract, Task.
+Planlanan:
+- Stream
+- Function
+- Bus
+- Vault
+- Contract
+- Task
 
-Backend sonrasında: Spring Cloud Kubernetes.
+Backend sonrasında:
+- Spring Cloud Kubernetes
 
-Dokümantasyon karşılaştırması: Eureka vs Consul vs ZooKeeper.
+Karşılaştırma:
+- Eureka vs Consul vs ZooKeeper
 
-## Backend sonrası faz
+## Backend sonrası
 
-Docker hardening → Kubernetes native fundamentals → Spring Cloud Kubernetes → Jenkins → SonarQube → Nexus → Harbor → Argo CD / GitOps.
+Docker hardening
+→ Kubernetes native fundamentals
+→ Spring Cloud Kubernetes
+→ Jenkins
+→ SonarQube
+→ Nexus
+→ Harbor
+→ Argo CD / GitOps

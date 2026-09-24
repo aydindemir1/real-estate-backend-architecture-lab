@@ -1,15 +1,15 @@
 # PropertyService Design
 
-## Purpose
-Own the canonical property lifecycle and write model.
+## Amaç
+Canonical property lifecycle ve write model ownership'ini taşımak.
 
 ## Architecture
 Vertical Slice Architecture.
 
 ## Primary datastore
-MongoDB via Spring Data MongoDB.
+MongoDB + Spring Data MongoDB.
 
-## Target package structure
+## Hedef package structure
 ```text
 com.aydindemir.property
 ├── create
@@ -24,7 +24,7 @@ com.aydindemir.property
     └── configuration
 ```
 
-## Planned canonical document
+## Planlanan canonical document
 Property:
 - id
 - sellerId
@@ -41,21 +41,21 @@ Property:
 - updatedAt
 - type-specific attributes
 
-## Why MongoDB
-Property types can have heterogeneous attributes. MongoDB remains canonical; Elasticsearch is only a projection.
+## Neden MongoDB?
+Farklı property type'ları heterogeneous attribute'lara sahip olabilir. MongoDB canonical source olarak kalır; Elasticsearch yalnızca projection olacaktır.
 
-## Planned events
+## Planlanan event'ler
 - PropertyCreated
 - PropertyPublished
 - PropertyUpdated
 - PropertyPriceChanged
 - PropertyDeleted
 
-## Day 7 dependency changes
-Use Spring Data MongoDB and remove unnecessary JPA/PostgreSQL dependencies from this module.
+## Day 7 dependency değişiklikleri
+Spring Data MongoDB kullanılacak; bu module için gereksiz JPA/PostgreSQL dependency'leri kaldırılacak.
 
-## Required infrastructure
-MongoDB; Kafka is added in Day 10.
+## Gerekli infrastructure
+MongoDB. Kafka Day 10'da eklenecek.
 
-## Planned tests
-Slice/use-case tests, Mongo integration tests and event-publication tests when Kafka is introduced.
+## Planlanan testler
+Slice/use-case testleri, MongoDB Integration Testing ve Kafka eklendiğinde event publication testleri.

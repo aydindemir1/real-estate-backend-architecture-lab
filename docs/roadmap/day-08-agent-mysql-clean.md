@@ -52,3 +52,7 @@ AgentService'i MySQL ve Clean Architecture ile gerçek bir vertical path üzerin
 
 ## Done
 AgentService MySQL üzerinde çalışır, Clean Architecture dependency direction korunur ve unit/integration/architecture tests green olur.
+
+## Exact file/class plan
+
+Implementation source of truth: `docs/roadmap/day-08-exact-file-plan.md`

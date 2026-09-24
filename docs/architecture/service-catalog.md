@@ -1,22 +1,22 @@
 # Service Catalog
 
-| Service | Responsibility | Owns data | Does not own |
+| Service | Sorumluluk | Sahip olduğu veri | Sahip olmadığı veri |
 |---|---|---|---|
 | AuthService | Authentication/account baseline | Auth/account persistence | User profile, property, search |
 | UserProfileService | User profile baseline | User profile data | Auth credentials, property |
-| AgentService | Agent identity, license, agency-facing business data | Agent relational data | Buyer preferences, property search |
-| BuyerService | Buyer preferences and buyer-side behavior | Buyer document data | Canonical property data |
+| AgentService | Agent identity, license ve agency-facing business data | Agent relational data | Buyer preferences, property search |
+| BuyerService | Buyer preferences ve buyer-side behavior | Buyer document data | Canonical property data |
 | SellerService | Seller profile, seller activity, listing submission history | Seller-oriented wide-column data | Canonical property document |
-| PropertyService | Canonical property lifecycle and write model | Property MongoDB documents | Search index |
-| SearchService | Search projection and query model | Elasticsearch index only | Canonical property source of truth |
-| ApiGatewayService | Edge routing, auth boundary, rate limiting | No business data | Domain persistence |
+| PropertyService | Canonical property lifecycle ve write model | Property MongoDB documents | Search index |
+| SearchService | Search projection ve query model | Elasticsearch index | Canonical property source of truth |
+| ApiGatewayService | Edge routing, auth boundary, rate limiting | Business data yok | Domain persistence |
 | Config Servers | Central configuration | Configuration | Business data |
 | EurekaServer | Service registry/discovery | Registry state | Business data |
 
-## Core ownership rule
+## Temel ownership kuralı
 
-A service may consume another service's data through an API or event, but it must not write directly to another service's datastore.
+Bir service başka bir service'in verisini API veya event üzerinden tüketebilir; ancak başka bir service'in datastore'una doğrudan yazamaz.
 
-## Search rule
+## Search kuralı
 
-SearchService is a derived projection. PropertyService/MongoDB remains canonical. Elasticsearch can be rebuilt.
+SearchService derived projection'dır. PropertyService/MongoDB canonical source olarak kalır. Elasticsearch index'i yeniden üretilebilir olmalıdır.

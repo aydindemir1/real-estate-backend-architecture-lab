@@ -1,10 +1,10 @@
 # Data Architecture
 
-## Database-per-service
+## Database per Service
 
-The project uses database-per-service boundaries for educational clarity and independent ownership. AuthService and UserProfileService keep the existing PostgreSQL baseline.
+Proje, service ownership sınırlarını netleştirmek ve independent persistence kararlarını öğretmek için Database per Service yaklaşımını kullanır. AuthService ve UserProfileService mevcut PostgreSQL baseline'ını korur.
 
-## Datastore assignments
+## Datastore dağılımı
 
 - PostgreSQL — AuthService, UserProfileService
 - MySQL — AgentService
@@ -12,31 +12,31 @@ The project uses database-per-service boundaries for educational clarity and ind
 - Cassandra — SellerService
 - MongoDB — PropertyService
 - Elasticsearch — SearchService projection
-- Redis — shared infrastructure capability, not a canonical business datastore
+- Redis — shared infrastructure capability; canonical business datastore değildir
 
-## Why each datastore exists
+## Datastore'ların projedeki öğretim amacı
 
 ### MySQL
-Relational modeling, JPA/Hibernate portability, constraints, transactions and indexes.
+Relational modeling, JPA/Hibernate portability, constraints, transactions ve indexes.
 
 ### Couchbase
-Document-oriented buyer preferences and ports/adapters persistence isolation.
+Document-oriented buyer preferences ve Hexagonal Architecture içinde persistence adapter izolasyonu.
 
 ### Cassandra
-Query-first modeling, partition/clustering keys, denormalization, high-write distributed data patterns.
+Query-first modeling, partition key, clustering key, denormalization ve distributed data design.
 
 ### MongoDB
-Flexible property aggregates with heterogeneous property attributes.
+Heterogeneous property attribute'larını taşıyan flexible property aggregate modeli.
 
 ### Elasticsearch
-Full-text search, filters, aggregations, facets, autocomplete, fuzzy and geo queries.
+Full-text search, filtering, aggregations, facets, autocomplete, fuzzy search ve geo query.
 
 ### Redis
-Caching, idempotency keys, rate limiting and short-lived state.
+Caching, idempotency key, rate limiting ve short-lived state.
 
-## Important constraints
+## Kısıtlar
 
-- No Oracle or SQL Server in the current roadmap.
-- Elasticsearch is not source of truth.
-- Redis is not a canonical aggregate store.
-- Cassandra tables are designed from access patterns, not JPA-style entity relations.
+- Oracle ve SQL Server mevcut roadmap kapsamında kullanılmayacak.
+- Elasticsearch source of truth değildir.
+- Redis canonical aggregate store değildir.
+- Cassandra tabloları JPA tarzı entity relation yaklaşımıyla değil access pattern'lere göre tasarlanacaktır.

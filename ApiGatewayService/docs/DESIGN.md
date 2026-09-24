@@ -1,20 +1,20 @@
 # ApiGatewayService Design
 
-## Purpose
-Provide edge routing and cross-cutting request controls.
+## Amaç
+Edge routing ve cross-cutting request control sağlamak.
 
-## Existing responsibilities
-- route requests by service name
-- use Eureka + Spring Cloud LoadBalancer
-- apply Circuit Breaker/fallback
-- propagate trace context
+## Mevcut sorumluluklar
+- request'leri service-name üzerinden route etmek
+- Eureka + Spring Cloud LoadBalancer kullanmak
+- Circuit Breaker / fallback uygulamak
+- trace context propagation sağlamak
 
-## Planned responsibilities
-- validate/propagate OAuth2 identity context
-- apply rate limiting
-- expose resilience/observability signals
+## Planlanan sorumluluklar
+- OAuth2 identity context doğrulamak ve gerektiğinde propagate etmek
+- Rate Limiting uygulamak
+- resilience ve observability signal'larını expose etmek
 
-## Non-responsibilities
-- business rules
+## Sorumluluk dışı alanlar
+- business rule
 - domain persistence
 - canonical business data

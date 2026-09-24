@@ -1,20 +1,20 @@
-# ADR-006 — Eureka, Consul and ZooKeeper Scope
+# ADR-006 — Eureka, Consul ve ZooKeeper Kapsamı
 
 **Status:** Accepted
 
 ## Decision
-Keep Eureka as the implemented service registry for the backend phase. Compare Consul and ZooKeeper in documentation; do not add all three to the running architecture.
+Backend fazında implemented service registry olarak Eureka korunacaktır. Consul ve ZooKeeper dokümantasyon üzerinden karşılaştırılacak; üçünü birden runtime architecture'a eklemeyeceğiz.
 
-## Comparison topics
+## Karşılaştırma başlıkları
 - service discovery model
 - health checking
 - configuration / KV capabilities
 - coordination semantics
 - operational complexity
-- relationship to Kubernetes-native discovery
+- Kubernetes-native discovery ile ilişki
 
 ## Rationale
-Implementing three registries would add operational noise without proportional learning value.
+Üç registry'yi birlikte implement etmek learning value'dan fazla operational noise üretir.
 
-## When to revisit
-During the Kubernetes/platform phase, compare Eureka-based discovery with Kubernetes-native Service/DNS discovery and Spring Cloud Kubernetes.
+## When to Revisit
+Kubernetes/platform fazında Eureka-based discovery ile Kubernetes Service/DNS ve Spring Cloud Kubernetes karşılaştırılacaktır.

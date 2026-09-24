@@ -33,3 +33,7 @@ Logs, metrics ve traces'i tek operational model altında birleştirmek.
 
 ## Done
 Metric -> trace -> log correlation yapılabilir; critical flow'lar operational olarak görünürdür.
+
+## Exact observability/file plan
+
+Implementation source of truth: `docs/roadmap/day-24-exact-file-plan.md`

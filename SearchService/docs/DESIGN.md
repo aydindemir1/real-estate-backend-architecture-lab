@@ -1,18 +1,18 @@
 # SearchService Design
 
-## Purpose
-Provide query-optimized property search.
+## Amaç
+Query-optimized property search sağlamak.
 
 ## Architecture
 Vertical Slice + CQRS Query Side.
 
 ## Primary datastore
-Elasticsearch via Spring Data Elasticsearch.
+Elasticsearch + Spring Data Elasticsearch.
 
 ## Ownership
-SearchService owns only the search projection. It does not own canonical property data.
+SearchService yalnızca search projection'ın sahibidir. Canonical property data'nın sahibi değildir.
 
-## Target package structure
+## Hedef package structure
 ```text
 com.aydindemir.search
 ├── searchproperties
@@ -27,7 +27,7 @@ com.aydindemir.search
     └── observability
 ```
 
-## Planned PropertySearchDocument
+## Planlanan PropertySearchDocument
 - propertyId
 - title
 - description
@@ -47,17 +47,17 @@ com.aydindemir.search
 - createdAt
 - updatedAt
 
-## Planned capabilities
-Full-text search, filtering, ranges, sorting, pagination, aggregations/facets, autocomplete, fuzzy matching and geo-distance search.
+## Planlanan capabilities
+Full-text search, filtering, ranges, sorting, pagination, aggregations/facets, autocomplete, fuzzy matching ve geo-distance search.
 
 ## Data flow
-PropertyService/MongoDB → Kafka property events → SearchService → Elasticsearch.
+PropertyService/MongoDB → Kafka property event'leri → SearchService → Elasticsearch.
 
-## Rebuild rule
-The Elasticsearch index must be rebuildable from canonical property data/event history.
+## Rebuild kuralı
+Elasticsearch index'i canonical property data veya event history üzerinden yeniden üretilebilir olmalıdır.
 
-## Required infrastructure
-Elasticsearch; Kafka from Day 10.
+## Gerekli infrastructure
+Elasticsearch. Kafka Day 10'da eklenecek.
 
-## Planned tests
-Index mapping/query integration tests, event projection tests, reindex/reconciliation tests.
+## Planlanan testler
+Index mapping/query Integration Testing, event projection testleri ve Reindex/Reconciliation testleri.

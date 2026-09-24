@@ -12,7 +12,7 @@ Bu proje messaging teknolojilerini birbirinin kopyası olarak kullanmaz.
 ### Mevcut
 AuthService -> UserProfileService async profile creation flow korunur.
 
-### Yeni ana flow
+### Yeni target flow
 SellerService -> PropertyService listing submission command.
 
 Exchange:
@@ -48,31 +48,19 @@ DLQ:
 Dead routing key:
 `property.listing.submit.dead`
 
-Öğrenilecek konular:
-- Exchange
-- Queue
-- Binding
-- Routing Key
-- ACK / NACK
-- Prefetch
-- Retry
-- TTL
-- DLX / DLQ
-- Competing Consumer
-- Idempotent Consumer
+### Reliability notu
+SellerService Cassandra state write ile RabbitMQ publish arasındaki reliable publication stratejisi Day 11 öncesi ayrıca finalize edilecektir. Day 7 yalnızca datastore/architecture foundation kapsamındadır.
 
 ## Kafka
 
 ### Topic yaklaşımı
-Başlangıçta domain bazlı topic:
-
 - `property.events`
 - `offer.events`
 
 ### property.events
 Message Key: `propertyId`
 
-Event candidate'ları:
+Initial event set:
 - PropertyCreated
 - PropertyPublished
 - PropertyUpdated
@@ -86,13 +74,13 @@ Event candidate'ları:
 ### offer.events
 Message Key: `offerId`
 
-Event candidate'ları:
+Initial event set:
 - OfferRequested
 - SellerAccepted
 - SellerRejected
-- OfferAccepted
-- OfferRejected
 - OfferExpired
+
+`OfferAccepted` ve `OfferRejected` başlangıç event setinde yoktur. Gerçek downstream consumer ihtiyacı oluşursa eklenir.
 
 ### Event envelope
 - eventId
@@ -105,23 +93,17 @@ Event candidate'ları:
 - schemaVersion
 - payload
 
-Öğrenilecek konular:
-- Topic
-- Partition
-- Message Key
-- Consumer Group
-- Offset
-- Ordering
-- Replay
-- Retention
+## Öğrenilecek konular
+
+- Topic / Partition / Message Key
+- Consumer Group / Offset / Ordering / Replay / Retention
 - At-least-once delivery
 - Duplicate Event
-- Retry Topic
-- DLT
+- Retry Topic / DLT
 - Spring Cloud Stream
 - Spring Cloud Function
 - Idempotent Consumer
 
 ## Önemli kural
 
-Aynı business flow'u yalnızca teknoloji göstermek için hem RabbitMQ hem Kafka ile tekrar etmeyeceğiz. Her broker'ın ayrı semantic rolü vardır.
+Aynı business flow yalnızca teknoloji göstermek için hem RabbitMQ hem Kafka ile tekrar edilmez. Her broker'ın ayrı semantic rolü vardır.

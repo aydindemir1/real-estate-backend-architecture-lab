@@ -1,488 +1,249 @@
-# Day 18 — Exact File / Projection / Commit Plan
+# Day 18 — Exact Outbox + Inbox + Idempotent Consumer Plan
 
-## 0. Scope
+## Scope
 
-Day 18 yalnızca CQRS Search Projection içindir.
+- Property Mongo Outbox
+- Inbox/Processed Message
+- duplicate-safe consumers
+- atomic local side effects
+- crash-window tests
+- reliable-publication design for Couchbase and Cassandra
 
-Hedef:
-- PropertyService lifecycle event publication points
-- SearchService Kafka consumer group
-- idempotent projection handlers
-- Elasticsearch projection updates
-- projection freshness tracking
-- replay compatibility
-- end-to-end Property -> Kafka -> Search tests
+## Mandatory correctness addendum
+- Property/MongoDB uses Outbox.
+- Seller/Cassandra uses durable pending outbound messages + dispatcher/reconciliation.
+- Buyer/Couchbase must have a durable outbound-publication strategy before Day 22.
+- Best-effort critical broker publication is prohibited.
 
-Day 18 içinde:
-- Offer Saga yok
-- GraphQL expansion yok
-- full reindex task yok
-- reconciliation job yok
-- advanced observability stack yok
+## Task 1 — Reliability failure matrix
 
-## Task 1 — Finalize property event contracts
+Create/update docs:
+- docs/architecture/messaging-reliability.md
 
-Review and freeze initial contracts used by Search:
-- PropertyPublishedEvent
-- PropertyUpdatedEvent
-- PropertyPriceChangedEvent
-- PropertyWithdrawnEvent
-- PropertySoldEvent
+List failure modes:
+- DB commit succeeds, publish fails
+- publish succeeds, DB commit fails
+- duplicate delivery
+- consumer crashes after side effect before ack
+- malformed payload
+- transient broker outage
+- downstream timeout
+- poison message
+- replay duplicate
 
-Optional if Search needs them:
-- PropertyCreatedEvent
+Map each to strategy.
 
-Search should usually index only searchable/published state.
+Commit: docs(messaging): define reliability failure matrix
 
-Commit: docs(cqrs): finalize Search-relevant Property events
+## Task 2 — Delivery semantics declaration
 
-## Task 2 — Event payload minimization
+Declare project baseline:
+- at-least-once delivery
+- duplicate delivery is expected
+- exactly-once business effect achieved through idempotency + local transaction semantics
 
-Each event carries only fields needed by consumers.
+Do not claim Kafka exactly-once end-to-end business semantics.
 
-For Search projection, candidate payload:
-- propertyId
-- sellerId
-- title
-- description
-- propertyType
-- city
-- district
-- price
-- currency
-- roomCount
-- features
-- status
-- publishedAt
-- updatedAt
+## Task 3 — PropertyService Outbox model
 
-Do not serialize full Mongo document blindly.
-
-Commit can group with event contract finalization.
-
-## Task 3 — PropertyService publication points
-
-Modify existing slices/use-cases.
-
-Publish via Outbox-enabled port after local state change:
-- publish -> PropertyPublishedEvent
-- update details -> PropertyUpdatedEvent when slice exists
-- change price -> PropertyPriceChangedEvent when slice exists
-- withdraw -> PropertyWithdrawnEvent when slice exists
-- sold -> PropertySoldEvent when slice exists
-
-Day 18 should only wire events for behaviors currently implemented.
-
-Do not invent endpoints just to emit every event.
-
-Commit: feat(property): publish lifecycle events through outbox
-
-## Task 4 — Search consumer binding
-
-Add config:
-- destination property.events
-- group search-projection-group
-- concurrency initially bounded
+Primary candidate because PropertyService uses MongoDB and publishes lifecycle events.
 
 Create:
-- eventconsumer/PropertyProjectionConsumer.java
+- shared/outbox/OutboxMessage.java
+- shared/outbox/OutboxStatus.java
+- shared/outbox/OutboxRepository.java
+
+Fields:
+- outboxId
+- aggregateId
+- aggregateType
+- eventType
+- payload
+- occurredAt
+- correlationId
+- causationId
+- schemaVersion
+- status
+- retryCount
+- nextAttemptAt
+- publishedAt
+
+## Task 4 — Mongo Outbox document
+
+Create:
+- shared/outbox/mongo/OutboxDocument.java
+- shared/outbox/mongo/SpringDataOutboxRepository.java
+- shared/outbox/mongo/MongoOutboxRepositoryAdapter.java
+
+Indexes:
+- status + nextAttemptAt
+- aggregateId candidate if operational query needs it
+
+Commit: feat(property): add Mongo outbox persistence
+
+## Task 5 — Atomic Property + Outbox write
+
+Because MongoDB supports multi-document transactions only in replica set topology, choose carefully.
+
+Preferred learning options:
+- same Mongo transaction with replica-set Testcontainers/local topology
+or
+- single-document embedded outbox only if model remains maintainable
+
+Do not pretend two separate Mongo saves are atomic.
+
+Create transaction boundary around Property state + Outbox record if using multi-document transaction.
+
+Commit: feat(property): persist domain state and outbox atomically
+
+## Task 6 — Outbox event mapper
+
+Create:
+- shared/outbox/OutboxEventMapper.java
 
 Responsibilities:
-- deserialize
-- validate envelope
-- deduplicate/inbox check
-- route by eventType to projection handler
+- integration event -> persisted payload/envelope
 
-Do not put Elasticsearch update logic directly in Consumer lambda.
+No Kafka client usage.
 
-Commit: feat(search): add Property projection consumer
+Commit: feat(property): add outbox event mapping
 
-## Task 5 — Projection handler abstraction
+## Task 7 — Outbox publisher
 
-Create package:
-- projection/
-
-Create handlers:
-- PropertyPublishedProjectionHandler.java
-- PropertyUpdatedProjectionHandler.java
-- PropertyPriceChangedProjectionHandler.java
-- PropertyWithdrawnProjectionHandler.java
-- PropertySoldProjectionHandler.java
-
-Only create handler for events actually active.
-
-Commit: feat(search): add projection handlers
-
-## Task 6 — Projection repository operations
-
-Extend Search persistence abstraction with explicit operations:
-- upsert(PropertySearchDocument)
-- updatePrice(propertyId, ...)
-- updateStatus(propertyId, ...)
-- delete or deactivate(propertyId)
-
-Prefer semantic methods over leaking Elasticsearch UpdateRequest.
-
-Commit: feat(search): add projection repository operations
-
-## Task 7 — Upsert strategy
-
-PropertyPublished and full PropertyUpdated events can upsert full document.
-
-PriceChanged can partial update if simpler/safer.
-
-Withdrawn/Sold policy:
-- either update status and exclude in query
-- or delete document
-
-Choose one and document.
-
-Recommended:
-keep document with status for traceability, query only searchable statuses.
-
-Commit: feat(search): define projection state semantics
-
-## Task 8 — Idempotent projection
-
-Use Day 17 inbox/processed-message pattern.
-
-Consumer key:
-- consumerName = search-projection
-- eventId
+Create:
+- shared/outbox/OutboxPublisher.java
+- shared/outbox/OutboxPublishingJob.java or application service
 
 Flow:
-1. check eventId
-2. apply projection update
-3. mark processed
+1. fetch pending due records
+2. publish through PublishPropertyEventPort
+3. mark published on success
+4. update retry metadata on transient failure
 
-Need local atomicity strategy appropriate to SearchService support store.
+Batch size bounded.
 
-If inbox is not in Elasticsearch, chosen local store must be explicit.
+Do not use unbounded polling.
 
-Do not rely solely on Elasticsearch document version for message deduplication.
+Commit: feat(messaging): add outbox publisher
 
-Commit: feat(search): make projection consumers idempotent
+## Task 8 — Outbox scheduling trigger
 
-## Task 9 — Event ordering guard
+Choose one lightweight trigger for Day 17:
+- @Scheduled polling
 
-Kafka key = propertyId gives per-property partition ordering.
+Spring Cloud Task remains Day 25.
 
-Still add stale-event protection candidate using event occurredAt/version.
+Config:
+- interval Duration
+- batch size
 
-PropertySearchDocument fields:
-- sourceVersion candidate
-- lastEventOccurredAt
+Do not create multiple uncontrolled scheduler instances in scaled environment without coordination strategy.
 
-If sourceVersion is available from Property Aggregate version, prefer it.
+Since local lab may be single instance, document distributed scaling caveat.
+
+Commit: config(messaging): add bounded outbox polling
+
+## Task 9 — Outbox publish idempotency
+
+Outbox record may be published more than once if crash occurs after broker ack but before mark-published.
+
+Therefore consumers must deduplicate by eventId.
+
+Do not rely on producer-side exactly-once illusion.
+
+## Task 10 — Inbox model
+
+Create generic consumer-side concept:
+- ProcessedMessage.java
+- ProcessedMessageRepository.java
+
+Fields:
+- messageId/eventId
+- consumerName
+- processedAt
+- payloadHash optional
+
+Unique logical key:
+- consumerName + messageId
+
+## Task 11 — Inbox persistence per datastore
+
+Do not force one DB technology across services.
+
+Examples:
+- SearchService Elasticsearch is not ideal as inbox source; use its canonical/local supporting store only if suitable or a dedicated lightweight persistence choice explicitly justified
+- SellerService Cassandra can use processed_message_by_consumer table
+- BuyerService Couchbase can store idempotency documents
+
+Day 17 should implement inbox where an actual side-effecting consumer exists now.
+
+Do not create unused inbox tables in every service.
+
+## Task 12 — Idempotent consumer wrapper
+
+Create application/infrastructure helper pattern:
+- IdempotentMessageHandler.java
+
+Flow:
+1. check messageId
+2. if already processed -> no-op/ack
+3. execute handler
+4. persist processed marker in same local transaction where possible
 
 Rule:
-older event must not overwrite newer projection state.
+processed marker + side effect should be atomic within local datastore capabilities.
 
-Commit: feat(search): guard projection against stale events
+Commit: feat(messaging): add idempotent consumer foundation
 
-## Task 10 — Projection freshness fields
-
-Add to document:
-- sourceUpdatedAt
-- projectionUpdatedAt
-- lastEventOccurredAt
-
-Freshness calculation:
-projectionUpdatedAt - lastEventOccurredAt
-
-Do not expose internal timestamps unless useful to API.
-
-Commit: feat(search): track projection freshness metadata
-
-## Task 11 — Search query filter update
-
-Ensure public search only returns searchable statuses.
-
-Candidate:
-- PUBLISHED
-- maybe ON_HOLD depending business visibility
-
-Decide now:
-Recommended initial searchable status = PUBLISHED only.
-
-Reserved/Sold/Withdrawn excluded.
-
-Commit: feat(search): enforce searchable property statuses
-
-## Task 12 — PropertyPublished handler
-
-Create full projection from event.
-
-Fields mapped to PropertySearchDocument.
-
-Test mapping independently.
-
-Commit: feat(search): project PropertyPublished events
-
-## Task 13 — PropertyPriceChanged handler
-
-Update price/currency/updatedAt/version.
-
-Reject stale version/event.
-
-Commit: feat(search): project PropertyPriceChanged events
-
-## Task 14 — PropertyUpdated handler
-
-Update searchable fields.
-
-Do not update fields not owned by event.
-
-Commit: feat(search): project PropertyUpdated events
-
-## Task 15 — Withdraw/Sold handlers
-
-Policy selected in Task 7.
-
-Recommended:
-- update status
-- keep doc
-- search query excludes non-searchable status
-
-Commit: feat(search): project terminal property statuses
-
-## Task 16 — Replay compatibility
-
-Projection handlers must be deterministic and rerunnable.
-
-Given same ordered event sequence, final projection should be same.
-
-No external side effects beyond projection/inbox.
-
-Commit: test(cqrs): verify projection replay determinism
-
-## Task 17 — Kafka consumer integration test
+## Task 13 — Outbox integration tests
 
 Create:
-- PropertyProjectionConsumerIntegrationTest.java
+- PropertyOutboxIntegrationTest.java
 
-Scenario:
-- publish event to property.events
-- Search consumer processes
-- Elasticsearch doc appears/updates
+Cases:
+- property change writes outbox record
+- publisher success marks published
+- transient failure keeps pending/retry metadata
+- crash-window duplicate publish tolerated by consumer
 
-Use Kafka + Elasticsearch Testcontainers.
+Commit: test(messaging): add outbox integration tests
 
-Commit: test(cqrs): add projection consumer integration test
-
-## Task 18 — Publish-to-search E2E test
+## Task 14 — Inbox/idempotency tests
 
 Create:
-- PropertySearchProjectionE2ETest.java
+- IdempotentConsumerIntegrationTest.java
 
-Flow:
-1. create DRAFT fixture
-2. publish Property via application use-case
-3. outbox publishes Kafka event
-4. Search consumer processes
-5. search query returns Property
+Cases:
+- first message processes
+- duplicate message no-op
+- duplicate after restart still no-op
+- same id different payload conflict if hash policy enabled
 
-Use Awaitility/bounded polling, not Thread.sleep.
+Commit: test(messaging): add inbox idempotency tests
 
-Commit: test(cqrs): add Property to Search end-to-end flow
+## Task 15 — Consumer crash-window test
 
-## Task 19 — Price update E2E test
+Simulate:
+- business side effect succeeds
+- ack/processed marker update boundary fails
 
-If ChangePrice slice exists by Day 18:
-1. publish property
-2. change price
-3. event
-4. search reflects new price
+Verify re-delivery does not duplicate business effect.
 
-If slice not implemented, do not invent just for test.
+This is a key at-least-once correctness test.
 
-## Task 20 — Withdraw/Sold E2E test
+Commit: test(messaging): verify consumer crash-window idempotency
 
-If behaviors exist:
-- terminal status causes search exclusion
-
-Otherwise defer.
-
-## Task 21 — Duplicate event test
-
-Publish same eventId twice.
-
-Verify:
-- projection not duplicated/corrupted
-- processed marker prevents duplicate side-effect
-
-Commit: test(cqrs): verify duplicate projection idempotency
-
-## Task 22 — Out-of-order stale event test
-
-Scenario:
-- newer event applied
-- older event delivered afterward
-
-Verify older version/timestamp does not overwrite.
-
-Commit: test(cqrs): reject stale projection events
-
-## Task 23 — DLT projection test
-
-Simulate projection failure.
-
-Verify:
-- bounded retry
-- DLT after exhaustion
-- good messages continue
-
-Commit: test(cqrs): verify projection failure routing
-
-## Task 24 — Projection freshness metric/log
-
-Day 24 owns full metrics stack.
-
-Day 18 minimum:
-- calculate freshness
-- expose low-cardinality metric candidate if Micrometer already available
-
-Metric name candidate:
-- search_projection_freshness_seconds
-
-Labels:
-- eventType maybe
-
-Never label by propertyId.
-
-Commit if implemented: feat(search): expose projection freshness metric
-
-## Task 25 — Consumer lag awareness
-
-Document that Kafka lag + projection freshness are complementary.
-
-Do not equate zero lag with fresh projection if handler is slow/failing.
-
-## Task 26 — API eventual consistency note
-
-Document Search API semantics:
-- write success does not guarantee immediate search visibility
-- projection is eventually consistent
-
-Optional response metadata not needed.
-
-Commit: docs(cqrs): document eventual consistency semantics
-
-## Task 27 — Architecture tests
+## Task 16 — Architecture tests
 
 Rules:
-- Search projection handlers do not call PropertyService directly
-- no OpenFeign read-after-write for projection
-- Search still owns only Elasticsearch projection
-- Property domain does not depend on SearchService
-- consumer depends on application/projection handler, not controller
+- domain does not depend on broker APIs
+- application ports define publish capability
+- listeners only call application handlers
+- outbox persistence does not leak Kafka classes
+- RabbitMQ publisher stays infrastructure
 
-Commit: test(cqrs): enforce projection architecture boundaries
+Commit: test(messaging): enforce reliability adapter boundaries
 
-## Task 28 — Recovery hook design
+## Source-of-truth note
 
-Day 25 owns reindex/reconciliation.
-
-Day 18 only ensure handlers can be invoked from replay/reindex pathways later.
-
-Do not add Cloud Task now.
-
-## Task 29 — Documentation
-
-Modify:
-- docs/architecture/messaging-topology.md
-- docs/architecture/domain-model.md if projection fields need update
-- docs/contracts/command-event-catalog.md
-- SearchService/docs/DESIGN.md
-- PropertyService/docs/DESIGN.md
-- docs/roadmap/day-18-cqrs-search-projection.md
-
-Record actual:
-- events consumed
-- consumer group
-- searchable statuses
-- stale-event policy
-- idempotency strategy
-- freshness metadata
-- eventual consistency
-
-Commit: docs(cqrs): finalize Search projection design
-
-## Recommended Commit Sequence
-
-1. docs(cqrs): finalize Search-relevant Property events
-2. feat(property): publish lifecycle events through outbox
-3. feat(search): add Property projection consumer
-4. feat(search): add projection handlers
-5. feat(search): add projection repository operations
-6. feat(search): define projection state semantics
-7. feat(search): make projection consumers idempotent
-8. feat(search): guard projection against stale events
-9. feat(search): track projection freshness metadata
-10. feat(search): enforce searchable property statuses
-11. feat(search): project PropertyPublished events
-12. feat(search): project PropertyPriceChanged events — if active
-13. feat(search): project PropertyUpdated events — if active
-14. feat(search): project terminal property statuses — if active
-15. test(cqrs): add projection consumer integration test
-16. test(cqrs): add Property to Search end-to-end flow
-17. test(cqrs): verify duplicate projection idempotency
-18. test(cqrs): reject stale projection events
-19. test(cqrs): verify projection failure routing
-20. test(cqrs): verify projection replay determinism
-21. test(cqrs): enforce projection architecture boundaries
-22. docs(cqrs): document eventual consistency semantics
-23. docs(cqrs): finalize Search projection design
-
-Adjacent event-handler commits may be grouped where they are one cohesive projection capability. Do not combine Property event publication, Search projection logic and all tests into one giant commit.
-
-## Explicitly Deferred from Day 18
-
-Do not implement:
-- Offer Saga
-- Seller offer projection
-- Spring Cloud Task
-- full reindex UI/job
-- Mongo-vs-Elasticsearch reconciliation job
-- Grafana dashboards
-- autocomplete/facets/geo expansion
-
-## Critical Design Note — CQRS
-
-CQRS here is system-level:
-- PropertyService/MongoDB = write model/source of truth
-- SearchService/Elasticsearch = read model/projection
-
-Command/query class naming alone is not the CQRS implementation.
-
-## Critical Design Note — Eventual Consistency
-
-Property write can succeed before Search projection updates.
-
-This is expected behavior, not an error.
-
-## Critical Design Note — Ordering
-
-Kafka key=propertyId gives per-property partition ordering.
-
-Projection still protects against stale/replayed older events when version/timestamp is available.
-
-## Day 18 Final Gate
-
-Day 18 closes only if:
-- Property lifecycle event publication is wired through reliable outbox path
-- Search consumer group processes property.events
-- PropertyPublished creates/upserts projection
-- active update events modify projection correctly
-- non-searchable terminal statuses are excluded from search
-- duplicate event is safe
-- stale event cannot overwrite newer projection
-- projection freshness metadata exists
-- E2E Property publish -> Kafka -> Elasticsearch -> Search works
-- projection failure reaches DLT after bounded retry
-- replay is deterministic
-- Search does not synchronously call PropertyService to build projection
-- CQRS architecture rules are automated
-- eventual consistency is documented
-- no Saga/reindex-task/full observability scope leaks into Day 18
-- docs match actual implementation
+This file follows the final Day 15–33 roadmap. Earlier combined Day numbering is superseded by `docs/roadmap/LEGACY-DAY-MAPPING.md`.

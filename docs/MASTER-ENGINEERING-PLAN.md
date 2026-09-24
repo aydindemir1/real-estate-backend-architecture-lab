@@ -309,10 +309,16 @@ Gerekli olanlar:
 
 ## 12. Implementation sırası
 
-Engineering Standards tamamlandıktan sonra:
+Engineering Standards 1–18 tamamlandı.
 
-- önce STEP 13-18 tamamlanır,
-- ardından Day 7 exact implementation plan çıkarılır,
-- daha sonra Day 7 branch açılır/uygulanır.
+Final audit sonrası implementation cadence yeniden düzenlenmiştir:
 
-Implementation'a plan hazır olmadan geçilmez.
+- Bir Day mümkün olduğunca tek service veya tek ana infrastructure konusu içerir.
+- Eski Day 7 içinde planlanan beş service tek milestone'da uygulanmayacaktır.
+- Backend roadmap Day 26'ya kadar genişletilmiştir.
+- İçerik azaltılmamış, yalnız daha küçük milestone'lara ayrılmıştır.
+- Küçük ve anlamlı commit'ler zorunlu çalışma prensibidir.
+
+Detaylı güncel sıra root `ROADMAP.md` dosyasındadır.
+
+Implementation'a hâlâ plan hazır olmadan geçilmez.

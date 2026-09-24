@@ -3,17 +3,17 @@
 **Status:** Accepted
 
 ## Decision
-Use distinct datastore models where each teaches a different backend problem:
+Her datastore farklı bir backend problemini öğretmek için kullanılacaktır:
 
-- MySQL for AgentService
-- Couchbase for BuyerService
-- Cassandra for SellerService
-- MongoDB for PropertyService
-- Elasticsearch for SearchService
-- Redis for cross-cutting infrastructure
+- MySQL → AgentService
+- Couchbase → BuyerService
+- Cassandra → SellerService
+- MongoDB → PropertyService
+- Elasticsearch → SearchService
+- Redis → cross-cutting infrastructure
 
 ## Rationale
-The project is an education/portfolio laboratory, but technologies must map to realistic responsibilities instead of being added as checkboxes.
+Proje education/portfolio laboratory niteliğindedir; ancak teknolojiler checklist doldurmak için değil gerçek sorumluluklara karşılık gelecek şekilde kullanılmalıdır.
 
 ## Consequences
-Testing and local infrastructure become more complex. Testcontainers and clear service boundaries are therefore mandatory later in the roadmap.
+Local infrastructure ve testing daha karmaşık hale gelir. Bu nedenle Testcontainers ve açık service boundary'leri roadmap'in zorunlu parçalarıdır.

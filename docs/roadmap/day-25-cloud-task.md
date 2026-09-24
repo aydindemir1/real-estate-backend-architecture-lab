@@ -28,3 +28,7 @@ Finite maintenance/recovery job'larını kontrollü ve rerunnable hale getirmek.
 
 ## Done
 Search recovery task'ları idempotent, observable ve controlled şekilde çalışır.
+
+## Exact task/recovery plan
+
+Implementation source of truth: `docs/roadmap/day-25-exact-file-plan.md`

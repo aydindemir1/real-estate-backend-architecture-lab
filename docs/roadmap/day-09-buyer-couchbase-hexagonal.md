@@ -48,3 +48,7 @@ BuyerPreferences/SavedSearch capability'sini Couchbase ve Hexagonal Architecture
 
 ## Done
 BuyerService preferences capability Couchbase üzerinde ve Hexagonal boundaries korunarak çalışır.
+
+## Exact file/class plan
+
+Implementation source of truth: `docs/roadmap/day-09-exact-file-plan.md`

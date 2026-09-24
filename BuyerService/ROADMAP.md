@@ -1,16 +1,16 @@
 # BuyerService Roadmap
 
-## Current baseline
-REST skeleton, Config Client, Eureka Client, Actuator and tracing are present.
+## Mevcut baseline
+REST skeleton, Config Client, Eureka Client, Actuator ve tracing mevcut.
 
-## Planned
+## Planlanan
 - Day 7: Couchbase + Hexagonal Architecture
 - Day 8: Keycloak authorization
-- Day 9: gRPC client toward AgentService
-- Day 10+: domain event participation where needed
-- Day 13: offer/reservation saga participation
+- Day 9: AgentService'e gRPC client
+- Day 10+: gerektiği yerde domain event katılımı
+- Day 13: Offer/Reservation Saga katılımı
 - Day 16: Testcontainers
-- Day 18: observability
-- Day 20: architecture fitness
+- Day 18: Observability
+- Day 20: Architecture Fitness
 
-Detailed design: `docs/DESIGN.md`
+Detaylı tasarım: `docs/DESIGN.md`

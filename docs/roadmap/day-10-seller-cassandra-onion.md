@@ -51,3 +51,7 @@ Seller ve ListingSubmission capability'sini Cassandra query-first model ile kurm
 
 ## Done
 SellerService query-first Cassandra model ile çalışır; RabbitMQ reliable dispatch bilinçli olarak sonraya bırakılır.
+
+## Exact file/class plan
+
+Implementation source of truth: `docs/roadmap/day-10-exact-file-plan.md`

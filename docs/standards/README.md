@@ -55,7 +55,7 @@ Bu klasör implementation öncesi ve implementation sırasında uyulacak ortak e
 
 ## Planlanan
 
-4. `domain-modeling.md`
+4. `domain-modeling.md` ✅
 5. `application-layer.md`
 6. `persistence.md`
 7. `messaging.md`

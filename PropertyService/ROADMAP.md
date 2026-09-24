@@ -1,19 +1,19 @@
 # PropertyService Roadmap
 
-## Current baseline
-REST skeleton, Config Client, Eureka Client, Actuator and tracing are present.
+## Mevcut baseline
+REST skeleton, Config Client, Eureka Client, Actuator ve tracing mevcut.
 
-## Planned
+## Planlanan
 - Day 7: MongoDB + Vertical Slice Architecture
 - Day 8: Keycloak authorization
-- Day 9: GraphQL read use cases
-- Day 10: Kafka property events
-- Day 11: Inbox/idempotency
+- Day 9: GraphQL read use-case'leri
+- Day 10: Kafka property event'leri
+- Day 11: Inbox / Idempotency
 - Day 12: CQRS source-of-truth side
-- Day 13: saga participation
+- Day 13: Saga katılımı
 - Day 16: Testcontainers
-- Day 18: observability
-- Day 19: source for reindex/reconciliation
-- Day 20: architecture fitness
+- Day 18: Observability
+- Day 19: Reindex / Reconciliation source
+- Day 20: Architecture Fitness
 
-Detailed design: `docs/DESIGN.md`
+Detaylı tasarım: `docs/DESIGN.md`

@@ -36,3 +36,7 @@ Offer/Reservation workflow'unu Saga Choreography ile kurmak.
 
 ## Done
 At most one active Property hold invariant korunur; accept/reject compensation flow'u uçtan uca çalışır.
+
+## Exact Saga/file plan
+
+Implementation source of truth: `docs/roadmap/day-19-exact-file-plan.md`

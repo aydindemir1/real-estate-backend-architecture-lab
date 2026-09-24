@@ -1,37 +1,45 @@
 # Day 7 — Polyglot Persistence & Architecture Foundations
 
-**Status:** Planned  
+**Status:** Ready for implementation  
 **Implementation branch:** `day/07-polyglot-persistence`
 
 ## Amaç
 
-Day 1–6 baseline capability'lerini yeniden uygulamadan bu milestone'un hedeflerini tamamlamak.
+Day 1–6 baseline capability'lerini yeniden uygulamadan Polyglot Persistence ve service-specific Architecture foundation'larını kurmak.
 
-## Planlanan kapsam
+## Scope
 
-- AgentService → MySQL + Clean Architecture
-- BuyerService → Couchbase + Hexagonal Architecture
-- SellerService → Cassandra + Onion Architecture
-- PropertyService → MongoDB + Vertical Slice Architecture
-- SearchService foundation + Elasticsearch connectivity
-- Redis infrastructure foundation
+- AgentService -> MySQL + Clean Architecture
+- BuyerService -> Couchbase + Hexagonal Architecture
+- SellerService -> Cassandra + Onion Architecture
+- PropertyService -> MongoDB + Vertical Slice Architecture
+- SearchService -> Elasticsearch + Vertical Slice / CQRS Query Side foundation
+- Redis -> infrastructure foundation
 
-## Dokümantasyon kuralı
+## Explicitly deferred
 
-Service'e özel package structure, data model ve dependency değişiklikleri ilgili service'in `docs/DESIGN.md` dosyasında tutulur. Bu dosya yalnızca milestone kapsamını ve cross-service çalışmaları tanımlar.
+- Keycloak
+- gRPC / GraphQL
+- Kafka / Stream / Function
+- Outbox / Inbox
+- Saga
+- advanced resilience
+- Vault / Bus
+- full observability stack
+- reindex/reconciliation job
 
-## Implementation öncesi zorunlu tasarım
+SellerService -> PropertyService RabbitMQ publication Day 7'de aktive edilmez; reliable publication strategy Day 11 öncesi finalize edilir.
 
-- Etkilenen service DESIGN dokümanlarını gözden geçir.
-- Bu milestone için gereken API/event contract'larını kesinleştir.
-- Infrastructure/configuration değişikliklerini kesinleştir.
-- Positive ve Failure-Path Testing senaryolarını tanımla.
-- Definition of Done maddelerini doğrula.
+## Exact implementation source of truth
+
+Detaylı class/package, dependency/config, datastore, test ve Definition of Done planı:
+
+`docs/roadmap/day-07-exact-implementation-plan.md`
+
+## Day 7 principle
+
+Foundation milestone olduğu için target end-state'in bütün class/use-case'leri bir anda implemente edilmez. Her service için Architecture + datastore kombinasyonunu kanıtlayan minimum gerçek vertical path uygulanır.
 
 ## Definition of Done
 
-- Implementation ilgili Day branch'inde çalışıyor olmalı.
-- Milestone için tanımlanan automated test'ler geçmeli.
-- Mevcut baseline regression test'leri bozulmamalı.
-- İlgili DESIGN/ROADMAP/ADR dosyaları aynı branch'te güncellenmeli.
-- Bu koşullar tamamlandıktan sonra branch `main` ile merge edilmeye uygun kabul edilir.
+Exact plan içindeki Definition of Done maddelerinin tamamı karşılanmalıdır.

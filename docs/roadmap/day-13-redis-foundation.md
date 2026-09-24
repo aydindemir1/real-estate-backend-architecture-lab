@@ -33,3 +33,7 @@ Redis'i canonical datastore olmadan ortak ephemeral infrastructure capability ol
 
 ## Done
 Redis foundation hazır; idempotency/rate-limit/cache henüz gereksiz yere implemente edilmemiş.
+
+## Exact file/config plan
+
+Implementation source of truth: `docs/roadmap/day-13-exact-file-plan.md`

@@ -3,7 +3,6 @@
 Bu doküman service bazında application use-case sınırlarını tanımlar. İsimler implementation sırasında command/query handler, application service veya use-case interface olarak uygulanabilir; service'in architecture stiline göre klasör yapısı değişebilir.
 
 ## AuthService
-
 - RegisterAccount
 - Login
 - GetAccount
@@ -14,13 +13,11 @@ Bu doküman service bazında application use-case sınırlarını tanımlar. İs
 Day 8 sonrası primary authentication Keycloak'a kaydıkça bazı use-case'ler adapter/integration rolüne dönüşebilir.
 
 ## UserProfileService
-
 - CreateUserProfile
 - GetUserProfile
 - UpdateUserProfile
 
 ## AgentService
-
 - CreateAgent
 - GetAgent
 - UpdateAgentProfile
@@ -52,7 +49,7 @@ Day 8 sonrası primary authentication Keycloak'a kaydıkça bazı use-case'ler a
 - MarkOfferExpired
 - MarkOfferFailed
 
-Son beş use-case doğrudan public endpoint olmak zorunda değildir; Kafka event handler tarafından çağrılabilir.
+Son beş use-case public endpoint olmak zorunda değildir; event handler tarafından çağrılabilir.
 
 ## SellerService
 
@@ -64,9 +61,9 @@ Son beş use-case doğrudan public endpoint olmak zorunda değildir; Kafka event
 ### Listing Submission
 - CreateListingSubmission
 - SubmitListing
-- MarkListingAccepted
 - MarkListingRejected
 - MarkPropertyCreated
+- MarkListingFailed
 - ListSellerSubmissions
 
 ### Offer Projection / Decision
@@ -103,7 +100,6 @@ Son beş use-case doğrudan public endpoint olmak zorunda değildir; Kafka event
 - RecordProcessedEvent
 
 ## SearchService
-
 - IndexPublishedProperty
 - UpdatePropertyProjection
 - UpdatePriceProjection
@@ -120,7 +116,6 @@ Son beş use-case doğrudan public endpoint olmak zorunda değildir; Kafka event
 ## ApiGatewayService
 
 Business use-case içermez. Cross-cutting policy sağlar:
-
 - RouteRequest
 - AuthenticateRequest
 - ApplyRateLimit

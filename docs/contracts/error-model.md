@@ -4,93 +4,65 @@
 
 REST, gRPC, messaging ve application katmanlarında tutarlı hata semantics'i oluşturmak.
 
-## Error kategorileri
+## HTTP error policy
 
-### Validation Error
-Client input format veya field validation hatası.
+### 400 Bad Request
+Malformed veya syntactic validation:
+- required field
+- format
+- parse
+- invalid primitive constraint
 
-HTTP:
-`400 Bad Request`
-
-Örnek code:
+Örnek:
 - VALIDATION_ERROR
-- INVALID_PRICE
 - INVALID_EMAIL
 
-### Authentication Error
-Token yok veya geçersiz.
-
-HTTP:
-`401 Unauthorized`
-
-Code:
+### 401 Unauthorized
+Authentication yok/geçersiz:
 - UNAUTHENTICATED
 - TOKEN_EXPIRED
 - INVALID_TOKEN
 
-### Authorization Error
-Authenticated user yetkili değil.
-
-HTTP:
-`403 Forbidden`
-
-Code:
+### 403 Forbidden
+Authenticated fakat yetkisiz:
 - ACCESS_DENIED
 - RESOURCE_OWNERSHIP_REQUIRED
 
-### Not Found
-Resource bulunamadı.
-
-HTTP:
-`404 Not Found`
-
-Code:
+### 404 Not Found
+Resource yok:
 - PROPERTY_NOT_FOUND
 - OFFER_NOT_FOUND
 - AGENT_NOT_FOUND
 - SELLER_NOT_FOUND
 
-### Conflict / State Violation
-Resource mevcut ancak requested transition uygulanamaz.
-
-HTTP:
-`409 Conflict`
-
-Code:
+### 409 Conflict
+Mevcut resource/state ile conflict:
 - PROPERTY_NOT_AVAILABLE
 - INVALID_PROPERTY_STATE
 - INVALID_OFFER_STATE
 - DUPLICATE_LICENSE_NUMBER
 - DUPLICATE_EMAIL
 - IDEMPOTENCY_CONFLICT
+- optimistic locking conflict
 
-### Business Rule Violation
-Domain rule ihlali.
-
-Çoğu durumda `409 Conflict` veya bazı validation senaryolarında `422 Unprocessable Content` değerlendirilebilir. Proje standardı implementation öncesinde tekleştirilecektir; default tercih `409` olacaktır.
-
-Code:
+### 422 Unprocessable Content
+Request syntactically valid fakat domain semantic'i bağımsız business rule nedeniyle kabul edilemiyor:
 - BUYER_CANNOT_OFFER_OWN_PROPERTY
 - SELLER_NOT_ACTIVE
 - AGENT_NOT_ACTIVE
 - OFFER_AMOUNT_MUST_BE_POSITIVE
 
-### Downstream / Dependency Error
-Başka service veya infrastructure erişilemiyor.
+Bir hata mevcut resource state conflict'ine dayanıyorsa 409; request'in business semantic'i kendi başına geçersizse 422 kullanılır.
 
-HTTP:
-- `503 Service Unavailable`
-- gerekiyorsa `504 Gateway Timeout`
+### 429 Too Many Requests
+Rate limit.
 
-Code:
-- DOWNSTREAM_UNAVAILABLE
-- AGENT_SERVICE_UNAVAILABLE
-- SEARCH_UNAVAILABLE
-- TIMEOUT
+### 500 / 503 / 504
+- 500 unexpected internal
+- 503 dependency/service unavailable
+- 504 downstream timeout
 
 ## REST error response
-
-Önerilen yapı:
 
 ```json
 {
@@ -98,24 +70,13 @@ Code:
   "status": 409,
   "code": "INVALID_PROPERTY_STATE",
   "message": "Property mevcut durumda publish edilemez.",
-  "path": "/properties/123/publish",
-  "correlationId": "..."
+  "path": "/api/v1/properties/123/publish",
+  "correlationId": "...",
+  "traceId": "..."
 }
 ```
 
-Validation için ek alan:
-
-```json
-{
-  "errors": [
-    {
-      "field": "amount",
-      "code": "POSITIVE",
-      "message": "Amount sıfırdan büyük olmalıdır."
-    }
-  ]
-}
-```
+Validation error'larda optional `errors` listesi bulunabilir.
 
 ## gRPC mapping
 
@@ -130,27 +91,18 @@ Validation için ek alan:
 
 ## Messaging error semantics
 
-### Retryable
+Retryable:
 - temporary network failure
 - broker/internal transient issue
-- downstream temporary unavailable
+- temporary downstream unavailable
 
-### Non-retryable
+Non-retryable:
 - invalid schema
-- impossible business transition
 - malformed command
-- permanent authorization/config problem
+- permanent unsupported business request
 
-Non-retryable message doğrudan DLQ/DLT'ye yönlendirilebilir.
-
-## Correlation
-
-Her error log ve response mümkün olduğunda:
-- correlationId
-- traceId
-
-ile ilişkilendirilmelidir.
+Business state race/conflict için consumer semantic'i use-case bazında explicit tasarlanır; kör retry yapılmaz.
 
 ## Kural
 
-Exception class isimleri dış API contract değildir. Dış contract stable `code` alanı üzerinden yönetilir.
+Exception class isimleri dış API contract değildir. Client stable `code` alanına dayanır.

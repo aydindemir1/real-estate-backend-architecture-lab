@@ -1,20 +1,20 @@
 # UserProfileService Design
 
-## Purpose
-Own user profile data.
+## Amaç
+User profile data ownership'ini taşımak.
 
 ## Architecture
-Existing N-Layer architecture.
+Mevcut N-Layer Architecture.
 
 ## Datastore
-PostgreSQL via Spring Data JPA + Hibernate.
+PostgreSQL + Spring Data JPA + Hibernate.
 
-## Existing integrations
+## Mevcut integration'lar
 - REST
-- RabbitMQ async consumer from AuthService
-- Config
+- AuthService'ten RabbitMQ async consumer
+- Spring Cloud Config
 - Eureka
 - tracing
 
-## Constraint
-UserProfileService keeps PostgreSQL and its existing working baseline. It must not be migrated merely to make every service use a different database.
+## Kısıt
+UserProfileService PostgreSQL ve mevcut çalışan baseline yapısını koruyacaktır. Yalnızca her service farklı database kullansın amacıyla migration yapılmayacaktır.

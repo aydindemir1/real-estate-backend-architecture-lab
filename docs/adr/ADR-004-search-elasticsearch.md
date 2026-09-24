@@ -3,13 +3,13 @@
 **Status:** Accepted
 
 ## Context
-Real-estate search requires text search, structured filtering, facets, ranges, autocomplete and geo capabilities.
+Real-estate search; full-text search, structured filtering, facet, range, autocomplete ve geo query gerektirir.
 
 ## Decision
-PropertyService/MongoDB remains the source of truth. SearchService consumes property events and builds an Elasticsearch projection.
+PropertyService/MongoDB source of truth olarak kalacaktır. SearchService property event'lerini tüketip Elasticsearch projection oluşturacaktır.
 
 ## Rationale
-Elasticsearch is optimized for search, not canonical transactional ownership.
+Elasticsearch transactional canonical ownership için değil search workload için optimize edilmiştir.
 
 ## Consequences
-Search is eventually consistent. The index must be rebuildable from canonical property data or event history. Reindex/reconciliation becomes an explicit operational capability.
+Search data Eventual Consistency ile güncellenir. Index, canonical property data veya event history üzerinden yeniden üretilebilir olmalıdır. Reindex ve reconciliation operational capability olarak ele alınacaktır.

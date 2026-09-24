@@ -1,0 +1,61 @@
+plugins {
+    id 'org.springframework.boot' version '4.1.1' apply false
+    id 'io.spring.dependency-management' version '1.1.7' apply false
+    id 'com.diffplug.eclipse.apt' version '4.4.1' apply false
+}
+
+allprojects {
+    apply from: "${rootDir}/dependencies.gradle"
+
+    group = 'com.aydindemir'
+    version = '1.0.0'
+
+    repositories {
+        mavenCentral()
+    }
+}
+
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'java-library'
+    apply plugin: 'eclipse'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
+    apply plugin: 'com.diffplug.eclipse.apt'
+
+    java {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(21)
+        }
+    }
+
+    tasks.withType(JavaCompile).configureEach {
+        options.encoding = 'UTF-8'
+    }
+
+    dependencyManagement {
+        imports {
+            mavenBom "org.springframework.cloud:spring-cloud-dependencies:${versions.springCloud}"
+        }
+    }
+
+    dependencies {
+        implementation libs.springBootWeb
+        implementation libs.swaggerApi
+        implementation libs.mapStruct
+        implementation libs.jwt
+        implementation libs.springCloudOpenFeign
+
+        compileOnly libs.lombok
+        annotationProcessor libs.lombok
+        annotationProcessor libs.lombokMapstructBinding
+        annotationProcessor libs.mapStructProcessor
+
+        testImplementation libs.springBootTest
+        testRuntimeOnly libs.junitPlatformLauncher
+    }
+
+    tasks.named('test') {
+        useJUnitPlatform()
+    }
+}

@@ -1,0 +1,17 @@
+server:
+  port: 9093
+
+spring:
+  datasource:
+    url: ${BUYER_DB_URL:jdbc:postgresql://localhost:5436/micro_buyer_service_db}
+    username: ${BUYER_DB_USERNAME:aydin}
+    password: ${BUYER_DB_PASSWORD:123456!}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+    show-sql: true
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html

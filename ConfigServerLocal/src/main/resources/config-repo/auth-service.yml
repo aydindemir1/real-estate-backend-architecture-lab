@@ -1,0 +1,36 @@
+server:
+  port: 9090
+
+spring:
+  datasource:
+    url: ${AUTH_DB_URL:jdbc:postgresql://localhost:5433/micro_auth_service_db}
+    username: ${AUTH_DB_USERNAME:aydin}
+    password: ${AUTH_DB_PASSWORD:123456!}
+  rabbitmq:
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USERNAME:java44}
+    password: ${RABBITMQ_PASSWORD:java44}
+    template:
+      observation-enabled: true
+    listener:
+      simple:
+        observation-enabled: true
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+    show-sql: true
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+
+authservice:
+  secret:
+    key: ${AUTH_JWT_SECRET:java44-auth-service-secret-key}
+  issuer: ${AUTH_JWT_ISSUER:java-44-auth-service}
+  expire:
+    date: ${AUTH_JWT_EXPIRE_MS:300000}
+

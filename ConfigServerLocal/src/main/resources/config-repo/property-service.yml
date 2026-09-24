@@ -1,0 +1,17 @@
+server:
+  port: 9094
+
+spring:
+  datasource:
+    url: ${PROPERTY_DB_URL:jdbc:postgresql://localhost:5437/micro_property_service_db}
+    username: ${PROPERTY_DB_USERNAME:aydin}
+    password: ${PROPERTY_DB_PASSWORD:123456!}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+    show-sql: true
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html

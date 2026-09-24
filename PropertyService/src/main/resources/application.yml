@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: property-service
+  config:
+    import: "configserver:"
+  cloud:
+    config:
+      uri: ${CONFIG_SERVER_URL:http://localhost:8889}

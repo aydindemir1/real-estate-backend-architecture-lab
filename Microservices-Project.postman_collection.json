@@ -1,0 +1,98 @@
+{
+  "info": {
+    "_postman_id": "java-44-microservice-project-day-3",
+    "name": "java-44-microservice-project",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {"key": "authBaseUrl", "value": "http://localhost:9090"},
+    {"key": "userProfileBaseUrl", "value": "http://localhost:9091"},
+    {"key": "agentBaseUrl", "value": "http://localhost:9092"},
+    {"key": "buyerBaseUrl", "value": "http://localhost:9093"},
+    {"key": "propertyBaseUrl", "value": "http://localhost:9094"},
+    {"key": "sellerBaseUrl", "value": "http://localhost:9095"},
+    {"key": "token", "value": ""}
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {"name": "hello", "request": {"method": "GET", "url": "{{authBaseUrl}}/"}},
+        {"name": "info", "request": {"method": "GET", "url": "{{authBaseUrl}}/info"}},
+        {
+          "name": "register",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"aydin\",\n  \"email\": \"aydin@example.com\",\n  \"password\": \"123456\",\n  \"rePassword\": \"123456\"\n}"
+            },
+            "url": "{{authBaseUrl}}/auth/register"
+          }
+        },
+        {
+          "name": "login",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"aydin\",\n  \"password\": \"123456\"\n}"
+            },
+            "url": "{{authBaseUrl}}/auth/login"
+          }
+        },
+        {"name": "findAll", "request": {"method": "GET", "url": "{{authBaseUrl}}/auth/findAll?token={{token}}"}},
+        {"name": "getMessage", "request": {"method": "GET", "url": "{{authBaseUrl}}/auth/getMessage"}}
+      ]
+    },
+    {
+      "name": "UserProfile",
+      "item": [
+        {"name": "hello", "request": {"method": "GET", "url": "{{userProfileBaseUrl}}/user/hello"}},
+        {
+          "name": "save",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"authId\": 1,\n  \"username\": \"aydin\",\n  \"email\": \"aydin@example.com\"\n}"
+            },
+            "url": "{{userProfileBaseUrl}}/user/save"
+          }
+        },
+        {"name": "getAll", "request": {"method": "GET", "url": "{{userProfileBaseUrl}}/user/getall"}}
+      ]
+    },
+    {
+      "name": "Agent",
+      "item": [
+        {"name": "hello", "request": {"method": "GET", "url": "{{agentBaseUrl}}/"}},
+        {"name": "info", "request": {"method": "GET", "url": "{{agentBaseUrl}}/info"}}
+      ]
+    },
+    {
+      "name": "Buyer",
+      "item": [
+        {"name": "hello", "request": {"method": "GET", "url": "{{buyerBaseUrl}}/"}},
+        {"name": "info", "request": {"method": "GET", "url": "{{buyerBaseUrl}}/info"}}
+      ]
+    },
+    {
+      "name": "Property",
+      "item": [
+        {"name": "hello", "request": {"method": "GET", "url": "{{propertyBaseUrl}}/"}},
+        {"name": "info", "request": {"method": "GET", "url": "{{propertyBaseUrl}}/info"}}
+      ]
+    },
+    {
+      "name": "Seller",
+      "item": [
+        {"name": "hello", "request": {"method": "GET", "url": "{{sellerBaseUrl}}/"}},
+        {"name": "info", "request": {"method": "GET", "url": "{{sellerBaseUrl}}/info"}}
+      ]
+    }
+  ]
+}

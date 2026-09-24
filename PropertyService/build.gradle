@@ -1,0 +1,8 @@
+dependencies {
+    implementation libs.springCloudEurekaClient
+    implementation libs.springBootDataJpa
+    implementation libs.springCloudStarterConfig
+    implementation libs.springBootActuator
+    implementation libs.springBootZipkin
+    runtimeOnly libs.postgreSql
+}

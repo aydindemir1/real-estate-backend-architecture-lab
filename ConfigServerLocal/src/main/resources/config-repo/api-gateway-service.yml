@@ -1,0 +1,75 @@
+server:
+  port: 8080
+
+spring:
+  cloud:
+    gateway:
+      server:
+        webmvc:
+          routes:
+
+            - id: auth-service
+              uri: lb://auth-service
+              predicates:
+                - Path=/auth/**
+              filters:
+                - name: CircuitBreaker
+                  args:
+                    id: authServiceCircuitBreaker
+                    fallbackUri: forward:/fallback/auth
+
+            - id: user-profile-service
+              uri: lb://user-profile-service
+              predicates:
+                - Path=/user/**
+              filters:
+                - name: CircuitBreaker
+                  args:
+                    id: userProfileServiceCircuitBreaker
+                    fallbackUri: forward:/fallback/user
+
+            - id: agent-service
+              uri: lb://agent-service
+              predicates:
+                - Path=/agent/**
+              filters:
+                - name: CircuitBreaker
+                  args:
+                    id: agentServiceCircuitBreaker
+                    fallbackUri: forward:/fallback/agent
+
+            - id: buyer-service
+              uri: lb://buyer-service
+              predicates:
+                - Path=/buyer/**
+              filters:
+                - name: CircuitBreaker
+                  args:
+                    id: buyerServiceCircuitBreaker
+                    fallbackUri: forward:/fallback/buyer
+
+            - id: property-service
+              uri: lb://property-service
+              predicates:
+                - Path=/property/**
+              filters:
+                - name: CircuitBreaker
+                  args:
+                    id: propertyServiceCircuitBreaker
+                    fallbackUri: forward:/fallback/property
+
+            - id: seller-service
+              uri: lb://seller-service
+              predicates:
+                - Path=/seller/**
+              filters:
+                - name: CircuitBreaker
+                  args:
+                    id: sellerServiceCircuitBreaker
+                    fallbackUri: forward:/fallback/seller
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info

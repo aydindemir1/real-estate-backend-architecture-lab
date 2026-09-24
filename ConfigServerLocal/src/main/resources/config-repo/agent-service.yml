@@ -1,0 +1,17 @@
+server:
+  port: 9092
+
+spring:
+  datasource:
+    url: ${AGENT_DB_URL:jdbc:postgresql://localhost:5435/micro_agent_service_db}
+    username: ${AGENT_DB_USERNAME:aydin}
+    password: ${AGENT_DB_PASSWORD:123456!}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+    show-sql: true
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html

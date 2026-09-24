@@ -1,0 +1,17 @@
+server:
+  port: 9095
+
+spring:
+  datasource:
+    url: ${SELLER_DB_URL:jdbc:postgresql://localhost:5438/micro_seller_service_db}
+    username: ${SELLER_DB_USERNAME:aydin}
+    password: ${SELLER_DB_PASSWORD:123456!}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+    show-sql: true
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html

@@ -1,0 +1,42 @@
+# Gradle
+.gradle/
+**/build/
+
+# Compiled output
+**/bin/
+*.class
+
+# Eclipse / STS
+.project
+.classpath
+.factorypath
+.settings/
+**/.project
+**/.classpath
+**/.factorypath
+**/.settings/
+
+# Annotation processing
+**/.apt_generated/
+**/.apt_generated_tests/
+
+# Accidental nested workspace folders
+**/java-2025/
+
+# IntelliJ IDEA
+.idea/
+*.iml
+out/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Environment / secrets
+.env
+.env.*
+!.env.example

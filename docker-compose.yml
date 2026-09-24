@@ -1,0 +1,170 @@
+services:
+  postgres:
+    image: postgres:18.6
+    container_name: java44-postgres
+    restart: unless-stopped
+
+    environment:
+      POSTGRES_DB: micro_auth_service_db
+      POSTGRES_USER: aydin
+      POSTGRES_PASSWORD: "123456!"
+
+    ports:
+      - "5433:5432"
+
+    volumes:
+      - postgres_data:/var/lib/postgresql
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U aydin -d micro_auth_service_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  user-profile-postgres:
+    image: postgres:18.6
+    container_name: java44-user-profile-postgres
+    restart: unless-stopped
+
+    environment:
+      POSTGRES_DB: micro_user_profile_service_db
+      POSTGRES_USER: aydin
+      POSTGRES_PASSWORD: "123456!"
+
+    ports:
+      - "5434:5432"
+
+    volumes:
+      - user_profile_postgres_data:/var/lib/postgresql
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U aydin -d micro_user_profile_service_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  agent-postgres:
+    image: postgres:18.6
+    container_name: java44-agent-postgres
+    restart: unless-stopped
+
+    environment:
+      POSTGRES_DB: micro_agent_service_db
+      POSTGRES_USER: aydin
+      POSTGRES_PASSWORD: "123456!"
+
+    ports:
+      - "5435:5432"
+
+    volumes:
+      - agent_postgres_data:/var/lib/postgresql
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U aydin -d micro_agent_service_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  buyer-postgres:
+    image: postgres:18.6
+    container_name: java44-buyer-postgres
+    restart: unless-stopped
+
+    environment:
+      POSTGRES_DB: micro_buyer_service_db
+      POSTGRES_USER: aydin
+      POSTGRES_PASSWORD: "123456!"
+
+    ports:
+      - "5436:5432"
+
+    volumes:
+      - buyer_postgres_data:/var/lib/postgresql
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U aydin -d micro_buyer_service_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  property-postgres:
+    image: postgres:18.6
+    container_name: java44-property-postgres
+    restart: unless-stopped
+
+    environment:
+      POSTGRES_DB: micro_property_service_db
+      POSTGRES_USER: aydin
+      POSTGRES_PASSWORD: "123456!"
+
+    ports:
+      - "5437:5432"
+
+    volumes:
+      - property_postgres_data:/var/lib/postgresql
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U aydin -d micro_property_service_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  seller-postgres:
+    image: postgres:18.6
+    container_name: java44-seller-postgres
+    restart: unless-stopped
+
+    environment:
+      POSTGRES_DB: micro_seller_service_db
+      POSTGRES_USER: aydin
+      POSTGRES_PASSWORD: "123456!"
+
+    ports:
+      - "5438:5432"
+
+    volumes:
+      - seller_postgres_data:/var/lib/postgresql
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U aydin -d micro_seller_service_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  rabbitmq:
+    image: rabbitmq:4.3.6-management
+    container_name: java44-rabbitmq
+    restart: unless-stopped
+
+    environment:
+      RABBITMQ_DEFAULT_USER: java44
+      RABBITMQ_DEFAULT_PASS: java44
+
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+volumes:
+  postgres_data:
+  user_profile_postgres_data:
+  agent_postgres_data:
+  buyer_postgres_data:
+  property_postgres_data:
+  seller_postgres_data:
+  rabbitmq_data:

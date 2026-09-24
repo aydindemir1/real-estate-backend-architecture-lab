@@ -1,0 +1,5 @@
+dependencies {
+    implementation libs.springCloudStarterConfig
+    implementation libs.springCloudEurekaServer
+    implementation libs.springBootActuator
+}

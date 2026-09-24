@@ -1,0 +1,28 @@
+server:
+  port: 9091
+
+spring:
+  datasource:
+    url: ${USER_PROFILE_DB_URL:jdbc:postgresql://localhost:5434/micro_user_profile_service_db}
+    username: ${USER_PROFILE_DB_USERNAME:aydin}
+    password: ${USER_PROFILE_DB_PASSWORD:123456!}
+  rabbitmq:
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USERNAME:java44}
+    password: ${RABBITMQ_PASSWORD:java44}
+    template:
+      observation-enabled: true
+    listener:
+      simple:
+        observation-enabled: true
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+    show-sql: true
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html

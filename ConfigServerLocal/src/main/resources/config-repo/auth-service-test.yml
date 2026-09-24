@@ -1,0 +1,5 @@
+server:
+  port: 9099
+
+authservice:
+  issuer: java-44-auth-service-test

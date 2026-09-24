@@ -1,13 +1,13 @@
 # UserProfileService Roadmap
 
-## Existing baseline
-PostgreSQL, JPA/Hibernate, REST, RabbitMQ consumer, Config, Eureka, Actuator and tracing.
+## Mevcut baseline
+PostgreSQL, JPA/Hibernate, REST, RabbitMQ consumer, Config, Eureka, Actuator ve tracing mevcut.
 
-## Planned
-- Day 8: Spring Security / Keycloak resource-server protection
-- Day 16: Testcontainers/integration tests
-- Day 17: contract/failure-path tests
-- Day 18: observability
+## Planlanan
+- Day 8: Spring Security / Keycloak Resource Server koruması
+- Day 16: Testcontainers / Integration Testing
+- Day 17: Contract Testing / Failure-Path Testing
+- Day 18: Observability
 - Day 20: regression completion
 
-The current N-Layer baseline is intentionally preserved.
+Mevcut N-Layer baseline bilinçli olarak korunacaktır.

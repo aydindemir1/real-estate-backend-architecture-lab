@@ -32,3 +32,7 @@ Domain Event Streaming foundation'ını Kafka ile kurmak.
 
 ## Done
 Kafka event-streaming foundation çalışır; RabbitMQ command role korunur.
+
+## Exact messaging/file plan
+
+Implementation source of truth: `docs/roadmap/day-16-exact-file-plan.md`

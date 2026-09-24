@@ -31,3 +31,7 @@ Synchronous ve asynchronous dependency failure'larını bounded ve observable ha
 
 ## Done
 Timeout/retry/circuit/bulkhead/rate limit policies bounded, tested ve dependency-specific olur.
+
+## Exact resilience/file plan
+
+Implementation source of truth: `docs/roadmap/day-20-exact-file-plan.md`

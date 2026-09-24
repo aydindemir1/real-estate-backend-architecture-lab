@@ -30,3 +30,7 @@
 
 ## Done
 Critical behaviors happy/failure/concurrency/security paths ile güvence altındadır.
+
+## Exact testing/file plan
+
+Implementation source of truth: `docs/roadmap/day-22-exact-file-plan.md`

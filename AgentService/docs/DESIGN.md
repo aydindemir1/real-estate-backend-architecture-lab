@@ -1,15 +1,15 @@
 # AgentService Design
 
-## Purpose
-Own agent, license and agency-facing business data.
+## Amaç
+Agent, license ve agency-facing business data'nın ownership'ini taşımak.
 
 ## Architecture
 Clean Architecture.
 
 ## Primary datastore
-MySQL via Spring Data JPA + Hibernate.
+MySQL + Spring Data JPA + Hibernate.
 
-## Target package structure
+## Hedef package structure
 ```text
 com.aydindemir.agent
 ├── domain
@@ -32,21 +32,21 @@ com.aydindemir.agent
     └── rest
 ```
 
-## Planned domain model
+## Planlanan domain model
 - Agent
 - AgentId
 - AgentStatus
 - LicenseNumber
 - AgencyInfo
 
-## Key rule
-Domain code must not depend on Spring Data JPA. JPA entities/repositories belong in infrastructure.
+## Temel kural
+Domain katmanı Spring Data JPA'yı bilmemelidir. JPA entity ve repository implementation'ları infrastructure altında bulunmalıdır.
 
-## Day 7 dependency changes
-Replace PostgreSQL runtime driver with MySQL driver for this module; keep Config, Eureka, Actuator, tracing, web and test dependencies.
+## Day 7 dependency değişiklikleri
+Bu module'de PostgreSQL runtime driver kaldırılıp MySQL driver kullanılacak; Config, Eureka, Actuator, tracing, web ve test dependency'leri korunacak.
 
-## Required infrastructure
+## Gerekli infrastructure
 MySQL.
 
-## Planned tests
-Domain/use-case unit tests, JPA adapter integration tests, MySQL Testcontainers.
+## Planlanan testler
+Domain/use-case Unit Testing, JPA adapter Integration Testing ve MySQL Testcontainers.

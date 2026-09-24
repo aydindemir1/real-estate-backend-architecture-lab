@@ -36,9 +36,25 @@ Bu klasör implementation öncesi ve implementation sırasında uyulacak ortak e
    - Mapper
    - pattern anti-abuse policy
 
+3. `api-design.md`
+   - REST Resource Design
+   - HTTP Method / Status Code
+   - DTO separation
+   - Validation
+   - Pagination / Sorting / Filtering
+   - Idempotency
+   - Optimistic Concurrency
+   - API Versioning
+   - Backward Compatibility / Deprecation
+   - Error Contract
+   - Correlation
+   - OpenAPI
+   - REST vs GraphQL vs gRPC
+   - Rate Limiting
+   - API Review Checklist
+
 ## Planlanan
 
-3. `api-design.md`
 4. `domain-modeling.md`
 5. `application-layer.md`
 6. `persistence.md`
@@ -53,4 +69,4 @@ Bu klasör implementation öncesi ve implementation sırasında uyulacak ortak e
 
 Technology breadth ile engineering maturity birlikte ilerlemelidir.
 
-Bir teknoloji veya pattern yalnızca projede bulunmak için eklenmez; gerçek problem, trade-off ve Architecture ihtiyacına göre uygulanır.
+Bir teknoloji, pattern veya API yaklaşımı yalnızca projede bulunmak için eklenmez; gerçek problem, trade-off ve Architecture ihtiyacına göre uygulanır.

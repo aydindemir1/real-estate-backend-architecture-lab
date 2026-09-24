@@ -1,15 +1,15 @@
 # AuthService Roadmap
 
-## Existing baseline
-PostgreSQL, JPA/Hibernate, registration/login, custom JWT, OpenFeign, RabbitMQ producer, Config, Eureka, LoadBalancer, Actuator and tracing.
+## Mevcut baseline
+PostgreSQL, JPA/Hibernate, registration/login, custom JWT, OpenFeign, RabbitMQ producer, Config, Eureka, LoadBalancer, Actuator ve tracing mevcut.
 
-## Planned
+## Planlanan
 - Day 8: Spring Security + OAuth2/OIDC + Keycloak + password hashing
-- Day 10+: preserve RabbitMQ command-messaging example
-- Day 14: resilience hardening where applicable
-- Day 16: Testcontainers/integration tests
-- Day 17: contract/failure-path tests
-- Day 18: OpenTelemetry/metrics/logging
-- Day 20: architecture fitness/regression completion
+- Day 10+: mevcut RabbitMQ command messaging örneğini koruma
+- Day 14: gerektiği yerde resilience hardening
+- Day 16: Testcontainers / Integration Testing
+- Day 17: Contract Testing / Failure-Path Testing
+- Day 18: OpenTelemetry / metrics / logging
+- Day 20: Architecture Fitness / regression completion
 
-The current N-Layer baseline is intentionally preserved for comparison.
+Mevcut N-Layer baseline karşılaştırma amacıyla bilinçli olarak korunacaktır.

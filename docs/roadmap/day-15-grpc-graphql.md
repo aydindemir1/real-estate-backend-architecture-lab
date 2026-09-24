@@ -29,3 +29,7 @@ Protocol'leri gerçek use-case'lere göre ayırmak.
 
 ## Done
 REST, gRPC ve GraphQL ayrı ve gerekçeli responsibilities ile çalışır.
+
+## Exact protocol/file plan
+
+Implementation source of truth: `docs/roadmap/day-15-exact-file-plan.md`

@@ -1,509 +1,254 @@
-# Day 16 — Exact File / Contract / Binding / Commit Plan
+# Day 16 — Exact GraphQL Read API Plan
 
-## 0. Scope
+## Scope
 
-Day 16 yalnızca Kafka + Spring Cloud Stream + Spring Cloud Function foundation içindir.
+- SearchService GraphQL schema
+- resolver over SearchPropertiesHandler
+- authorization
+- bounded query cost
+- GraphQL tests and REST parity
 
-Hedef:
-- Kafka local infrastructure
-- Spring Cloud Stream
-- Spring Cloud Function
-- property.events
-- offer.events
-- common event envelope
-- producer bindings
-- minimal consumer foundation
-- partition key / consumer group
-- correlation / causation
-- Kafka Testcontainers
+## Task 1 — GraphQL dependency setup
 
-Day 16 içinde:
-- full Search projection yok
-- Saga yok
-- Outbox/Inbox yok
-- retry/DLT hardening yok
-- Seller RabbitMQ reliable dispatch değişmiyor
+Modify SearchService/build.gradle
 
-## Task 1 — Kafka local infrastructure
+Add:
+- spring-boot-starter-graphql
 
-Modify docker-compose.yml.
+Do not add GraphQL to all services.
 
-Add Kafka using an explicit image/version compatible with local learning setup.
+Commit: build(search): add GraphQL support
 
-Choose one simple local topology:
-- single broker KRaft preferred if current image/tooling supports cleanly
+## Task 2 — GraphQL schema
 
-Required:
-- explicit version
-- advertised listeners correct for host + compose network
-- named volume if useful
-- healthcheck
-- bounded memory
+Create:
+- SearchService/src/main/resources/graphql/search.graphqls
 
-Do not add ZooKeeper unless chosen Kafka image genuinely requires it.
+Initial schema:
+- Query.searchProperties
+- Query.property optional only if read use-case exists
 
-Commit: infra(kafka): add local Kafka broker
+Types:
+- PropertySearchResult
+- PropertySearchItem
+- SearchPageInfo
+- SearchFilterInput
 
-## Task 2 — Dependency setup
+Do not expose Elasticsearch DSL.
 
-Add only to modules that publish/consume now.
+Commit: feat(search): add GraphQL search schema
 
-Likely modules:
-- PropertyService
-- BuyerService
-- SearchService only if minimal consumer demo is placed there
+## Task 3 — GraphQL input design
 
-Dependencies:
-- spring-cloud-stream
-- Kafka binder
-- Spring Cloud Function core if not transitively sufficient
-- test binder only if useful
-- Testcontainers Kafka
+SearchFilterInput candidate fields:
+- text
+- status
+- propertyType
+- city
+- district
+- minPrice
+- maxPrice
+- page
+- size
 
-Do not add Kafka client globally to every module.
+Reuse existing SearchPropertiesQuery application model via mapper.
 
-Commit: build(kafka): add Stream and Function dependencies
+## Task 4 — GraphQL resolver/controller
 
-## Task 3 — Topic names and ownership
+Create:
+- graphql/SearchQueryController.java
 
-Canonical topics:
-- property.events
-- offer.events
-
-Naming is domain/capability-oriented.
-
-Do not create one topic per event type.
-
-## Task 4 — Event envelope model
-
-Create contract package/location that does not couple service domain models.
-
-Candidate:
-- contracts/events/CommonEventEnvelope.java
-
-Fields:
-- eventId
-- eventType
-- aggregateId
-- aggregateType
-- occurredAt
-- correlationId
-- causationId
-- schemaVersion
-- payload
-
-Implementation choice:
-- generic envelope with typed payload where practical
-- or event-specific record carrying same metadata shape
-
-Avoid raw Map payload if type safety is lost.
-
-Commit: feat(messaging): add event envelope contracts
-
-## Task 5 — Property event contracts
-
-Create initial event payload types:
-- PropertyCreatedEvent
-- PropertyPublishedEvent
-- PropertyUpdatedEvent
-- PropertyPriceChangedEvent
-- PropertyHeldEvent
-- PropertyHoldReleasedEvent
-- PropertyReservedEvent
-- PropertyWithdrawnEvent
-- PropertySoldEvent
-
-Day 16 does not need every event actively emitted.
-
-At minimum, implement one or two producer examples sufficient to prove Stream wiring, preferably PropertyPublished and PropertyPriceChanged candidate if current Property use-cases support them.
-
-Do not fabricate unused event emission just for coverage.
-
-Commit: feat(property): add property event contracts
-
-## Task 6 — Offer event contracts
-
-Create initial payload types:
-- OfferRequestedEvent
-- SellerAcceptedEvent
-- SellerRejectedEvent
-- OfferExpiredEvent
-
-Day 16 producer can be foundation-only if Offer Aggregate is not yet active.
-
-Do not emit fake offer events from nonexistent workflow.
-
-Commit: feat(buyer): add offer event contracts
-
-## Task 7 — Spring Cloud Stream binding naming
-
-Use functional binding names.
-
-Candidate functions:
-- propertyEventsSupplier or explicit StreamBridge-based publisher
-- offerEventsSupplier only if current flow supports it
-- propertyEventConsumer demo
-
-Prefer clear binding names documented in config.
-
-## Task 8 — Producer abstraction — PropertyService
-
-Create application/integration boundary:
-- PublishPropertyEventPort.java
-
-Create infrastructure adapter:
-- KafkaPropertyEventPublisher.java
+Use @QueryMapping or supported annotation.
 
 Responsibilities:
-- map application/integration event
-- add envelope metadata
-- set message key = propertyId
-- publish to property.events
+- map GraphQL input -> SearchPropertiesQuery
+- call existing SearchPropertiesHandler
+- map result
 
-Domain Aggregate does not know Kafka.
+No duplicate Elasticsearch query logic.
 
-Commit: feat(property): add property event publisher
+Commit: feat(search): add GraphQL search resolver
 
-## Task 9 — Producer abstraction — BuyerService
+## Task 5 — GraphQL response models
 
-Create:
-- PublishOfferEventPort.java
-- KafkaOfferEventPublisher.java
+Create only if needed:
+- graphql/PropertySearchGraphQlResponse.java
+- graphql/SearchPageInfo.java
 
-If Day 19 Offer workflow not present yet, adapter may be wired and contract-tested without application emission.
+Can reuse application result if transport coupling remains acceptable only at adapter mapping boundary; prefer transport model for clarity.
 
-Do not create fake business trigger.
+Commit can group with resolver.
 
-Commit: feat(buyer): add offer event publisher
+## Task 6 — GraphQL authorization
 
-## Task 10 — StreamBridge vs Supplier decision
+Apply Search read role/scope policy from Day 14.
 
-Decision rule:
-- event publication triggered by application action -> StreamBridge is usually clearer
-- continuous/generated source -> Supplier
+Do not rely on resolver being hidden behind Gateway only.
 
-Document choice.
+Commit: feat(search): secure GraphQL search queries
 
-Do not force Supplier for imperative business event publication.
+## Task 7 — GraphQL query complexity/depth
 
-## Task 11 — Kafka message key
+Set bounded policy.
 
-property.events key = propertyId
-offer.events key = offerId
+Since initial schema is shallow, keep config simple.
 
-Key must be explicitly set in producer headers/config.
+Do not add third-party complexity framework unless needed.
 
-Purpose:
-- partition affinity
-- per-aggregate ordering
+At minimum:
+- bounded page size
+- no recursive schema
+- disable/limit expensive unbounded query shapes
 
-## Task 12 — Consumer group names
+Commit: config(search): bound GraphQL query cost
 
-Initial groups:
-- search-projection-group
-- seller-offer-projection-group candidate
+## Task 8 — N+1 review
 
-Day 16 minimal consumer should use a real logical group name.
+Initial Search GraphQL should call one search handler returning a batch result, so N+1 should not arise.
 
-Do not use random generated group IDs in production-like config.
+Do not add DataLoader unless nested resolver pattern actually creates N+1.
 
-## Task 13 — Minimal consumer foundation
+Document decision.
 
-Preferred location:
-- SearchService minimal property event consumer if it can remain non-business/no projection yet
+## Task 9 — GraphQL error mapping
 
-Create:
-- eventconsumer/PropertyEventConsumer.java
+Map:
+- validation -> GraphQL error with stable extension code
+- forbidden -> security error
+- downstream unavailable -> stable error extension
 
-Function role Day 16:
-- deserialize
-- validate envelope basics
-- log metadata
-- call no-op/test handler or minimal technical handler
-
-Do not update Elasticsearch projection yet.
-
-Alternative if no-op consumer feels artificial:
-use a dedicated test consumer only and defer Search consumer wiring to Day 18.
-
-Choose whichever avoids fake production code.
-
-Commit if production consumer added:
-feat(search): add property event consumer foundation
-
-## Task 14 — Spring Cloud Function model
-
-Consumer bean should be explicit and small.
-
-Example semantic:
-- Consumer<PropertyPublishedEventEnvelope>
-
-Do not bury business logic inside lambda.
-
-## Task 15 — Serialization
-
-Initial format:
-- JSON
-
-Rules:
-- explicit content type
-- no Java serialization
-- event schema version field
-- backward-compatible additive changes preferred
-
-Avro/Schema Registry deferred.
-
-## Task 16 — Correlation and causation
-
-Producer obtains current correlationId from request/context when available.
-
-causationId:
-- current triggering message/event id if message-driven
-- null/absent for user-originated root event
-
-Consumer restores/propagates correlation context where practical.
-
-Commit: feat(messaging): propagate event correlation metadata
-
-## Task 17 — Basic duplicate-safe consumer foundation
-
-Day 17 owns full Inbox/Idempotent Consumer.
-
-Day 16 only enforce design hooks:
-- every event has eventId
-- consumer handler API receives eventId
-- side-effecting consumer must be written assuming duplicate delivery
-
-Do not implement full processed-message store yet.
-
-## Task 18 — Stream configuration
-
-Add external config:
-- brokers
-- destinations
-- consumer groups
-- content type
-- partition key expression/strategy
-- concurrency default 1 initially
-
-Do not add aggressive retry config yet.
-
-Commit: config(kafka): add Stream bindings and topic configuration
-
-## Task 19 — Topic provisioning strategy
-
-Choose:
-- binder auto-provision for local learning
-or
-- explicit topic creation in local infra
-
-Production-like preference is explicit topic properties where important.
-
-If auto-provision used, still document expected partitions.
-
-Initial partitions:
-- small fixed count, e.g. 3, if useful to demonstrate partitioning
-
-Do not over-provision.
-
-## Task 20 — Partition behavior test
+Do not expose stack trace/Elasticsearch exception.
 
 Create:
-- KafkaPartitioningIntegrationTest.java
+- graphql/GraphQlExceptionResolver.java if needed
 
-Scenario:
-- publish multiple events same propertyId -> same partition
-- different propertyIds may distribute
+Commit: feat(search): standardize GraphQL error mapping
 
-Do not assert exact partition number unless hash algorithm/config is intentionally fixed.
-
-Commit: test(kafka): verify aggregate partitioning
-
-## Task 21 — Producer integration test
+## Task 10 — GraphQL tests
 
 Create:
-- PropertyEventPublisherIntegrationTest.java
-- OfferEventPublisherIntegrationTest.java only if meaningful
+- graphql/SearchGraphQlTest.java
 
-Verify:
-- correct topic
-- correct key
-- event envelope fields
-- JSON deserialization
+Cases:
+- search query success
+- filters
+- empty result
+- invalid page/price range
+- unauthorized/forbidden
 
-Commit: test(kafka): add producer integration tests
+Use GraphQlTester.
 
-## Task 22 — Consumer integration test
+Commit: test(graphql): add SearchService GraphQL tests
 
-Create:
-- PropertyEventConsumerIntegrationTest.java if consumer foundation exists
+## Task 11 — REST parity test
 
-Verify:
-- consumer group receives
-- payload deserializes
-- correlation metadata available
+Verify REST and GraphQL call the same application handler and produce semantically consistent results.
 
-Commit: test(kafka): add consumer integration test
+Do not duplicate business query logic.
 
-## Task 23 — Ordering test
+Create optional:
+- SearchProtocolParityTest.java
 
-Publish ordered events for same aggregate key.
+Commit only if useful:
+test(search): verify REST and GraphQL query parity
 
-Verify observed order within one partition.
+## Task 12 — Contract documentation
 
-Document:
-ordering is per partition, not global.
-
-Commit: test(kafka): verify per-aggregate ordering
-
-## Task 24 — Consumer group behavior test
-
-Create test proving two instances in same group divide partitions/messages rather than both processing every event.
-
-If test infrastructure complexity is too high for Day 16, document and defer to hardening Day 22.
-
-## Task 25 — Failure handling baseline
-
-Day 16 only:
-- consumer exception visible
-- no silent swallow
-- no infinite retry
-
-Full retry topic/DLT policy Day 17.
-
-## Task 26 — Observability baseline
-
-Log only metadata:
-- eventId
-- eventType
-- aggregateId
-- correlationId
-
-Do not log full payload by default.
-
-Full Kafka metrics Day 24.
-
-## Task 27 — Security
-
-If Kafka local auth is disabled for simplicity, document as local-only.
-
-Production-like authentication/TLS can be later infrastructure hardening.
-
-Do not confuse application OAuth token with broker authentication.
-
-## Task 28 — RabbitMQ coexistence verification
-
-Confirm existing RabbitMQ command/work-queue flows still work.
-
-Architecture rule:
-- RabbitMQ command semantic remains
-- Kafka event semantic added
-
-No migration of existing Auth -> UserProfile RabbitMQ flow.
-
-## Task 29 — Architecture tests
-
-Add rules where useful:
-- domain packages do not depend on Kafka/Stream
-- event publisher adapters implement ports
-- Search/Buyer/Property application layers do not depend on binder classes directly
-
-Create/update:
-- messaging architecture tests per service
-
-Commit: test(messaging): enforce broker adapter boundaries
-
-## Task 30 — Documentation
-
-Modify:
-- docs/architecture/messaging-topology.md
-- docs/contracts/command-event-catalog.md
-- docs/roadmap/day-16-kafka-stream-function.md
-- affected service DESIGN/PACKAGE-DESIGN docs
+Update:
+- docs/contracts/grpc-contract.md
+- docs/contracts/graphql-schema.md
+- docs/architecture/communication-architecture.md
+- docs/roadmap/day-15-grpc-graphql.md
 
 Record actual:
-- Kafka image/version
-- topic names
-- partition count
-- key strategy
-- binding names
-- consumer groups
-- serialization format
-- correlation metadata
-- RabbitMQ/Kafka semantic split
+- proto package/version
+- gRPC deadline
+- auth mode
+- status mapping
+- GraphQL schema
+- scope
+- complexity/page limits
 
-Commit: docs(kafka): finalize event-streaming topology
+Commit: docs(protocol): finalize gRPC and GraphQL contracts
 
 ## Recommended Commit Sequence
 
-1. infra(kafka): add local Kafka broker
-2. build(kafka): add Stream and Function dependencies
-3. feat(messaging): add event envelope contracts
-4. feat(property): add property event contracts
-5. feat(buyer): add offer event contracts
-6. feat(property): add property event publisher
-7. feat(buyer): add offer event publisher
-8. config(kafka): add Stream bindings and topic configuration
-9. feat(messaging): propagate event correlation metadata
-10. feat(search): add property event consumer foundation — only if non-artificial
-11. test(kafka): add producer integration tests
-12. test(kafka): verify aggregate partitioning
-13. test(kafka): verify per-aggregate ordering
-14. test(kafka): add consumer integration test — if consumer exists
-15. test(messaging): enforce broker adapter boundaries
-16. docs(kafka): finalize event-streaming topology
+1. docs(protocol): confirm REST gRPC GraphQL boundaries
+2. build(grpc): add protobuf and gRPC support
+3. feat(contract): add AgentAvailability gRPC contract
+4. build(grpc): configure protobuf code generation
+5. feat(agent): add availability query use case
+6. feat(agent): expose availability gRPC service
+7. feat(agent): standardize gRPC error mapping
+8. config(agent): configure gRPC server
+9. feat(buyer): add AgentAvailability outbound port
+10. feat(buyer): add AgentAvailability gRPC adapter
+11. config(buyer): configure Agent gRPC client
+12. feat(grpc): secure Agent availability calls
+13. feat(buyer): add agent availability application flow
+14. test(grpc): add adapter unit tests
+15. test(grpc): add availability integration test
+16. build(search): add GraphQL support
+17. feat(search): add GraphQL search schema
+18. feat(search): add GraphQL search resolver
+19. feat(search): secure GraphQL search queries
+20. config(search): bound GraphQL query cost
+21. feat(search): standardize GraphQL error mapping
+22. test(graphql): add SearchService GraphQL tests
+23. docs(protocol): finalize gRPC and GraphQL contracts
 
-Adjacent event-contract commits can be combined if small. Infrastructure, contracts, producer adapters, config, tests and docs should remain separately reviewable.
+Adjacent technical commits may be merged if cohesive; gRPC and GraphQL should remain reviewable as separate protocol capabilities.
 
-## Explicitly Deferred from Day 16
+## Explicitly Deferred from Day 15
 
 Do not implement:
-- Inbox
-- Outbox
-- processed-message table
-- retry topics
-- DLT
-- poison message policy
-- full Search projection
+- GraphQL mutation
+- GraphQL subscriptions
+- full viewing scheduler
+- streaming gRPC
+- bidirectional streaming
+- mTLS
+- service mesh
+- Kafka
 - Saga
-- seller offer projection
-- Avro
-- Schema Registry
-- Kafka transactions
+- custom GraphQL federation
 
-## Critical Design Note — Stream is not Kafka ignorance
+## Critical Design Note — REST remains primary
 
-Spring Cloud Stream abstracts integration plumbing but does not remove the need to understand:
-- partitions
-- keys
-- consumer groups
-- offsets
-- ordering
-- replay
+gRPC and GraphQL are specialized additions, not replacements for all REST endpoints.
 
-## Critical Design Note — Function model
+## Critical Design Note — No duplicate business logic
 
-Use Spring Cloud Function to structure consumer logic, not to hide business rules in lambdas.
+REST and GraphQL must call the same application query/use-case layer.
 
-## Critical Design Note — Command vs Event
+gRPC adapter must call Agent application use-case rather than persistence directly.
 
-Kafka carries facts that happened.
-RabbitMQ continues to carry targeted commands/work where designed.
+## Critical Design Note — Deadlines
 
-## Day 16 Final Gate
+Every gRPC client call has an explicit deadline.
 
-Day 16 closes only if:
-- Kafka starts locally
-- property.events exists/works
-- offer.events contract exists
-- event envelope metadata is standardized
-- propertyId/offerId key strategy is explicit
-- at least one real producer flow is verified
-- consumer group behavior/config is explicit
-- JSON serialization is explicit
-- correlation/causation fields are populated where possible
-- same aggregate key preserves partition ordering
-- domain/application layers do not depend directly on Kafka binder APIs
-- RabbitMQ baseline still works
-- no Outbox/Inbox/DLT/Saga/Search projection scope leaks into Day 16
+Timeout ownership is service-client level; later Day 20 resilience policies build on this baseline.
+
+## Day 15 Final Gate
+
+Day 15 closes only if:
+- proto contract is versioned and generated reproducibly
+- AgentService exposes gRPC availability through application use case
+- BuyerService calls Agent via outbound port + gRPC adapter
+- explicit deadline exists
+- auth/service identity is applied
+- gRPC errors map to semantic statuses
+- integration test proves client/server compatibility
+- SearchService GraphQL schema is explicit
+- GraphQL resolver reuses existing search handler
+- GraphQL read authorization works
+- query/page cost is bounded
+- GraphQL errors do not leak internals
+- REST still works
+- no business logic duplicated between REST/GraphQL/gRPC adapters
+- no Kafka/Saga/mTLS/streaming scope leaks into Day 15
 - docs match actual implementation
+
+## Source-of-truth note
+
+This file follows the final Day 15–33 roadmap. Earlier combined Day numbering is superseded by `docs/roadmap/LEGACY-DAY-MAPPING.md`.

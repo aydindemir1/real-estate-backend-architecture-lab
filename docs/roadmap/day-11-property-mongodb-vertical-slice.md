@@ -46,3 +46,7 @@ Canonical Property Aggregate'i MongoDB ve Vertical Slice Architecture ile kurmak
 
 ## Done
 Property canonical model MongoDB üzerinde çalışır ve Vertical Slice boundary korunur.
+
+## Exact file/class plan
+
+Implementation source of truth: `docs/roadmap/day-11-exact-file-plan.md`

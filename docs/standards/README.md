@@ -63,7 +63,7 @@ Bu klasör implementation öncesi ve implementation sırasında uyulacak ortak e
 9. `testing.md` ✅
 10. `observability.md` ✅
 11. `performance-resilience.md` ✅
-12. `architecture-fitness.md`
+12. `architecture-fitness.md` ✅
 
 ## Temel ilke
 

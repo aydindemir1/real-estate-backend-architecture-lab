@@ -17,35 +17,55 @@ Primary public HTTP API ve synchronous integration baseline.
 REST'in uygun olduğu mevcut internal HTTP client modeli.
 
 ### gRPC
-BuyerService → AgentService gibi düşük latency ve strongly-defined contract gerektiren internal service-to-service use-case'ler.
+BuyerService → AgentService gibi low-latency ve strongly-defined contract gerektiren internal service-to-service use-case'ler.
 
 ### GraphQL
-Client'ın field selection avantajından yararlandığı flexible read/query use-case'leri. Tüm REST endpoint'lerin replacement'ı değildir.
+Flexible read/query use-case'leri. Tüm REST endpoint'lerin replacement'ı değildir.
 
 ### RabbitMQ
-Command/task-oriented asynchronous flow'lar. Mevcut AuthService → UserProfileService async akışı referans use-case olarak korunur.
+Command / Work Queue ağırlıklı asynchronous flow.
+
+Mevcut:
+- AuthService → UserProfileService async profile creation
+
+Yeni target flow:
+- SellerService → `SubmitPropertyListingCommand` → PropertyService
 
 ### Kafka
-Durable domain-event streaming ve multi-consumer Event-Driven Architecture akışları.
+Durable Domain Event Streaming, CQRS Projection ve Saga event akışları.
 
-Beklenen property event'leri:
-- PropertyListingSubmitted
+Initial property event set:
 - PropertyCreated
 - PropertyPublished
 - PropertyUpdated
 - PropertyPriceChanged
-- PropertyDeleted
+- PropertyHeld
+- PropertyHoldReleased
+- PropertyReserved
+- PropertyWithdrawn
+- PropertySold
+
+Initial offer event set:
+- OfferRequested
+- SellerAccepted
+- SellerRejected
+- OfferExpired
+
+`OfferAccepted` / `OfferRejected` yalnızca gerçek downstream consumer ihtiyacı doğarsa eklenir.
 
 ## Reliability pattern'leri
 
-Kafka/RabbitMQ messaging ilerleyen günlerde şu pattern'lerle genişletilecek:
-- Idempotency
+- Idempotent Consumer
 - Retry
-- DLQ/DLT
+- DLQ / DLT
 - Outbox / Inbox
 - Eventual Consistency
 - Saga Choreography
 
+## Önemli not
+
+SellerService Cassandra state write ile RabbitMQ publish arasındaki reliable publication stratejisi henüz final değildir. Bu cross-service command flow Day 7 foundation kapsamında uygulanmayacak; Day 11 öncesi Cassandra'ya uygun reliability strategy netleştirilecektir.
+
 ## Kural
 
-Aynı flow'u yalnızca teknoloji göstermek amacıyla iki farklı protocol ile uygulamayacağız. Her protocol'ün açık bir architecture veya learning gerekçesi olacak.
+Aynı flow yalnızca teknoloji göstermek amacıyla iki farklı protocol ile uygulanmaz. Her protocol'ün açık architecture veya learning gerekçesi vardır.

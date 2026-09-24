@@ -219,18 +219,15 @@ Kapsam:
 
 Aşağıdaki konular henüz final değildir ve ilgili milestone'dan önce ADR veya design decision gerektirir.
 
-### 7.1 SellerService Cassandra -> RabbitMQ reliable command publication
-Cassandra state write ile RabbitMQ publish arasında RDBMS-style transactional outbox yoktur.
+### 7.1 Reliable outbound publication by datastore
 
-Day 7'de bu cross-service command implementation'ı yapılmayacak.
+Critical broker publication cannot be a best-effort `save -> send` sequence.
 
-Reliable strategy Day 11 öncesi netleşecek:
-- Cassandra-friendly dispatch/reconciliation
-- CDC yaklaşımı
-- publisher confirm + durable pending state
-- başka uygun pattern
+- Property/MongoDB -> Outbox
+- Seller/Cassandra -> Cassandra-friendly durable pending outbound message + dispatcher/reconciliation
+- Buyer/Couchbase -> durable reliable-publication strategy must be finalized before OfferRequested is wired
 
-Classic relational outbox Cassandra'ya zorla uygulanmayacaktır.
+Exact guarantees are documented in the relevant reliability Days; relational Transactional Outbox semantics are not blindly forced onto Cassandra/Couchbase.
 
 ### 7.2 Identity mapping
 Keycloak subject -> UserProfile -> Buyer/Seller/Agent identity mapping açık bir design olarak Day 8 öncesi finalize edilmelidir.
@@ -239,18 +236,21 @@ Keycloak subject -> UserProfile -> Buyer/Seller/Agent identity mapping açık bi
 JSON başlangıç formatıdır. Avro/Protobuf/Schema Registry yalnızca gerçek evolution ihtiyacı ortaya çıkarsa değerlendirilecektir.
 
 ### 7.4 Search projection rebuild
-Kafka replay ve source-of-truth reindex iki farklı recovery yolu olarak korunur. Day 19'da final operational strategy netleştirilecektir.
+
+Kafka replay ile source-of-truth reindex iki farklı recovery yoludur. Final operational rebuild/reconciliation strategy Day 31 Spring Cloud Task milestone'ında uygulanır.
+
+### 7.5 Offer idempotency durability
+
+Redis, Offer creation correctness için tek source of truth olamaz. `Idempotency-Key` -> request hash -> Offer/result ilişkisi BuyerService'in durable Couchbase state'i içinde korunmalıdır. Redis yalnız acceleration/cache rolü oynayabilir.
 
 ## 8. Target Design vs Milestone Scope
 
 Dokümanlardaki end-state design ile Day implementation scope birbirine karıştırılmamalıdır.
 
 Örnek:
-SearchService'in target package design'ında autocomplete/facet/geo/reindex bulunabilir; ancak Day 7 yalnızca Elasticsearch foundation/connectivity içerebilir.
+SearchService target design'ında autocomplete/facet/geo/reindex bulunabilir; fakat Day 12 yalnız temel Elasticsearch query-side capability'sini, Day 21 event projection'ı, Day 31 reindex/reconciliation'ı içerir.
 
-Aynı kural:
-- Day 7 -> foundation
-- sonraki Day -> ilgili capability'nin gerçek implementation'ı
+Aynı kural tüm roadmap için geçerlidir: target design erken tanımlanabilir, fakat capability yalnız kendi milestone'ında aktive edilir.
 
 ## 9. Pre-Day Implementation Gate
 
@@ -315,10 +315,10 @@ Final audit sonrası implementation cadence yeniden düzenlenmiştir:
 
 - Bir Day mümkün olduğunca tek service veya tek ana infrastructure konusu içerir.
 - Eski Day 7 içinde planlanan beş service tek milestone'da uygulanmayacaktır.
-- Backend roadmap Day 26'ya kadar genişletilmiştir.
+- Backend roadmap final audit sonrası Day 33'e kadar genişletilmiştir.
 - İçerik azaltılmamış, yalnız daha küçük milestone'lara ayrılmıştır.
 - Küçük ve anlamlı commit'ler zorunlu çalışma prensibidir.
 
-Detaylı güncel sıra root `ROADMAP.md` dosyasındadır.
+Detaylı güncel sıra root `ROADMAP.md` dosyasındadır. Day 15 sonrası eski birleşik milestone numaraları superseded kabul edilir.
 
 Implementation'a hâlâ plan hazır olmadan geçilmez.

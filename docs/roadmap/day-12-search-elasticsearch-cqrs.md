@@ -45,3 +45,7 @@ SearchService'i bağımsız query-side module olarak ayağa kaldırmak.
 
 ## Done
 SearchService standalone Elasticsearch query-side foundation olarak çalışır.
+
+## Exact file/class plan
+
+Implementation source of truth: `docs/roadmap/day-12-exact-file-plan.md`

@@ -21,7 +21,7 @@ Bu klasör implementation öncesi ve implementation sırasında uyulacak ortak e
 
 13. `java-21.md` ✅
 14. `spring-boot.md` ✅
-15. Spring Cloud Engineering Standard
+15. `spring-cloud.md` ✅
 16. Build, Dependency & Configuration Governance
 17. Quality Attributes & Non-Functional Requirements
 18. Operational Readiness & Runbook Standard

@@ -1,11 +1,11 @@
-# ADR-005 — RabbitMQ and Kafka Responsibilities
+# ADR-005 — RabbitMQ ve Kafka Sorumlulukları
 
 **Status:** Accepted
 
 ## Decision
-Keep RabbitMQ for command/task-style asynchronous messaging and use Kafka for durable domain-event streaming.
+RabbitMQ command/task-style asynchronous messaging için korunacak; Kafka durable domain-event streaming için kullanılacaktır.
 
-## Reference examples
+## Referans örnekler
 
 RabbitMQ:
 - AuthService → UserProfileService async profile creation
@@ -15,10 +15,10 @@ Kafka:
 - PropertyUpdated
 - PropertyPriceChanged
 - PropertyDeleted
-- Saga/CQRS event flows
+- Saga / CQRS event flow'ları
 
 ## Rationale
-The project should teach semantic differences, not duplicate the same workflow with two brokers.
+Amaç aynı workflow'u iki broker ile tekrar etmek değil, farklı messaging semantic'lerini öğrenmektir.
 
 ## Consequences
-Two brokers increase local infrastructure complexity, but each has a distinct and documented purpose.
+İki broker local infrastructure complexity'yi artırır; ancak her biri farklı ve dokümante edilmiş bir role sahip olacaktır.

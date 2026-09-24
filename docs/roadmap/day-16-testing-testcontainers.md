@@ -1,36 +1,36 @@
-# Day 16 — Testing + Testcontainers
+# Day 16 — Unit + Integration + Testcontainers
 
 **Status:** Planned  
 **Implementation branch:** `day/16-testing`
 
-## Goal
+## Amaç
 
-Deliver this milestone without reimplementing Day 1-6 baseline capabilities.
+Day 1–6 baseline capability'lerini yeniden uygulamadan bu milestone'un hedeflerini tamamlamak.
 
-## Planned scope
+## Planlanan kapsam
 
-- Unit tests
-- Integration tests
-- Testcontainers for datastores/brokers/security
-- Architecture-specific tests
-- Repository/adapter/controller/messaging tests
+- Unit Testing
+- Integration Testing
+- Datastore, broker ve security için Testcontainers
+- Architecture-specific test yaklaşımı
+- Repository, adapter, controller ve messaging testleri
 
-## Documentation rule
+## Dokümantasyon kuralı
 
-Detailed service-specific package structures, data models and dependency changes live in each service's `docs/DESIGN.md`. This file records only milestone scope and cross-service work.
+Service'e özel package structure, data model ve dependency değişiklikleri ilgili service'in `docs/DESIGN.md` dosyasında tutulur. Bu dosya yalnızca milestone kapsamını ve cross-service çalışmaları tanımlar.
 
-## Required before implementation
+## Implementation öncesi zorunlu tasarım
 
-- Review affected service DESIGN documents.
-- Finalize API/event contracts needed by this milestone.
-- Finalize infrastructure/configuration changes.
-- Define positive and failure-path tests.
-- Confirm Definition of Done.
+- Etkilenen service DESIGN dokümanlarını gözden geçir.
+- Bu milestone için gereken API/event contract'larını kesinleştir.
+- Infrastructure/configuration değişikliklerini kesinleştir.
+- Positive ve Failure-Path Testing senaryolarını tanımla.
+- Definition of Done maddelerini doğrula.
 
 ## Definition of Done
 
-- Implementation works on the Day branch.
-- Automated tests for the milestone pass.
-- Existing baseline regression tests remain valid.
-- Relevant DESIGN/ROADMAP/ADR files are updated in the same branch.
-- Only then is the Day branch eligible to merge into `main`.
+- Implementation ilgili Day branch'inde çalışıyor olmalı.
+- Milestone için tanımlanan automated test'ler geçmeli.
+- Mevcut baseline regression test'leri bozulmamalı.
+- İlgili DESIGN/ROADMAP/ADR dosyaları aynı branch'te güncellenmeli.
+- Bu koşullar tamamlandıktan sonra branch `main` ile merge edilmeye uygun kabul edilir.

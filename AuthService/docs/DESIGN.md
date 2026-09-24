@@ -1,24 +1,24 @@
 # AuthService Design
 
-## Purpose
-Own authentication/account baseline.
+## Amaç
+Authentication/account baseline ownership'ini taşımak.
 
 ## Architecture
-Existing N-Layer architecture is preserved intentionally.
+Mevcut N-Layer Architecture bilinçli olarak korunacaktır.
 
 ## Datastore
-PostgreSQL via Spring Data JPA + Hibernate.
+PostgreSQL + Spring Data JPA + Hibernate.
 
-## Existing integrations
+## Mevcut integration'lar
 - REST
-- OpenFeign to UserProfileService
-- RabbitMQ async profile-creation command
-- Config
-- Eureka/LoadBalancer
+- UserProfileService'e OpenFeign
+- Async profile creation için RabbitMQ
+- Spring Cloud Config
+- Eureka / LoadBalancer
 - tracing
 
-## Planned evolution
-Day 8 introduces Spring Security, Keycloak, OAuth2/OIDC, RBAC and service-to-service authentication. Existing custom JWT may remain only for educational comparison.
+## Planlanan gelişim
+Day 8 kapsamında Spring Security, Keycloak, OAuth2/OIDC, RBAC ve service-to-service authentication eklenecek. Mevcut custom JWT yalnızca eğitimsel karşılaştırma için gerektiği ölçüde korunabilir.
 
-## Constraint
-Do not refactor this service into Clean/Hexagonal/Onion merely for consistency; it is the N-Layer comparison baseline.
+## Kısıt
+Bu service yalnızca tutarlılık sağlamak amacıyla Clean Architecture, Hexagonal Architecture veya Onion Architecture'a dönüştürülmeyecektir; N-Layer karşılaştırma baseline'ı olarak kalacaktır.

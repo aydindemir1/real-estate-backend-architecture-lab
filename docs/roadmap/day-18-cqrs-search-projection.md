@@ -28,3 +28,7 @@ Property write model ile Search query modelini event-driven CQRS ile bağlamak.
 
 ## Done
 Mongo canonical source olarak kalır; Elasticsearch projection Kafka event'leriyle güncellenir.
+
+## Exact projection/file plan
+
+Implementation source of truth: `docs/roadmap/day-18-exact-file-plan.md`

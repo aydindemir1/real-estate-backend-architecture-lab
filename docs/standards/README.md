@@ -57,7 +57,7 @@ Bu klasör implementation öncesi ve implementation sırasında uyulacak ortak e
 
 4. `domain-modeling.md` ✅
 5. `application-layer.md` ✅
-6. `persistence.md`
+6. `persistence.md` ✅
 7. `messaging.md`
 8. `security.md`
 9. `testing.md`

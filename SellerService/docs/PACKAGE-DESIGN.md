@@ -23,8 +23,8 @@ com.aydindemir.seller
 │   │   └── ListingSubmissionStatus
 │   ├── event
 │   │   ├── ListingSubmittedDomainEvent
-│   │   ├── OfferAcceptedDomainEvent
-│   │   └── OfferRejectedDomainEvent
+│   │   ├── SellerAcceptedOfferDomainEvent
+│   │   └── SellerRejectedOfferDomainEvent
 │   ├── repository
 │   │   ├── SellerRepository
 │   │   ├── ListingSubmissionRepository
@@ -57,22 +57,9 @@ com.aydindemir.seller
 ├── infrastructure
 │   ├── cassandra
 │   │   ├── table
-│   │   │   ├── SellerByIdTable
-│   │   │   ├── ListingSubmissionBySellerMonthTable
-│   │   │   ├── PendingOfferBySellerTable
-│   │   │   ├── OfferBySellerMonthTable
-│   │   │   └── SellerActivityBySellerMonthTable
 │   │   ├── repository
-│   │   │   ├── SpringDataSellerByIdRepository
-│   │   │   ├── SpringDataListingSubmissionRepository
-│   │   │   ├── SpringDataPendingOfferRepository
-│   │   │   └── SpringDataSellerActivityRepository
 │   │   ├── mapper
-│   │   │   └── SellerCassandraMapper
 │   │   └── adapter
-│   │       ├── CassandraSellerRepositoryAdapter
-│   │       ├── CassandraListingSubmissionAdapter
-│   │       └── CassandraOfferProjectionAdapter
 │   ├── messaging
 │   │   ├── rabbitmq
 │   │   │   └── RabbitMqListingCommandPublisher
@@ -100,4 +87,6 @@ com.aydindemir.seller
 domain <- application <- infrastructure/presentation
 ```
 
-Outer layer'lar inner layer'ı bilir; domain hiçbir infrastructure technology'sine bağımlı değildir.
+Domain hiçbir infrastructure technology'sine bağımlı değildir.
+
+Integration event isimleri `SellerAccepted` / `SellerRejected`; domain event class'ları business intent'i daha açık ifade etmek için `SellerAcceptedOfferDomainEvent` / `SellerRejectedOfferDomainEvent` olarak adlandırılır.

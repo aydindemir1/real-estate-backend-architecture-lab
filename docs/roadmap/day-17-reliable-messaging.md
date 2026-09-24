@@ -33,3 +33,7 @@ At-least-once messaging altında correctness ve recoverability sağlamak.
 
 ## Done
 Duplicate delivery business side-effect üretmez; failure/retry/DLQ recovery paths test edilmiştir.
+
+## Exact reliability/file plan
+
+Implementation source of truth: `docs/roadmap/day-17-exact-file-plan.md`

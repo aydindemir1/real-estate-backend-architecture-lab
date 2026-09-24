@@ -33,3 +33,7 @@ Backend'in mimari, functional ve operational bütünlüğünü final olarak doğ
 
 ## Done
 Architecture, contracts, critical workflows, security, failure handling ve docs birbiriyle uyumlu; backend fazı kapanmaya hazırdır.
+
+## Exact completion/file plan
+
+Implementation source of truth: `docs/roadmap/day-26-exact-file-plan.md`

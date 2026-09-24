@@ -32,3 +32,7 @@ Identity ve authorization modelini Keycloak tabanlı hale getirmek.
 
 ## Done
 Authentication/authorization Gateway + downstream defense-in-depth ile çalışır; ownership test edilmiştir.
+
+## Exact security/file plan
+
+Implementation source of truth: `docs/roadmap/day-14-exact-file-plan.md`

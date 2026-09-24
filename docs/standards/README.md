@@ -5,65 +5,28 @@ Bu klasör implementation öncesi ve implementation sırasında uyulacak ortak e
 ## Tamamlanan
 
 1. `engineering-principles.md`
-   - Clean Code
-   - OOP
-   - SOLID
-   - KISS
-   - YAGNI
-   - DRY
-   - Tell, Don't Ask
-   - Law of Demeter
-   - Immutability
-   - dependency direction
-   - code review baseline
-
 2. `design-patterns.md`
-   - Repository
-   - Adapter
-   - Strategy
-   - Factory / Factory Method
-   - Builder
-   - State behavior
-   - Specification
-   - Domain Event / Observer semantics
-   - Outbox
-   - Inbox
-   - Idempotent Consumer
-   - Saga
-   - CQRS
-   - Projection
-   - Query Object
-   - Mapper
-   - pattern anti-abuse policy
-
 3. `api-design.md`
-   - REST Resource Design
-   - HTTP Method / Status Code
-   - DTO separation
-   - Validation
-   - Pagination / Sorting / Filtering
-   - Idempotency
-   - Optimistic Concurrency
-   - API Versioning
-   - Backward Compatibility / Deprecation
-   - Error Contract
-   - Correlation
-   - OpenAPI
-   - REST vs GraphQL vs gRPC
-   - Rate Limiting
-   - API Review Checklist
+4. `domain-modeling.md`
+5. `application-layer.md`
+6. `persistence.md`
+7. `messaging.md`
+8. `security.md`
+9. `testing.md`
+10. `observability.md`
+11. `performance-resilience.md`
+12. `architecture-fitness.md`
 
-## Planlanan
+## Master Plan ile eklenen implementation-öncesi standard'lar
 
-4. `domain-modeling.md` ✅
-5. `application-layer.md` ✅
-6. `persistence.md` ✅
-7. `messaging.md` ✅
-8. `security.md` ✅
-9. `testing.md` ✅
-10. `observability.md` ✅
-11. `performance-resilience.md` ✅
-12. `architecture-fitness.md` ✅
+13. Java 21 Engineering Standard
+14. Spring Boot Engineering Standard
+15. Spring Cloud Engineering Standard
+16. Build, Dependency & Configuration Governance
+17. Quality Attributes & Non-Functional Requirements
+18. Operational Readiness & Runbook Standard
+
+Detaylı sıra ve audit sonucu: `../MASTER-ENGINEERING-PLAN.md`.
 
 ## Temel ilke
 

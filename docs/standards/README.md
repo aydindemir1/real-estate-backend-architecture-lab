@@ -17,9 +17,27 @@ Bu klasör implementation öncesi ve implementation sırasında uyulacak ortak e
    - dependency direction
    - code review baseline
 
+2. `design-patterns.md`
+   - Repository
+   - Adapter
+   - Strategy
+   - Factory / Factory Method
+   - Builder
+   - State behavior
+   - Specification
+   - Domain Event / Observer semantics
+   - Outbox
+   - Inbox
+   - Idempotent Consumer
+   - Saga
+   - CQRS
+   - Projection
+   - Query Object
+   - Mapper
+   - pattern anti-abuse policy
+
 ## Planlanan
 
-2. `design-patterns.md`
 3. `api-design.md`
 4. `domain-modeling.md`
 5. `application-layer.md`
@@ -35,4 +53,4 @@ Bu klasör implementation öncesi ve implementation sırasında uyulacak ortak e
 
 Technology breadth ile engineering maturity birlikte ilerlemelidir.
 
-Bir teknoloji yalnızca çalıştırılmış olmak için eklenmez; doğru Architecture, principle, pattern, test ve operational practice ile uygulanır.
+Bir teknoloji veya pattern yalnızca projede bulunmak için eklenmez; gerçek problem, trade-off ve Architecture ihtiyacına göre uygulanır.

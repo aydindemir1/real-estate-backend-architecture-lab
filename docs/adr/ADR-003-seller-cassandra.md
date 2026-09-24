@@ -1,18 +1,18 @@
-# ADR-003 — Cassandra for SellerService
+# ADR-003 — SellerService için Cassandra
 
 **Status:** Accepted
 
 ## Context
-SellerService is the chosen service for learning wide-column, distributed and query-driven modeling.
+SellerService, wide-column ve query-driven distributed modeling öğrenmek için seçilen service'tir.
 
 ## Decision
-Use Spring Data Cassandra. Model tables from access patterns such as seller lookup, listing submission history and time-ordered seller activity.
+Spring Data Cassandra kullanılacaktır. Tablolar seller lookup, listing submission history ve time-ordered seller activity gibi access pattern'lere göre tasarlanacaktır.
 
 ## Rationale
-Cassandra teaches partition keys, clustering keys, denormalization and distributed data design that would not be learned by adding another relational database.
+Cassandra; partition key, clustering key, denormalization ve distributed data design konularını öğretir. Bir başka relational database eklemek aynı öğrenme değerini sağlamaz.
 
-## Alternatives considered
+## Alternatives Considered
 MySQL, PostgreSQL, MongoDB.
 
 ## Consequences
-No joins or JPA-style aggregate navigation. Duplicate/denormalized data may be intentional. Classic relational transactional-outbox assumptions must not be falsely applied.
+Join ve JPA-style aggregate navigation kullanılmayacaktır. Denormalized data bilinçli olarak tutulabilir. Classic relational Transactional Outbox varsayımları Cassandra'ya doğrudan taşınmayacaktır.

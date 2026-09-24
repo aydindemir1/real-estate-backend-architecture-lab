@@ -1,6 +1,6 @@
 # Communication Architecture
 
-## Existing baseline
+## Mevcut baseline
 
 - REST / Spring MVC
 - Spring Cloud OpenFeign
@@ -8,27 +8,27 @@
 - Eureka + Spring Cloud LoadBalancer
 - API Gateway
 
-## Planned communication responsibilities
+## Planlanan iletişim rolleri
 
 ### REST
-Primary public HTTP API and baseline synchronous integration style.
+Primary public HTTP API ve synchronous integration baseline.
 
 ### OpenFeign
-Existing internal HTTP client style where REST remains appropriate.
+REST'in uygun olduğu mevcut internal HTTP client modeli.
 
 ### gRPC
-Internal low-latency, strongly defined service-to-service contracts such as BuyerService → AgentService checks.
+BuyerService → AgentService gibi düşük latency ve strongly-defined contract gerektiren internal service-to-service use-case'ler.
 
 ### GraphQL
-Flexible read/query use cases where clients benefit from field selection. It is not intended to replace all REST endpoints.
+Client'ın field selection avantajından yararlandığı flexible read/query use-case'leri. Tüm REST endpoint'lerin replacement'ı değildir.
 
 ### RabbitMQ
-Command/task-oriented asynchronous flows. Existing AuthService → UserProfileService async flow remains as the reference use case.
+Command/task-oriented asynchronous flow'lar. Mevcut AuthService → UserProfileService async akışı referans use-case olarak korunur.
 
 ### Kafka
-Durable domain-event streaming and multi-consumer event-driven flows.
+Durable domain-event streaming ve multi-consumer Event-Driven Architecture akışları.
 
-Expected property events include:
+Beklenen property event'leri:
 - PropertyListingSubmitted
 - PropertyCreated
 - PropertyPublished
@@ -36,16 +36,16 @@ Expected property events include:
 - PropertyPriceChanged
 - PropertyDeleted
 
-## Reliability patterns
+## Reliability pattern'leri
 
-Kafka/RabbitMQ messaging will be extended with:
-- idempotency
-- retry
+Kafka/RabbitMQ messaging ilerleyen günlerde şu pattern'lerle genişletilecek:
+- Idempotency
+- Retry
 - DLQ/DLT
-- Outbox/Inbox where datastore guarantees make sense
-- eventual consistency
-- Saga choreography
+- Outbox / Inbox
+- Eventual Consistency
+- Saga Choreography
 
-## Rule
+## Kural
 
-Do not use two protocols for the same flow merely to demonstrate technology. Each protocol must have a distinct learning or architectural reason.
+Aynı flow'u yalnızca teknoloji göstermek amacıyla iki farklı protocol ile uygulamayacağız. Her protocol'ün açık bir architecture veya learning gerekçesi olacak.

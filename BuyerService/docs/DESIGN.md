@@ -1,15 +1,15 @@
 # BuyerService Design
 
-## Purpose
-Own buyer preferences, saved criteria and buyer-side behavior.
+## Amaç
+Buyer preferences, saved criteria ve buyer-side behavior verilerinin ownership'ini taşımak.
 
 ## Architecture
 Hexagonal Architecture.
 
 ## Primary datastore
-Couchbase via Spring Data Couchbase.
+Couchbase + Spring Data Couchbase.
 
-## Target package structure
+## Hedef package structure
 ```text
 com.aydindemir.buyer
 ├── domain
@@ -31,7 +31,7 @@ com.aydindemir.buyer
         └── client
 ```
 
-## Planned document model
+## Planlanan document model
 BuyerPreferences:
 - buyerId
 - budgetMin / budgetMax
@@ -43,17 +43,17 @@ BuyerPreferences:
 - notification preferences
 - saved criteria
 
-## Key ports
+## Temel port'lar
 - SaveBuyerPreferencesPort
 - FindBuyerPreferencesPort
 - AgentAvailabilityPort
 - PublishOfferRequestedPort
 
-## Day 7 dependency changes
-Use Spring Data Couchbase; remove unnecessary JPA/PostgreSQL dependencies from this module.
+## Day 7 dependency değişiklikleri
+Spring Data Couchbase kullanılacak; bu module için gereksiz JPA/PostgreSQL dependency'leri kaldırılacak.
 
-## Required infrastructure
+## Gerekli infrastructure
 Couchbase.
 
-## Planned tests
-Application services with fake outbound ports, Couchbase adapter integration tests, Testcontainers.
+## Planlanan testler
+Fake outbound port'larla application service testleri, Couchbase adapter Integration Testing ve Testcontainers.

@@ -29,3 +29,7 @@ Cross-service contract ve sistematik negative-path güvenilirliğini doğrulamak
 
 ## Done
 Critical contracts breaking change'e karşı korunur; major failure paths automated olarak test edilir.
+
+## Exact contract/failure plan
+
+Implementation source of truth: `docs/roadmap/day-23-exact-file-plan.md`

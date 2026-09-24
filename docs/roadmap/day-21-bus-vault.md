@@ -28,3 +28,7 @@ Config ve secret lifecycle'ını ayırmak ve kontrollü config propagation eklem
 
 ## Done
 Secrets Vault'ta, normal config Config Server'da; refresh sadece güvenli property'lerde çalışır.
+
+## Exact Vault/Bus plan
+
+Implementation source of truth: `docs/roadmap/day-21-exact-file-plan.md`

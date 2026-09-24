@@ -19,7 +19,7 @@ Bu klasör implementation öncesi ve implementation sırasında uyulacak ortak e
 
 ## Master Plan ile eklenen implementation-öncesi standard'lar
 
-13. Java 21 Engineering Standard
+13. `java-21.md` ✅
 14. Spring Boot Engineering Standard
 15. Spring Cloud Engineering Standard
 16. Build, Dependency & Configuration Governance

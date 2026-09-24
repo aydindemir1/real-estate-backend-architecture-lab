@@ -60,7 +60,7 @@
 DRAFT --publish()--> PUBLISHED --hold()--> ON_HOLD --reserve()--> RESERVED --sell()--> SOLD
                          ^                   |
                          |----release()------|
-                         
+
 DRAFT / PUBLISHED --withdraw()--> WITHDRAWN
 ```
 
@@ -173,18 +173,19 @@ Property değildir; Seller'ın listing oluşturma talebidir.
 ### ListingSubmissionStatus
 - CREATED
 - SUBMITTED
-- ACCEPTED
-- REJECTED
 - PROPERTY_CREATED
+- REJECTED
 - FAILED
 
 ### State Machine
 
 ```text
-CREATED -> SUBMITTED -> ACCEPTED -> PROPERTY_CREATED
+CREATED -> SUBMITTED -> PROPERTY_CREATED
                    \-> REJECTED
                    \-> FAILED
 ```
+
+`ACCEPTED` ara state'i kaldırılmıştır; PropertyService command'ı başarıyla işleyip Property oluşturduğunda `PropertyCreated` event'i SellerService projection'ını doğrudan `PROPERTY_CREATED` state'ine taşır.
 
 ## Agent Aggregate
 

@@ -60,7 +60,7 @@ Bu klasör implementation öncesi ve implementation sırasında uyulacak ortak e
 6. `persistence.md` ✅
 7. `messaging.md` ✅
 8. `security.md` ✅
-9. `testing.md`
+9. `testing.md` ✅
 10. `observability.md`
 11. `performance-resilience.md`
 12. `architecture-fitness.md`

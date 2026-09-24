@@ -1,6 +1,6 @@
-# java-44-microservice-project
+# Real Estate Backend Architecture Lab
 
-Bu proje, referans eğitim projesindeki mikroservis mimarisini güncel Java ve Spring ekosistemiyle adım adım yeniden uygulamak için hazırlanmıştır.
+Bu repository, referans eğitim projesindeki ilk 6 günlük mikroservis çalışmasının güncel Java ve Spring ekosistemiyle tamamlanmış ve lokal olarak doğrulanmış baseline'ı üzerine kurulmuş bağımsız bir **Real Estate Backend Architecture Lab** projesidir. Day 1-6 kapsamı korunarak bundan sonraki geliştirmeler; farklı veri teknolojileri, mimari yaklaşımlar, servisler arası iletişim modelleri ve ileri seviye backend/distributed systems konularını karşılaştırmalı olarak uygulamak üzere genişletilecektir.
 
 ## Day 1
 
@@ -830,3 +830,193 @@ Eureka Dashboard üzerinde kayıtlı servisler:
 **Day 6B — Spring Cloud Netflix Eureka tamamlandı ve test edildi.**
 
 Sonraki adım: **Day 6C — Spring Cloud LoadBalancer ile Gateway ve OpenFeign çağrılarını service-name tabanlı hale getirmek.**
+
+
+## Day 6C
+
+Altıncı günün üçüncü bölümünde **Spring Cloud LoadBalancer** ile Gateway ve OpenFeign çağrıları service-name tabanlı hale getirildi. Böylece sabit servis URL'leri kaldırılarak Eureka registry üzerinden servis çözümleme ve load-balanced çağrı akışı uygulanmıştır.
+
+### Eklenen teknoloji ve konular
+
+- Spring Cloud LoadBalancer
+- Eureka tabanlı service-name resolution
+- Gateway `lb://service-name` routing
+- OpenFeign + Eureka + LoadBalancer entegrasyonu
+- Sabit servis URL'lerinin kaldırılması
+- Gateway ve servisler arası client-side load balancing
+- Uçtan uca service discovery testi
+
+### Gateway route'ları
+
+ApiGatewayService artık sabit `http://localhost:909x` adresleri yerine Eureka servis adlarını kullanır:
+
+```text
+lb://auth-service
+lb://user-profile-service
+lb://agent-service
+lb://buyer-service
+lb://property-service
+lb://seller-service
+```
+
+Örnek:
+
+```yaml
+- id: auth-service
+  uri: lb://auth-service
+  predicates:
+    - Path=/auth/**
+```
+
+Gateway isteği aldığında hedef servisin instance bilgisini Eureka registry üzerinden çözer ve Spring Cloud LoadBalancer aracılığıyla uygun instance'a yönlendirir.
+
+### OpenFeign service-name çözümleme
+
+AuthService içindeki UserProfileService client'ı artık sabit URL kullanmaz:
+
+```java
+@FeignClient(name = "user-profile-service")
+public interface IUserProfileManager {
+
+    @PostMapping("/user/save")
+    ResponseEntity<Boolean> save(@RequestBody UserProfileSaveRequestDto dto);
+}
+```
+
+Önceki `services.user-profile.url` konfigürasyonu kaldırılmıştır.
+
+### Doğrulanan Feign + LoadBalancer akışı
+
+Gateway devreye alınmadan önce aşağıdaki çağrı test edildi:
+
+```text
+POST http://localhost:9090/auth/register
+```
+
+Başarılı test akışı:
+
+```text
+AuthService
+   |
+   v
+@FeignClient(name = "user-profile-service")
+   |
+   v
+Eureka Registry
+   |
+   v
+Spring Cloud LoadBalancer
+   |
+   v
+UserProfileService
+```
+
+Kullanıcı Auth veritabanına kaydedildi ve aynı kullanıcı için UserProfile veritabanında eşleşen profil kaydı oluşturuldu.
+
+### Doğrulanan Gateway + LoadBalancer akışı
+
+Aşağıdaki Gateway çağrıları `200 OK` ile doğrulandı:
+
+```text
+GET http://localhost:8080/auth/getMessage
+GET http://localhost:8080/user/hello
+```
+
+Bu çağrılar şu yapıyı doğrular:
+
+```text
+Client
+   |
+   v
+ApiGatewayService :8080
+   |
+   v
+lb://service-name
+   |
+   v
+Eureka Registry
+   |
+   v
+Spring Cloud LoadBalancer
+   |
+   v
+Target Service
+```
+
+### Uçtan uca kayıt testi
+
+Son olarak aşağıdaki istek Gateway üzerinden başarıyla çalıştırıldı:
+
+```text
+POST http://localhost:8080/auth/register
+```
+
+Bu tek request içinde iki ayrı service-name çözümleme adımı gerçekleşti:
+
+```text
+Postman
+   |
+   v
+ApiGatewayService :8080
+   |
+   | lb://auth-service
+   v
+Eureka + Spring Cloud LoadBalancer
+   |
+   v
+AuthService
+   |
+   | @FeignClient(name = "user-profile-service")
+   v
+Eureka + Spring Cloud LoadBalancer
+   |
+   v
+UserProfileService
+   |
+   v
+PostgreSQL
+```
+
+Gateway üzerinden oluşturulan kullanıcı hem Auth veritabanında hem de UserProfile veritabanında doğrulandı.
+
+### Day 6C doğrulama sonucu
+
+- Spring Cloud LoadBalancer dependency'si eklendi.
+- ApiGatewayService LoadBalancer ile çalışıyor.
+- AuthService OpenFeign çağrısında LoadBalancer kullanıyor.
+- Gateway route'ları `lb://service-name` formatına geçirildi.
+- OpenFeign sabit URL kullanımı kaldırıldı.
+- Eureka üzerinden service-name resolution doğrulandı.
+- `GET /auth/getMessage` Gateway üzerinden başarılı.
+- `GET /user/hello` Gateway üzerinden başarılı.
+- Doğrudan AuthService kayıt çağrısında Feign + Eureka + LoadBalancer doğrulandı.
+- Gateway üzerinden uçtan uca kayıt çağrısı başarılı.
+- Auth ve UserProfile veritabanlarında eşleşen kayıtlar doğrulandı.
+
+### Ekran görüntüleri
+
+Gateway üzerinden AuthService çağrısı:
+
+![Day 6C - Gateway Auth GetMessage](docs/screenshoot/day6c-gateway-auth-getmessage.png)
+
+Gateway üzerinden UserProfileService çağrısı:
+
+![Day 6C - Gateway User Hello](docs/screenshoot/day6c-gateway-user-hello.png)
+
+Eureka üzerinde Gateway, AuthService ve UserProfileService:
+
+![Day 6C - Eureka Gateway Auth UserProfile](docs/screenshoot/day6c-eureka-gateway-auth-user.png)
+
+Gateway üzerinden uçtan uca register çağrısı:
+
+![Day 6C - Gateway Register](docs/screenshoot/day6c-gateway-register.png)
+
+Auth veritabanında oluşturulan kayıt:
+
+![Day 6C - Auth DB](docs/screenshoot/day6c-auth-db.png)
+
+UserProfile veritabanında eşleşen kayıt:
+
+![Day 6C - UserProfile DB](docs/screenshoot/day6c-user-profile-db.png)
+
+**Day 6C — Spring Cloud LoadBalancer tamamlandı ve test edildi.**

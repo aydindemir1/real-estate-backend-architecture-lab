@@ -1,22 +1,24 @@
 # Architecture Decision Records
 
-ADR documents are intentionally short. Each record uses:
+ADR dokümanları kısa tutulur.
+
+Standart yapı:
 
 - Status
 - Context
 - Decision
 - Rationale
-- Alternatives considered
+- Alternatives Considered
 - Consequences
-- When to revisit
+- When to Revisit
 
-Initial decisions:
+İlk kararlar:
 
-1. Database per service
-2. Polyglot persistence
-3. SellerService on Cassandra
-4. SearchService as Elasticsearch projection
-5. RabbitMQ vs Kafka responsibilities
-6. Eureka vs Consul vs ZooKeeper comparison
+1. Database per Service
+2. Polyglot Persistence
+3. SellerService için Cassandra
+4. SearchService için Elasticsearch projection
+5. RabbitMQ vs Kafka sorumlulukları
+6. Eureka vs Consul vs ZooKeeper karşılaştırma kapsamı
 
-Additional ADRs will be added only when a decision has meaningful trade-offs.
+Yeni ADR yalnızca gerçek bir trade-off veya önemli architecture kararı olduğunda eklenir.

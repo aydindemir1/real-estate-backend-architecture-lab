@@ -23,7 +23,7 @@ Bu klasör implementation öncesi ve implementation sırasında uyulacak ortak e
 14. `spring-boot.md` ✅
 15. `spring-cloud.md` ✅
 16. `build-dependency-configuration.md` ✅
-17. Quality Attributes & Non-Functional Requirements
+17. `quality-attributes-nfr.md` ✅
 18. Operational Readiness & Runbook Standard
 
 Detaylı sıra ve audit sonucu: `../MASTER-ENGINEERING-PLAN.md`.

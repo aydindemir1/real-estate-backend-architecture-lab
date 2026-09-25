@@ -252,6 +252,24 @@ services:
       retries: 20
       start_period: 60s
 
+  redis:
+    image: redis:8.2.1
+    container_name: real-estate-redis
+    restart: unless-stopped
+
+    ports:
+      - "6379:6379"
+
+    volumes:
+      - redis_data:/data
+
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
   rabbitmq:
     image: rabbitmq:4.3.6-management
     container_name: real-estate-rabbitmq
@@ -287,4 +305,5 @@ volumes:
   seller_postgres_data:
   seller_cassandra_data:
   rabbitmq_data:
+  redis_data:
   elasticsearch_data:

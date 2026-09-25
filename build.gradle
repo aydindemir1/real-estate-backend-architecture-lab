@@ -40,12 +40,6 @@ subprojects {
     }
 
     dependencies {
-        implementation libs.springBootWeb
-        implementation libs.swaggerApi
-        implementation libs.mapStruct
-        implementation libs.jwt
-        implementation libs.springCloudOpenFeign
-
         compileOnly libs.lombok
         annotationProcessor libs.lombok
         annotationProcessor libs.lombokMapstructBinding

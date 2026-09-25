@@ -13,6 +13,11 @@ ext {
     libs = [
             springBootWeb                               : "org.springframework.boot:spring-boot-starter-webmvc:$versions.springBoot",
             springBootDataJpa                           : "org.springframework.boot:spring-boot-starter-data-jpa:$versions.springBoot",
+            springBootDataCouchbase                     : "org.springframework.boot:spring-boot-starter-data-couchbase:$versions.springBoot",
+            springBootDataCassandra                     : "org.springframework.boot:spring-boot-starter-data-cassandra:$versions.springBoot",
+            springBootDataMongoDb                       : "org.springframework.boot:spring-boot-starter-data-mongodb:$versions.springBoot",
+            springBootDataElasticsearch                 : "org.springframework.boot:spring-boot-starter-data-elasticsearch:$versions.springBoot",
+            springBootDataRedis                         : "org.springframework.boot:spring-boot-starter-data-redis:$versions.springBoot",
             springBootTest                              : "org.springframework.boot:spring-boot-starter-test:$versions.springBoot",
             springBootActuator                          : "org.springframework.boot:spring-boot-starter-actuator:$versions.springBoot",
             springBootZipkin                            : "org.springframework.boot:spring-boot-starter-zipkin:$versions.springBoot",
@@ -30,6 +35,8 @@ ext {
             feignMicrometer                             : "io.github.openfeign:feign-micrometer",
 
             postgreSql                                  : "org.postgresql:postgresql:$versions.postgreSql",
+            mySql                                       : "com.mysql:mysql-connector-j",
+            testcontainersJunitJupiter                  : "org.testcontainers:junit-jupiter",
 
             lombok                                      : "org.projectlombok:lombok:$versions.lombok",
             lombokMapstructBinding                      : "org.projectlombok:lombok-mapstruct-binding:$versions.lombokMapstructBinding",

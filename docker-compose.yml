@@ -68,6 +68,30 @@ services:
       retries: 5
       start_period: 10s
 
+  agent-mysql:
+    image: mysql:8.4.11
+    container_name: real-estate-agent-mysql
+    restart: unless-stopped
+
+    environment:
+      MYSQL_DATABASE: ${AGENT_DB_NAME:-micro_agent_service_db}
+      MYSQL_USER: ${AGENT_DB_USERNAME}
+      MYSQL_PASSWORD: ${AGENT_DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${AGENT_DB_ROOT_PASSWORD}
+
+    ports:
+      - "3307:3306"
+
+    volumes:
+      - agent_mysql_data:/var/lib/mysql
+
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u\"${MYSQL_USER}\" -p\"${MYSQL_PASSWORD}\" --silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
   buyer-postgres:
     image: postgres:18.6
     container_name: java44-buyer-postgres
@@ -164,6 +188,7 @@ volumes:
   postgres_data:
   user_profile_postgres_data:
   agent_postgres_data:
+  agent_mysql_data:
   buyer_postgres_data:
   property_postgres_data:
   seller_postgres_data:

@@ -1,4 +1,9 @@
 dependencies {
+    implementation libs.springBootWeb
+    implementation libs.swaggerApi
+    implementation libs.mapStruct
+    implementation libs.jwt
+    implementation libs.springCloudOpenFeign
     implementation libs.springCloudLoadBalancer
     implementation libs.springCloudEurekaClient
     implementation libs.springBootDataJpa

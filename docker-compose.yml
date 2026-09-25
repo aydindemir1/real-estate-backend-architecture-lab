@@ -45,29 +45,6 @@ services:
       retries: 5
       start_period: 10s
 
-  agent-postgres:
-    image: postgres:18.6
-    container_name: real-estate-agent-postgres
-    restart: unless-stopped
-
-    environment:
-      POSTGRES_DB: ${AGENT_DB_NAME:-micro_agent_service_db}
-      POSTGRES_USER: ${AGENT_DB_USERNAME}
-      POSTGRES_PASSWORD: ${AGENT_DB_PASSWORD}
-
-    ports:
-      - "5435:5432"
-
-    volumes:
-      - agent_postgres_data:/var/lib/postgresql
-
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${AGENT_DB_USERNAME} -d ${AGENT_DB_NAME:-micro_agent_service_db}"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 10s
-
   agent-mysql:
     image: mysql:8.4.11
     container_name: real-estate-agent-mysql
@@ -92,29 +69,6 @@ services:
       retries: 10
       start_period: 30s
 
-  buyer-postgres:
-    image: postgres:18.6
-    container_name: real-estate-buyer-postgres
-    restart: unless-stopped
-
-    environment:
-      POSTGRES_DB: ${BUYER_DB_NAME:-micro_buyer_service_db}
-      POSTGRES_USER: ${BUYER_DB_USERNAME}
-      POSTGRES_PASSWORD: ${BUYER_DB_PASSWORD}
-
-    ports:
-      - "5436:5432"
-
-    volumes:
-      - buyer_postgres_data:/var/lib/postgresql
-
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${BUYER_DB_USERNAME} -d ${BUYER_DB_NAME:-micro_buyer_service_db}"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 10s
-
   buyer-couchbase:
     image: couchbase:community-8.0.2
     container_name: real-estate-buyer-couchbase
@@ -138,29 +92,6 @@ services:
       retries: 12
       start_period: 30s
 
-  property-postgres:
-    image: postgres:18.6
-    container_name: real-estate-property-postgres
-    restart: unless-stopped
-
-    environment:
-      POSTGRES_DB: ${PROPERTY_DB_NAME:-micro_property_service_db}
-      POSTGRES_USER: ${PROPERTY_DB_USERNAME}
-      POSTGRES_PASSWORD: ${PROPERTY_DB_PASSWORD}
-
-    ports:
-      - "5437:5432"
-
-    volumes:
-      - property_postgres_data:/var/lib/postgresql
-
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${PROPERTY_DB_USERNAME} -d ${PROPERTY_DB_NAME:-micro_property_service_db}"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 10s
-
   property-mongodb:
     image: mongo:8.0.30
     container_name: real-estate-property-mongodb
@@ -183,29 +114,6 @@ services:
       timeout: 5s
       retries: 10
       start_period: 20s
-
-  seller-postgres:
-    image: postgres:18.6
-    container_name: real-estate-seller-postgres
-    restart: unless-stopped
-
-    environment:
-      POSTGRES_DB: ${SELLER_DB_NAME:-micro_seller_service_db}
-      POSTGRES_USER: ${SELLER_DB_USERNAME}
-      POSTGRES_PASSWORD: ${SELLER_DB_PASSWORD}
-
-    ports:
-      - "5438:5432"
-
-    volumes:
-      - seller_postgres_data:/var/lib/postgresql
-
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${SELLER_DB_USERNAME} -d ${SELLER_DB_NAME:-micro_seller_service_db}"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 10s
 
   seller-cassandra:
     image: cassandra:5.0.9
@@ -296,13 +204,9 @@ services:
 volumes:
   postgres_data:
   user_profile_postgres_data:
-  agent_postgres_data:
   agent_mysql_data:
-  buyer_postgres_data:
   buyer_couchbase_data:
-  property_postgres_data:
   property_mongodb_data:
-  seller_postgres_data:
   seller_cassandra_data:
   rabbitmq_data:
   redis_data:

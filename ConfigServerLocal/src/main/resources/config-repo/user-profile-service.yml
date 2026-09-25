@@ -5,12 +5,12 @@ spring:
   datasource:
     url: ${USER_PROFILE_DB_URL:jdbc:postgresql://localhost:5434/micro_user_profile_service_db}
     username: ${USER_PROFILE_DB_USERNAME:aydin}
-    password: ${USER_PROFILE_DB_PASSWORD:123456!}
+    password: ${USER_PROFILE_DB_PASSWORD}
   rabbitmq:
     host: ${RABBITMQ_HOST:localhost}
     port: ${RABBITMQ_PORT:5672}
-    username: ${RABBITMQ_USERNAME:java44}
-    password: ${RABBITMQ_PASSWORD:java44}
+    username: ${RABBITMQ_USERNAME}
+    password: ${RABBITMQ_PASSWORD}
     template:
       observation-enabled: true
     listener:

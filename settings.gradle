@@ -1,4 +1,4 @@
-rootProject.name = 'java-44-microservice-project'
+rootProject.name = 'real-estate-backend-architecture-lab'
 
 include 'AuthService'
 include 'UserProfileService'

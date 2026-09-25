@@ -1,4 +1,7 @@
 dependencies {
+    implementation libs.springBootWeb
+    implementation libs.swaggerApi
+    implementation libs.mapStruct
     implementation libs.springCloudEurekaClient
     implementation libs.springBootDataJpa
     implementation libs.springCloudStarterConfig

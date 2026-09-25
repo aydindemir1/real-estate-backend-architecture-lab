@@ -5,7 +5,7 @@ spring:
   datasource:
     url: ${SELLER_DB_URL:jdbc:postgresql://localhost:5438/micro_seller_service_db}
     username: ${SELLER_DB_USERNAME:aydin}
-    password: ${SELLER_DB_PASSWORD:123456!}
+    password: ${SELLER_DB_PASSWORD}
   jpa:
     hibernate:
       ddl-auto: update

@@ -243,6 +243,16 @@ Exact variable set implementation sırasında selected local auth modes'a göre 
 ### Modify
 `/docker-compose.yml`
 
+### Also modify local Config Server files
+- `/ConfigServerLocal/src/main/resources/config-repo/auth-service.yml`
+- `/ConfigServerLocal/src/main/resources/config-repo/user-profile-service.yml`
+- `/ConfigServerLocal/src/main/resources/config-repo/agent-service.yml`
+- `/ConfigServerLocal/src/main/resources/config-repo/buyer-service.yml`
+- `/ConfigServerLocal/src/main/resources/config-repo/seller-service.yml`
+- `/ConfigServerLocal/src/main/resources/config-repo/property-service.yml`
+
+Current `main` contains literal local fallback credentials in these config files, including PostgreSQL passwords, RabbitMQ credentials and an Auth JWT secret fallback. Day 7 secret hygiene therefore covers both Compose and Config Server local config.
+
 Replace literal credentials with:
 
 `${VARIABLE_NAME:-safe_local_example_or_required_behavior}`
@@ -262,6 +272,10 @@ docker compose config
 Repository search:
 - known literal password yok
 - RabbitMQ literal credential yok
+- committed JWT secret fallback yok
+- Config Server local config contains no real/secret-like credential defaults
+
+Non-secret local defaults such as host, port, database name and username may remain only when explicitly classified as non-secret.
 
 ## Commit
 
@@ -747,6 +761,7 @@ No artificial commit is created if a task causes no file change.
 - `build.gradle` — after dependency ownership audit
 - `dependencies.gradle`
 - `docker-compose.yml`
+- `ConfigServerLocal/src/main/resources/config-repo/*.yml` secret-bearing files
 
 ## Definitely create
 
@@ -785,7 +800,7 @@ Day 7 closes only when:
 
 - root Gradle configuration resolves
 - SearchService is recognized as a module
-- no real/local credential literal remains committed in compose
+- no real/local credential literal remains committed in compose or Config Server local config
 - `.env.example` exists
 - MySQL starts
 - MongoDB starts

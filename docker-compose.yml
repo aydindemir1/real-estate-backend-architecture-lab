@@ -207,6 +207,28 @@ services:
       retries: 5
       start_period: 10s
 
+  seller-cassandra:
+    image: cassandra:5.0.9
+    container_name: real-estate-seller-cassandra
+    restart: unless-stopped
+
+    environment:
+      CASSANDRA_CLUSTER_NAME: real-estate-local
+      CASSANDRA_DC: datacenter1
+
+    ports:
+      - "9042:9042"
+
+    volumes:
+      - seller_cassandra_data:/var/lib/cassandra
+
+    healthcheck:
+      test: ["CMD-SHELL", "cqlsh -e \"SELECT release_version FROM system.local;\" >/dev/null 2>&1 || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 20
+      start_period: 90s
+
   rabbitmq:
     image: rabbitmq:4.3.6-management
     container_name: real-estate-rabbitmq
@@ -240,4 +262,5 @@ volumes:
   property_postgres_data:
   property_mongodb_data:
   seller_postgres_data:
+  seller_cassandra_data:
   rabbitmq_data:

@@ -36,3 +36,11 @@ Framework, library, runtime, database, broker ve infrastructure teknolojilerinin
 - Redis
 
 Day 7 datastore'larının bir bölümü yalnız Infrastructure Ready durumundadır; service-level integration sonraki Day'lerde yapılacaktır.
+
+
+## Core Java & Build
+
+- [Java 21](java-21.md)
+- [Gradle](gradle.md)
+- [Lombok](lombok.md)
+- [MapStruct](mapstruct.md)

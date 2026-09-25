@@ -5,12 +5,12 @@ spring:
   datasource:
     url: ${AUTH_DB_URL:jdbc:postgresql://localhost:5433/micro_auth_service_db}
     username: ${AUTH_DB_USERNAME:aydin}
-    password: ${AUTH_DB_PASSWORD:123456!}
+    password: ${AUTH_DB_PASSWORD}
   rabbitmq:
     host: ${RABBITMQ_HOST:localhost}
     port: ${RABBITMQ_PORT:5672}
-    username: ${RABBITMQ_USERNAME:java44}
-    password: ${RABBITMQ_PASSWORD:java44}
+    username: ${RABBITMQ_USERNAME}
+    password: ${RABBITMQ_PASSWORD}
     template:
       observation-enabled: true
     listener:
@@ -29,7 +29,7 @@ springdoc:
 
 authservice:
   secret:
-    key: ${AUTH_JWT_SECRET:java44-auth-service-secret-key}
+    key: ${AUTH_JWT_SECRET}
   issuer: ${AUTH_JWT_ISSUER:java-44-auth-service}
   expire:
     date: ${AUTH_JWT_EXPIRE_MS:300000}

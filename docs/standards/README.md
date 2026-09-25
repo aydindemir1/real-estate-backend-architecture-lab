@@ -25,6 +25,7 @@ Bu klasör implementation öncesi ve implementation sırasında uyulacak ortak e
 16. `build-dependency-configuration.md` ✅
 17. `quality-attributes-nfr.md` ✅
 18. `operational-readiness-runbook.md` ✅
+19. `knowledge-base.md` ✅
 
 Detaylı sıra ve audit sonucu: `../MASTER-ENGINEERING-PLAN.md`.
 
@@ -33,3 +34,8 @@ Detaylı sıra ve audit sonucu: `../MASTER-ENGINEERING-PLAN.md`.
 Technology breadth ile engineering maturity birlikte ilerlemelidir.
 
 Bir teknoloji, pattern veya API yaklaşımı yalnızca projede bulunmak için eklenmez; gerçek problem, trade-off ve Architecture ihtiyacına göre uygulanır.
+
+
+## Sürekli dokümantasyon kuralı
+
+Her Day sonunda Knowledge Base impact review yapılır. Yeni Architecture, Approach, Principle, Pattern, Technology veya Protocol varsa `../knowledge-base` altında canonical doküman oluşturulur veya mevcut doküman güncellenir.

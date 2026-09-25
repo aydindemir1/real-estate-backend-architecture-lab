@@ -5,7 +5,7 @@ spring:
   datasource:
     url: ${AGENT_DB_URL:jdbc:postgresql://localhost:5435/micro_agent_service_db}
     username: ${AGENT_DB_USERNAME:aydin}
-    password: ${AGENT_DB_PASSWORD:123456!}
+    password: ${AGENT_DB_PASSWORD}
   jpa:
     hibernate:
       ddl-auto: update

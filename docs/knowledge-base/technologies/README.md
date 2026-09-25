@@ -2,45 +2,24 @@
 
 Framework, library, runtime, database, broker ve infrastructure teknolojilerinin canonical bilgi dosyaları burada tutulur.
 
-İlk 7 gün kapsamında başlıca:
-- Java 21
-- Spring Boot
-- Spring MVC
-- Spring Data JPA / Hibernate
-- PostgreSQL
-- Gradle
-- Lombok
-- MapStruct
-- SpringDoc OpenAPI
-- Auth0 java-jwt
-- Spring Cloud OpenFeign
-- Spring Cloud Config
-- Spring Cloud Gateway
-- Spring Cloud Circuit Breaker
-- Resilience4j
-- Spring Boot Actuator
-- Micrometer Tracing
-- Brave
-- Zipkin
-- RabbitMQ
-- Spring AMQP
-- Spring Cloud Netflix Eureka
-- Spring Cloud LoadBalancer
-- Docker
-- Docker Compose
-- MySQL
-- MongoDB
-- Couchbase
-- Cassandra
-- Elasticsearch
-- Redis
+## Technology families
 
-Day 7 datastore'larının bir bölümü yalnız Infrastructure Ready durumundadır; service-level integration sonraki Day'lerde yapılacaktır.
+- [Core Java & Build](core-java-build/README.md)
+- [Spring & API](spring-api/README.md)
+- [Spring Cloud](spring-cloud/README.md)
+- [Observability](observability/README.md)
+- [Resilience](resilience/README.md)
+- [Messaging](messaging/README.md)
+- [Containerization](containerization/README.md)
+- [Datastores](datastores/README.md)
+- [Security & Authentication](security-auth/README.md)
 
+## Day 1–7 kapsam notu
 
-## Core Java & Build
+Day 7 datastore foundation kapsamında MySQL, MongoDB, Couchbase, Cassandra, Elasticsearch ve Redis local infrastructure olarak hazırlanmıştır. Service-level application integration'ları sonraki Day'lerde yapılacaktır.
 
-- [Java 21](java-21.md)
-- [Gradle](gradle.md)
-- [Lombok](lombok.md)
-- [MapStruct](mapstruct.md)
+## Canonical placement rule
+
+Her teknoloji yalnız tek canonical klasörde tutulur.
+
+Cross-cutting bir teknoloji birden fazla alana dokunuyorsa duplicate dosya açılmaz; diğer category README veya konu dokümanlarından canonical dosyaya link verilir.

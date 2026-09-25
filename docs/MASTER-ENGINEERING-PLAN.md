@@ -322,3 +322,25 @@ Final audit sonrası implementation cadence yeniden düzenlenmiştir:
 Detaylı güncel sıra root `ROADMAP.md` dosyasındadır. Day 15 sonrası eski birleşik milestone numaraları superseded kabul edilir.
 
 Implementation'a hâlâ plan hazır olmadan geçilmez.
+
+
+## 13. Knowledge Base Maintenance
+
+Proje boyunca öğrenilen ve uygulanan Architecture, Approach, Principle, Pattern, Technology ve Protocol bilgileri `docs/knowledge-base` altında kalıcı bilgi bankası olarak tutulur.
+
+Kurallar:
+- Her kavram için tek canonical doküman bulunur.
+- Project-specific architecture dokümanları Knowledge Base ile karıştırılmaz.
+- Her Day sonunda Knowledge Base impact review yapılır.
+- Yeni kavram varsa canonical dosya oluşturulur.
+- Mevcut kavram anlamlı biçimde genişlediyse canonical dosya güncellenir.
+- `by-day` dosyaları içerik tekrar etmez; canonical dokümanlara link verir.
+- "Infrastructure Ready" ile "Implemented/Integrated/Verified" durumları birbirinden ayrılır.
+
+Her Day Definition of Done maddelerine şu kontrol eklenmiştir:
+
+> Knowledge Base impact reviewed and updated.
+
+Detaylı standard: `docs/standards/knowledge-base.md`.
+
+Knowledge Base ilk olarak Day 1–7 kapsamı ile başlatılmıştır ve sonraki her Day sonunda büyütülecektir.

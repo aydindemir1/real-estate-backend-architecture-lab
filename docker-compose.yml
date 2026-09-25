@@ -5,9 +5,9 @@ services:
     restart: unless-stopped
 
     environment:
-      POSTGRES_DB: micro_auth_service_db
-      POSTGRES_USER: aydin
-      POSTGRES_PASSWORD: "123456!"
+      POSTGRES_DB: ${AUTH_DB_NAME:-micro_auth_service_db}
+      POSTGRES_USER: ${AUTH_DB_USERNAME}
+      POSTGRES_PASSWORD: ${AUTH_DB_PASSWORD}
 
     ports:
       - "5433:5432"
@@ -16,7 +16,7 @@ services:
       - postgres_data:/var/lib/postgresql
 
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U aydin -d micro_auth_service_db"]
+      test: ["CMD-SHELL", "pg_isready -U ${AUTH_DB_USERNAME} -d ${AUTH_DB_NAME:-micro_auth_service_db}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -28,9 +28,9 @@ services:
     restart: unless-stopped
 
     environment:
-      POSTGRES_DB: micro_user_profile_service_db
-      POSTGRES_USER: aydin
-      POSTGRES_PASSWORD: "123456!"
+      POSTGRES_DB: ${USER_PROFILE_DB_NAME:-micro_user_profile_service_db}
+      POSTGRES_USER: ${USER_PROFILE_DB_USERNAME}
+      POSTGRES_PASSWORD: ${USER_PROFILE_DB_PASSWORD}
 
     ports:
       - "5434:5432"
@@ -39,7 +39,7 @@ services:
       - user_profile_postgres_data:/var/lib/postgresql
 
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U aydin -d micro_user_profile_service_db"]
+      test: ["CMD-SHELL", "pg_isready -U ${USER_PROFILE_DB_USERNAME} -d ${USER_PROFILE_DB_NAME:-micro_user_profile_service_db}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -51,9 +51,9 @@ services:
     restart: unless-stopped
 
     environment:
-      POSTGRES_DB: micro_agent_service_db
-      POSTGRES_USER: aydin
-      POSTGRES_PASSWORD: "123456!"
+      POSTGRES_DB: ${AGENT_DB_NAME:-micro_agent_service_db}
+      POSTGRES_USER: ${AGENT_DB_USERNAME}
+      POSTGRES_PASSWORD: ${AGENT_DB_PASSWORD}
 
     ports:
       - "5435:5432"
@@ -62,7 +62,7 @@ services:
       - agent_postgres_data:/var/lib/postgresql
 
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U aydin -d micro_agent_service_db"]
+      test: ["CMD-SHELL", "pg_isready -U ${AGENT_DB_USERNAME} -d ${AGENT_DB_NAME:-micro_agent_service_db}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -74,9 +74,9 @@ services:
     restart: unless-stopped
 
     environment:
-      POSTGRES_DB: micro_buyer_service_db
-      POSTGRES_USER: aydin
-      POSTGRES_PASSWORD: "123456!"
+      POSTGRES_DB: ${BUYER_DB_NAME:-micro_buyer_service_db}
+      POSTGRES_USER: ${BUYER_DB_USERNAME}
+      POSTGRES_PASSWORD: ${BUYER_DB_PASSWORD}
 
     ports:
       - "5436:5432"
@@ -85,7 +85,7 @@ services:
       - buyer_postgres_data:/var/lib/postgresql
 
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U aydin -d micro_buyer_service_db"]
+      test: ["CMD-SHELL", "pg_isready -U ${BUYER_DB_USERNAME} -d ${BUYER_DB_NAME:-micro_buyer_service_db}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -97,9 +97,9 @@ services:
     restart: unless-stopped
 
     environment:
-      POSTGRES_DB: micro_property_service_db
-      POSTGRES_USER: aydin
-      POSTGRES_PASSWORD: "123456!"
+      POSTGRES_DB: ${PROPERTY_DB_NAME:-micro_property_service_db}
+      POSTGRES_USER: ${PROPERTY_DB_USERNAME}
+      POSTGRES_PASSWORD: ${PROPERTY_DB_PASSWORD}
 
     ports:
       - "5437:5432"
@@ -108,7 +108,7 @@ services:
       - property_postgres_data:/var/lib/postgresql
 
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U aydin -d micro_property_service_db"]
+      test: ["CMD-SHELL", "pg_isready -U ${PROPERTY_DB_USERNAME} -d ${PROPERTY_DB_NAME:-micro_property_service_db}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -120,9 +120,9 @@ services:
     restart: unless-stopped
 
     environment:
-      POSTGRES_DB: micro_seller_service_db
-      POSTGRES_USER: aydin
-      POSTGRES_PASSWORD: "123456!"
+      POSTGRES_DB: ${SELLER_DB_NAME:-micro_seller_service_db}
+      POSTGRES_USER: ${SELLER_DB_USERNAME}
+      POSTGRES_PASSWORD: ${SELLER_DB_PASSWORD}
 
     ports:
       - "5438:5432"
@@ -131,7 +131,7 @@ services:
       - seller_postgres_data:/var/lib/postgresql
 
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U aydin -d micro_seller_service_db"]
+      test: ["CMD-SHELL", "pg_isready -U ${SELLER_DB_USERNAME} -d ${SELLER_DB_NAME:-micro_seller_service_db}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -143,8 +143,8 @@ services:
     restart: unless-stopped
 
     environment:
-      RABBITMQ_DEFAULT_USER: java44
-      RABBITMQ_DEFAULT_PASS: java44
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USERNAME}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
 
     ports:
       - "5672:5672"

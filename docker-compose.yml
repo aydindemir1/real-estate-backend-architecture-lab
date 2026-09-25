@@ -86,7 +86,7 @@ services:
       - agent_mysql_data:/var/lib/mysql
 
     healthcheck:
-      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u\"${MYSQL_USER}\" -p\"${MYSQL_PASSWORD}\" --silent"]
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u\"${AGENT_DB_USERNAME}\" -p\"${AGENT_DB_PASSWORD}\" --silent"]
       interval: 10s
       timeout: 5s
       retries: 10

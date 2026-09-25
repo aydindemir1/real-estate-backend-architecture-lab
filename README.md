@@ -1020,3 +1020,33 @@ UserProfile veritabanında eşleşen kayıt:
 ![Day 6C - UserProfile DB](docs/screenshoot/day6c-user-profile-db.png)
 
 **Day 6C — Spring Cloud LoadBalancer tamamlandı ve test edildi.**
+
+
+## Day 7 — Build & Local Data Infrastructure Foundation
+
+Day 7 ile proje, sonraki persistence ve architecture çalışmalarına hazırlanmıştır.
+
+Başlıca değişiklikler:
+
+- Build dependency ownership temizlendi.
+- SearchService module foundation eklendi.
+- Local secret/config değerleri `.env` üzerinden externalize edildi.
+- Agent için MySQL, Buyer için Couchbase, Seller için Cassandra, Property için MongoDB hazırlandı.
+- SearchService için Elasticsearch ve shared ephemeral use case'ler için Redis eklendi.
+- Agent/Buyer/Seller/Property için geçici PostgreSQL Compose servisleri kaldırıldı.
+- Docker Compose profile'ları ile selective local infrastructure standardı oluşturuldu.
+
+Profile örnekleri:
+
+```powershell
+docker compose --profile core up -d
+docker compose --profile agent up -d
+docker compose --profile property --profile search up -d
+```
+
+Local infrastructure detayları:
+
+- `docs/roadmap/day-07-build-data-infra.md`
+- `docs/infrastructure/local-data-services.md`
+
+Day 7 yalnızca build ve infrastructure foundation kapsamındadır. Service-level persistence migration'ları Day 8–13 arasında yapılacaktır.

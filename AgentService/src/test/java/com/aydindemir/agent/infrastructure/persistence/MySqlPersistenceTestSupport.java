@@ -2,8 +2,8 @@ package com.aydindemir.agent.infrastructure.persistence;
 
 import com.aydindemir.agent.infrastructure.persistence.adapter.AgentRepositoryAdapter;
 import com.aydindemir.agent.infrastructure.persistence.mapper.AgentPersistenceMapper;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
+import org.springframework.boot.jdbc.test.autoconfigure.AutoConfigureTestDatabase;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;

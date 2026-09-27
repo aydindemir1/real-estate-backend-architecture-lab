@@ -3,14 +3,26 @@ server:
 
 spring:
   datasource:
-    url: ${AGENT_DB_URL:jdbc:postgresql://localhost:5435/micro_agent_service_db}
-    username: ${AGENT_DB_USERNAME:aydin}
+    url: ${AGENT_DB_URL:jdbc:mysql://localhost:3307/micro_agent_service_db}
+    username: ${AGENT_DB_USERNAME}
     password: ${AGENT_DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      minimum-idle: 2
+      maximum-pool-size: 10
+      connection-timeout: 30000
+      validation-timeout: 5000
+      idle-timeout: 600000
+      max-lifetime: 1800000
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
     open-in-view: false
-    show-sql: true
+    show-sql: false
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    validate-on-migrate: true
 
 springdoc:
   swagger-ui:

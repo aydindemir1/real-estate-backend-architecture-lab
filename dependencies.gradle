@@ -36,7 +36,11 @@ ext {
 
             postgreSql                                  : "org.postgresql:postgresql:$versions.postgreSql",
             mySql                                       : "com.mysql:mysql-connector-j",
+            flywayCore                                  : "org.flywaydb:flyway-core",
+            flywayMySql                                 : "org.flywaydb:flyway-mysql",
             testcontainersJunitJupiter                  : "org.testcontainers:junit-jupiter",
+            testcontainersMySql                         : "org.testcontainers:mysql",
+            archUnitJunit5                              : "com.tngtech.archunit:archunit-junit5",
 
             lombok                                      : "org.projectlombok:lombok:$versions.lombok",
             lombokMapstructBinding                      : "org.projectlombok:lombok-mapstruct-binding:$versions.lombokMapstructBinding",

@@ -32,13 +32,20 @@ class AgentTest {
     }
 
     @Test
-    void activeAgentShouldChangeAvailability() {
+    void activeAgentShouldMoveAcrossAllAvailabilityStates() {
         Agent agent = newAgent();
 
         agent.changeAvailability(AvailabilityStatus.AVAILABLE, LATER_CLOCK);
-
         assertThat(agent.availability()).isEqualTo(AvailabilityStatus.AVAILABLE);
-        assertThat(agent.updatedAt()).isEqualTo(Instant.parse("2026-09-27T18:05:00Z"));
+
+        Clock busyClock = Clock.fixed(Instant.parse("2026-09-27T18:06:00Z"), ZoneOffset.UTC);
+        agent.changeAvailability(AvailabilityStatus.BUSY, busyClock);
+        assertThat(agent.availability()).isEqualTo(AvailabilityStatus.BUSY);
+
+        Clock offlineClock = Clock.fixed(Instant.parse("2026-09-27T18:07:00Z"), ZoneOffset.UTC);
+        agent.changeAvailability(AvailabilityStatus.OFFLINE, offlineClock);
+        assertThat(agent.availability()).isEqualTo(AvailabilityStatus.OFFLINE);
+        assertThat(agent.updatedAt()).isEqualTo(Instant.parse("2026-09-27T18:07:00Z"));
     }
 
     @Test
@@ -97,9 +104,10 @@ class AgentTest {
     }
 
     @Test
-    void inactiveAgentShouldBeTerminal() {
+    void inactiveAgentShouldBeTerminalAndOffline() {
         Agent agent = newAgent();
-        agent.deactivate(LATER_CLOCK);
+        agent.changeAvailability(AvailabilityStatus.AVAILABLE, LATER_CLOCK);
+        agent.deactivate(Clock.fixed(Instant.parse("2026-09-27T18:10:00Z"), ZoneOffset.UTC));
 
         assertThat(agent.status()).isEqualTo(AgentStatus.INACTIVE);
         assertThat(agent.availability()).isEqualTo(AvailabilityStatus.OFFLINE);
@@ -109,6 +117,36 @@ class AgentTest {
 
         assertThatThrownBy(() -> agent.suspend(LATER_CLOCK))
                 .isInstanceOf(InvalidAgentStateException.class);
+
+        assertThatThrownBy(() ->
+                agent.changeAvailability(AvailabilityStatus.AVAILABLE, LATER_CLOCK))
+                .isInstanceOf(InvalidAgentStateException.class);
+
+        assertThatThrownBy(() ->
+                agent.changeAvailability(AvailabilityStatus.BUSY, LATER_CLOCK))
+                .isInstanceOf(InvalidAgentStateException.class);
+    }
+
+    @Test
+    void sameStatusTransitionsShouldBeNoOp() {
+        Agent agent = newAgent();
+
+        agent.activate(LATER_CLOCK);
+        assertThat(agent.updatedAt()).isEqualTo(CREATED_AT);
+
+        agent.suspend(LATER_CLOCK);
+        Instant suspendedAt = agent.updatedAt();
+
+        Clock later = Clock.fixed(Instant.parse("2026-09-27T18:20:00Z"), ZoneOffset.UTC);
+        agent.suspend(later);
+        assertThat(agent.updatedAt()).isEqualTo(suspendedAt);
+
+        agent.deactivate(later);
+        Instant deactivatedAt = agent.updatedAt();
+
+        Clock evenLater = Clock.fixed(Instant.parse("2026-09-27T18:30:00Z"), ZoneOffset.UTC);
+        agent.deactivate(evenLater);
+        assertThat(agent.updatedAt()).isEqualTo(deactivatedAt);
     }
 
     @Test
@@ -151,6 +189,36 @@ class AgentTest {
                 CREATED_AT,
                 1L
         )).isInstanceOf(InvalidAgentStateException.class);
+    }
+
+    @Test
+    void reconstituteShouldRejectNegativeVersion() {
+        assertThatThrownBy(() -> Agent.reconstitute(
+                new AgentId(UUID.randomUUID()),
+                new UserId(UUID.randomUUID()),
+                new LicenseNumber("LIC-42"),
+                new AgencyInfo("North Realty", null, null),
+                AgentStatus.ACTIVE,
+                AvailabilityStatus.OFFLINE,
+                CREATED_AT,
+                CREATED_AT,
+                -1L
+        )).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    void reconstituteShouldRejectUpdatedAtBeforeCreatedAt() {
+        assertThatThrownBy(() -> Agent.reconstitute(
+                new AgentId(UUID.randomUUID()),
+                new UserId(UUID.randomUUID()),
+                new LicenseNumber("LIC-42"),
+                new AgencyInfo("North Realty", null, null),
+                AgentStatus.ACTIVE,
+                AvailabilityStatus.OFFLINE,
+                CREATED_AT,
+                CREATED_AT.minusSeconds(1),
+                0L
+        )).isInstanceOf(IllegalArgumentException.class);
     }
 
     private Agent newAgent() {

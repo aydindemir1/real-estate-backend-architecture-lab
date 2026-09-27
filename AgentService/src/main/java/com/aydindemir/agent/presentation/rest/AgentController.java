@@ -1,12 +1,14 @@
-package com.aydindemir.agent.controller;
+package com.aydindemir.agent.presentation.rest;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class HelloController {
+@RequestMapping("/agent")
+public class AgentController {
 
-    @GetMapping("/")
+    @GetMapping("/hello")
     public String hello() {
         return "AgentService Hello";
     }

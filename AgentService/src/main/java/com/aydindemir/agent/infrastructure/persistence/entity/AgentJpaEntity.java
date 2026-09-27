@@ -55,11 +55,9 @@ public class AgentJpaEntity {
     @Column(name = "availability_status", nullable = false, length = 32)
     private AvailabilityStatus availabilityStatus;
 
-    @JdbcTypeCode(SqlTypes.TIMESTAMP_WITH_TIMEZONE)
     @Column(name = "created_at", nullable = false, columnDefinition = "TIMESTAMP(6)")
     private Instant createdAt;
 
-    @JdbcTypeCode(SqlTypes.TIMESTAMP_WITH_TIMEZONE)
     @Column(name = "updated_at", nullable = false, columnDefinition = "TIMESTAMP(6)")
     private Instant updatedAt;
 

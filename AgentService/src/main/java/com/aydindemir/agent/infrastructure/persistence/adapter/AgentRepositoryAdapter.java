@@ -81,15 +81,25 @@ public class AgentRepositoryAdapter implements AgentRepository {
 
         String constraintName = constraintViolation.getConstraintName();
 
-        if (constraintName != null && USER_UNIQUE_CONSTRAINT.equalsIgnoreCase(constraintName)) {
+        if (matchesConstraint(constraintName, USER_UNIQUE_CONSTRAINT)) {
             return new AgentAlreadyExistsForUserException(agent.userId());
         }
 
-        if (constraintName != null && LICENSE_UNIQUE_CONSTRAINT.equalsIgnoreCase(constraintName)) {
+        if (matchesConstraint(constraintName, LICENSE_UNIQUE_CONSTRAINT)) {
             return new DuplicateLicenseNumberException(agent.licenseNumber());
         }
 
         return exception;
+    }
+
+    private boolean matchesConstraint(String actualConstraintName, String expectedConstraintName) {
+        if (actualConstraintName == null) {
+            return false;
+        }
+
+        return actualConstraintName.equalsIgnoreCase(expectedConstraintName)
+                || actualConstraintName.toLowerCase()
+                .endsWith("." + expectedConstraintName.toLowerCase());
     }
 
     private ConstraintViolationException findConstraintViolation(Throwable throwable) {

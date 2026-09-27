@@ -8,7 +8,7 @@ dependencies {
     implementation libs.springCloudStarterConfig
     implementation libs.springBootActuator
     implementation libs.springBootZipkin
-    implementation libs.flywayCore
+    implementation libs.springBootFlyway
     runtimeOnly libs.flywayMySql
     runtimeOnly libs.mySql
 
@@ -18,4 +18,5 @@ dependencies {
     
     testImplementation libs.springBootDataJpaTest
     testImplementation libs.springBootWebMvcTest
+    testImplementation libs.springBootFlywayTest
 }

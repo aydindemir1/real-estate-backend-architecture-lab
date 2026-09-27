@@ -265,6 +265,175 @@ Branch: `day/33-backend-completion`
 - backend completion report
 - README/roadmap completion status
 
+## Day 34–45 — Extended Architecture Scope
+
+Day 33 backend completion'ı baseline sistem olarak kabul edilir. Day 34+ kapsamı, aynı Real Estate domain'i içinde henüz kullanılmamış architecture style, pattern ve technology'leri yalnız gerçek business ihtiyacına bağlayarak ekler.
+
+**Activation principle:** Bir capability yalnız kendi milestone'ındaki business problem gerçekten tanımlandıysa aktive edilir. Pattern göstermek için yapay domain ihtiyacı, yapay trafik veya yapay veri hacmi üretilmez.
+
+### Day 34 — Anti-Corruption Layer + Strangler Fig
+Branch: `day/34-acl-strangler-fig`
+- yeni `ListingSyncService` ile ExternalMLS entegrasyonu
+- ExternalMLS model -> internal canonical command/model translation için Anti-Corruption Layer
+- external vocabulary'nin Property domain modeline sızmaması
+- translation/version mismatch testleri
+- Strangler Fig yalnız gerçekten mevcut/legacy bir MLS import path varsa aktive edilir
+- sıfırdan yazılan yeni adapter tek başına Strangler Fig olarak adlandırılmaz
+- legacy path varsa routing/cutover kademeli olarak `ListingSyncService` tarafına taşınır
+
+### Day 35 — Event Sourcing Foundation: Offer Write Side
+Branch: `day/35-event-sourcing-foundation`
+- kapsam yalnız BuyerService içindeki Offer Aggregate write-side
+- Couchbase üzerinde append-only Offer event stream
+- stream version + optimistic concurrency
+- Offer state'in event stream'den rebuild edilmesi
+- Day 22 Offer state machine korunur; rebuild edilen current state üzerinde transition guard görevi taşır
+- internal Event Sourcing domain events ile Kafka integration events ayrı contract/vocabulary olarak ele alınır
+- `OfferCountered` yalnız gerçek negotiation requirement oluşursa eklenir
+- yeni EventStoreDB eklenmez
+
+### Day 36 — Event Sourcing Replay, Audit & Snapshot
+Branch: `day/36-event-sourcing-replay`
+- full replay ve aggregate rebuild verification
+- audit/history read API; raw event store public API olarak expose edilmez
+- corruption/rebuild consistency testleri
+- snapshot capability optional optimization olarak değerlendirilir; mevcut Offer stream uzunluğu gerektirmiyorsa production default kabul edilmez
+- snapshot ile full replay sonucu tutarlılığı test edilir
+- Event Store append -> best-effort Kafka send yapılmaz; mevcut reliable outbound strategy korunur
+
+### Day 37 — Saga Orchestration: Property Purchase Completion
+Branch: `day/37-saga-orchestration`
+- Day 22 Offer/Reservation Saga Choreography korunur; bu milestone onun yerine geçmez
+- yeni workflow: accepted Offer -> Contract -> Escrow -> Title Transfer -> Property SOLD -> Agent Commission
+- yeni `PurchaseProcessService` saga orchestrator/process manager; yalnız process/saga state owner
+- yeni `ContractService` contract lifecycle owner
+- yeni `EscrowService` escrow/payment lifecycle owner
+- yeni `TitleTransferService` legal ownership transfer lifecycle owner
+- Property canonical lifecycle ownership `PropertyService`'te kalır
+- Agent commission entitlement/record ownership `AgentService`'te kalır
+- compensatable, retryable ve irreversible/point-of-no-return step'ler ayrı modellenir
+- title transfer sonrası commission failure gibi durumlarda otomatik global rollback yerine retry/reconciliation uygulanabilir
+- sırf çeşitlilik için yeni broker, datastore veya workflow engine eklenmez
+- Choreography vs Orchestration karşılaştırmalı ADR
+
+### Day 38 — Reactive Foundation: PropertyWatchService
+Branch: `day/38-reactive-webflux`
+- yeni `PropertyWatchService`
+- Spring WebFlux + Project Reactor
+- canonical ownership yalnız WatchSubscription capability'si; Property state ownership PropertyService'te kalır
+- Property price/status lifecycle events Kafka üzerinden consume edilir
+- reactive processing pipeline
+- roadmap'te R2DBC zorunlu değildir; gerçek ihtiyaçla seçilen bir reactive datastore adapter kullanılır
+- reactive request/processing path içinde blocking JDBC, blocking OpenFeign, `block()`, `blockFirst()`, `Thread.sleep()` kullanılmaz
+- SearchService imperative baseline korunur; reactive'e çevrilmez
+- blocking vs non-blocking karşılaştırmalı load test
+- virtual threads learning/comparison konusu olabilir, bu Day'in implementation scope'una zorla eklenmez
+
+### Day 39 — Real-Time Property Notifications with SSE
+Branch: `day/39-realtime-notification`
+- property watch için primary client delivery mechanism Server-Sent Events
+- WebSocket yalnız ileride gerçek bidirectional real-time requirement oluşursa değerlendirilir
+- internal Kafka events doğrudan client'a expose edilmez; client-facing notification contract'a map edilir
+- authenticated Buyer yalnız kendi WatchSubscription bildirimlerini alabilir
+- connect/disconnect/reconnect/stream cleanup
+- bounded slow-consumer/backpressure policy
+- duplicate upstream event safety
+- `Last-Event-ID`/reconnect semantics değerlendirilir; sırf feature göstermek için ayrı notification-history datastore'u eklenmez
+
+### Day 40 — Backend-for-Frontend
+Branch: `day/40-bff`
+- iki ayrı deployable BFF: `WebBffService` ve `MobileBffService`
+- Web BFF: Agent/Seller dashboard composition
+- Mobile BFF: Buyer-oriented lightweight composition
+- API Gateway edge/platform concern'lerini taşır; BFF client-specific application composition yapar
+- BFF canonical state, aggregate veya domain invariant owner değildir
+- BFF'ler mümkün olduğunca stateless kalır; yeni canonical datastore eklenmez
+- bağımsız downstream çağrılar parallel yürütülür
+- required vs optional dependency ayrımı + partial degradation semantics
+- Day 40 mevcut service contracts ile çalışır; GraphQL Federation Day 41'e bırakılır
+
+### Day 41 — GraphQL Federation
+Branch: `day/41-graphql-federation`
+- Day 16 SearchService GraphQL API kaldırılmaz; federation-ready Search subgraph'a evrilir
+- PropertyService ve AgentService gerekli read capability'leri için kendi subgraph adapter'larını sunar
+- Property canonical ownership PropertyService'te kalır
+- SearchService yalnız Elasticsearch projection/query-side owner'dır
+- Federated Router yalnız schema composition, entity resolution ve query planning yapar; business logic/canonical state owner değildir
+- WebBffService/MobileBffService korunur; yalnız uygun composition-heavy read use-case'lerde federated graph kullanabilir
+- REST/gRPC baseline kaldırılmaz
+- N+1, batching/DataLoader, query complexity/depth, auth propagation, timeout/fan-out ve partial failure testleri
+- federation runtime için preferred option milestone başında compatibility doğrulanarak seçilir; technology version şimdiden hard-code edilmez
+
+### Day 42 — Spring Batch: Reporting & Stale Listing Detection
+Branch: `day/42-spring-batch`
+- ana business use-case: market statistics reporting
+- gerçek Spring Batch semantics: Job/Step, ItemReader/ItemProcessor/ItemWriter, chunk processing
+- JobRepository/execution metadata
+- restartability/checkpoint
+- bounded retry + skip policy
+- job parameters + idempotent rerun
+- report source/output canonical ownership ve consumer ihtiyacına göre seçilir
+- `stale listing cleanup` doğrudan otomatik domain-state mutation değildir; önce stale listing detection/candidate processing yapılır
+- otomatik withdraw yalnız açık business policy varsa eklenir
+- Spring Batch processing semantics ile Spring Cloud Task short-lived execution/orchestration sorumlulukları ayrı tutulur
+- sırf çeşitlilik için yeni scheduler, datastore veya analytics platform eklenmez
+
+### Day 43 — Multi-Tenancy: Agency Isolation
+Branch: `day/43-multi-tenancy`
+- gerçek business tenant `Agency`
+- `Agency`, başlangıçta AgentService bounded context'i içinde domain entity; ayrı AgencyService açılmaz
+- Agent başlangıçta tek Agency'ye bağlıdır
+- tenant context client'ın serbestçe verdiği header'dan değil authenticated identity + Agent/Agency membership üzerinden resolve edilir
+- ilk implementation row-level tenant isolation: application authorization + tenant-scoped persistence query
+- schema-per-tenant ve database-per-tenant ADR'de karşılaştırılır, uygulanmaz
+- tüm servisler zorla tenant-aware yapılmaz; yalnız Agency-owned/scoped use-case'ler tenant boundary taşır
+- AgencyAdmin own-tenant only; cross-tenant System/Admin erişimi explicit privilege gerektirir
+- cross-tenant leakage, IDOR, cache-key namespace, BFF/GraphQL propagation ve background job boundary testleri
+
+### Day 44 — Schema Registry + Avro Event Evolution
+Branch: `day/44-schema-registry`
+- Kafka integration/domain event serialization için Avro + Schema Registry
+- Protobuf gRPC contract'larında kalır
+- preferred registry: Apicurio Registry; exact version/integration compatibility milestone başında doğrulanır
+- JSON -> Avro migration aynı topic üzerinde ani serializer swap ile yapılmaz
+- versioned migration path ve gerektiğinde geçici dual publishing
+- dual publishing mevcut reliable outbound/outbox mekanizmasını bypass etmez
+- `PropertyPublished` üzerinde compatible additive evolution ve deliberately incompatible change
+- SearchService gerçek migration consumer'ı
+- business event contract version ile Registry schema version aynı kavram değildir
+- backward/forward/full compatibility semantics test edilir; production compatibility policy Registry semantics'i doğrulandıktan sonra kilitlenir
+- old-schema replay, unknown schema, malformed message ve Registry outage davranışları test edilir
+
+### Sharding / Partitioning — Design Only
+Bu konu ayrı implementation Day'i değildir.
+- Cassandra: partition key vs clustering key, query-first modeling, partition growth, hot partition, tombstone/token-distribution trade-off'ları
+- MongoDB: shard-key cardinality/frequency, ranged vs hashed strategy, hotspot, balancing ve resharding
+- gerçek multi-node sharding cluster kurulmaz
+- yapay veri hacmiyle ihtiyaç oluşturulmaz
+- durum: `Design Only` / `Not Implemented` / `Not Integrated` / `Not Verified at Scale`
+- gerçek scale requirement oluşursa ayrı roadmap kararıyla aktive edilir
+
+### Day 45 — Extended Architecture Fitness & Completion Audit
+Branch: `day/45-extended-architecture-audit`
+- Day 34–44 architecture conformance audit
+- ownership boundary, security, failure behavior ve integration correctness doğrulaması
+- ArchUnit/static architecture rules yeni modüllere genişletilir
+- ACL external-model leakage kontrolü
+- Event Sourcing scope ve domain-event/integration-event ayrımı kontrolü
+- Saga Orchestration ownership/compensation/irreversible-step kontrolü
+- reactive path blocking-call kontrolü
+- SSE auth/backpressure/reconnect kontrolü
+- BFF business-logic drift kontrolü
+- GraphQL Federation canonical ownership + fan-out/N+1 kontrolü
+- Spring Batch domain-mutation boundary kontrolü
+- Multi-Tenancy cross-tenant leakage kontrolü
+- Schema Registry migration/compatibility kontrolü
+- ADR'ler actual implementation ile reconcile edilir
+- Knowledge Base impact review ve canonical docs update
+- README/roadmap completion status
+- capability status matrix: `Infrastructure Ready`, `Implemented`, `Integrated`, `Verified`, `Design Only`
+- doğrulanmamış capability `Verified` işaretlenmez; Sharding/Partitioning `Design Only` kalır
+
 ## Cross-cutting correctness decisions
 
 ### Reliable outbound messaging
@@ -282,6 +451,18 @@ Branch: `day/33-backend-completion`
 - Contracts can be designed early.
 - Producers/consumers are wired to business workflows only when the corresponding aggregate/use-case exists.
 - Day 17 event-streaming foundation must not bypass Day 18–20 reliability rules.
+
+
+### Extended scope activation
+- Day 34–45 capability'leri kendi gerçek domain senaryosu tanımlanmadan implementation'a başlamaz.
+- Technology/pattern seçimi business requirement'tan sonra gelir.
+- Composition katmanları canonical ownership'i devralmaz.
+- Yeni technology sırf portfolio breadth için eklenmez.
+- Event Sourcing internal domain events ile Kafka integration events ayrı kavramlardır.
+- Day 37 Saga Orchestration, Day 22 Saga Choreography'nin yerine geçmez.
+- Day 38 Reactive Foundation, Day 39 real-time client delivery'den ayrıdır.
+- Day 40 BFF ile Day 41 GraphQL Federation aynı responsibility değildir ve birbirinin yerine geçmez.
+- Sharding/Partitioning gerçek scale ihtiyacı oluşmadan implementation status'üne geçirilmez.
 
 ## Commit ilkesi
 Her Day küçük, anlamlı ve review edilebilir commit'lere bölünür. Unrelated architecture layers tek commit'te birleştirilmez.

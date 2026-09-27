@@ -12,6 +12,7 @@ ext {
 
     libs = [
             springBootWeb                               : "org.springframework.boot:spring-boot-starter-webmvc:$versions.springBoot",
+            springBootValidation                        : "org.springframework.boot:spring-boot-starter-validation:$versions.springBoot",
             springBootDataJpa                           : "org.springframework.boot:spring-boot-starter-data-jpa:$versions.springBoot",
             springBootDataCouchbase                     : "org.springframework.boot:spring-boot-starter-data-couchbase:$versions.springBoot",
             springBootDataCassandra                     : "org.springframework.boot:spring-boot-starter-data-cassandra:$versions.springBoot",

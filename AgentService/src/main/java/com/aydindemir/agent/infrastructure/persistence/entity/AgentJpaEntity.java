@@ -10,6 +10,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import jakarta.persistence.Version;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -25,9 +27,11 @@ import java.util.UUID;
 public class AgentJpaEntity {
 
     @Id
+    @JdbcTypeCode(SqlTypes.CHAR)
     @Column(name = "id", nullable = false, length = 36)
     private UUID id;
 
+    @JdbcTypeCode(SqlTypes.CHAR)
     @Column(name = "user_id", nullable = false, length = 36)
     private UUID userId;
 
@@ -51,10 +55,12 @@ public class AgentJpaEntity {
     @Column(name = "availability_status", nullable = false, length = 32)
     private AvailabilityStatus availabilityStatus;
 
-    @Column(name = "created_at", nullable = false)
+    @JdbcTypeCode(SqlTypes.TIMESTAMP_WITH_TIMEZONE)
+    @Column(name = "created_at", nullable = false, columnDefinition = "TIMESTAMP(6)")
     private Instant createdAt;
 
-    @Column(name = "updated_at", nullable = false)
+    @JdbcTypeCode(SqlTypes.TIMESTAMP_WITH_TIMEZONE)
+    @Column(name = "updated_at", nullable = false, columnDefinition = "TIMESTAMP(6)")
     private Instant updatedAt;
 
     @Version

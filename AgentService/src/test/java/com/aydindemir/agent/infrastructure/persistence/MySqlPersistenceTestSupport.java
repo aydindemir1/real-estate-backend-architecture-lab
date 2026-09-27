@@ -8,10 +8,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.mysql.MySQLContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
-@Testcontainers
 @DataJpaTest(properties = {
         "spring.cloud.config.enabled=false",
         "spring.config.import=optional:configserver:",
@@ -23,11 +20,14 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @Import({AgentPersistenceMapper.class, AgentRepositoryAdapter.class})
 public abstract class MySqlPersistenceTestSupport {
 
-    @Container
     static final MySQLContainer MYSQL = new MySQLContainer("mysql:8.4")
             .withDatabaseName("agent_service_test")
             .withUsername("agent_test")
             .withPassword("agent_test");
+
+    static {
+        MYSQL.start();
+    }
 
     @DynamicPropertySource
     static void configureMySql(DynamicPropertyRegistry registry) {

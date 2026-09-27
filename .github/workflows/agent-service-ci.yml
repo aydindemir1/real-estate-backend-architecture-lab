@@ -45,3 +45,13 @@ jobs:
 
       - name: Run AgentService tests
         run: ./gradlew :AgentService:test --stacktrace
+
+      - name: Upload AgentService test reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: agent-service-test-reports
+          path: |
+            AgentService/build/test-results/test/**
+            AgentService/build/reports/tests/test/**
+          if-no-files-found: warn

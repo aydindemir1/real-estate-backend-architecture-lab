@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: agent-service
+  config:
+    import: "optional:configserver:"
+  cloud:
+    config:
+      enabled: false
+      uri: http://localhost:8889
+
+eureka:
+  client:
+    enabled: false

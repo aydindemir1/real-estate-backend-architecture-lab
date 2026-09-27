@@ -21,6 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
         properties = {
                 "spring.cloud.config.enabled=false",
+                "spring.config.import=optional:configserver:",
                 "eureka.client.enabled=false",
                 "management.endpoints.web.exposure.include=health,info",
                 "spring.flyway.enabled=true",

@@ -1,6 +1,10 @@
 package com.aydindemir.agent.infrastructure.persistence;
 
+import com.aydindemir.agent.infrastructure.persistence.adapter.AgentRepositoryAdapter;
+import com.aydindemir.agent.infrastructure.persistence.mapper.AgentPersistenceMapper;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.MySQLContainer;
@@ -14,6 +18,8 @@ import org.testcontainers.junit.jupiter.Testcontainers;
         "spring.flyway.enabled=true",
         "spring.jpa.hibernate.ddl-auto=validate"
 })
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@Import({AgentPersistenceMapper.class, AgentRepositoryAdapter.class})
 public abstract class MySqlPersistenceTestSupport {
 
     @Container

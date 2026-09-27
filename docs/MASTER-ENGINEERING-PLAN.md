@@ -27,6 +27,24 @@ Implementation her iki eksende de quality gate'leri karşılamalıdır.
 - Saga Choreography
 - Eventual Consistency
 
+
+### Extended Architecture (Day 34–45)
+- Anti-Corruption Layer for ExternalMLS integration through `ListingSyncService`
+- Strangler Fig only when a real legacy/existing MLS import path exists and is migrated incrementally
+- Event Sourcing limited to BuyerService Offer write-side; Couchbase event stream is authoritative write history
+- Offer state machine retained as transition guard over event-rebuilt current state
+- Saga Orchestration for Property Purchase Completion, parallel to Day 22 Saga Choreography
+- Reactive Architecture with a dedicated `PropertyWatchService`, Spring WebFlux and Project Reactor
+- SSE for one-way real-time property notifications; WebSocket only if a genuine bidirectional requirement appears
+- Backend-for-Frontend with separate `WebBffService` and `MobileBffService`
+- GraphQL Federation across Property, Search and Agent read capabilities without changing canonical ownership
+- Spring Batch for market statistics reporting and stale-listing detection/candidate processing
+- Multi-Tenancy with Agency as the business tenant and row-level isolation as the first implementation strategy
+- Schema Evolution Governance with Avro + Schema Registry for Kafka events; Protobuf remains on gRPC boundaries
+- Sharding/Partitioning remains design-only until a real scale requirement exists
+
+These capabilities extend the existing architecture; they do not replace existing ownership, communication or reliability decisions. Each capability is activated only in its own milestone and only after its business scenario is defined.
+
 ### Persistence
 - Auth/UserProfile -> PostgreSQL
 - Agent -> MySQL
@@ -243,6 +261,90 @@ Kafka replay ile source-of-truth reindex iki farklı recovery yoludur. Final ope
 
 Redis, Offer creation correctness için tek source of truth olamaz. `Idempotency-Key` -> request hash -> Offer/result ilişkisi BuyerService'in durable Couchbase state'i içinde korunmalıdır. Redis yalnız acceleration/cache rolü oynayabilir.
 
+
+### 7.6 Sharding / Partitioning status
+Cassandra and MongoDB scaling strategy is documented as design-only. No artificial data volume or multi-node sharding cluster is introduced merely to demonstrate the capability.
+
+- Cassandra focus: partition-key/query-first modeling, partition growth, hot-partition risk, tombstone and token-distribution trade-offs
+- MongoDB focus: shard-key cardinality/frequency, ranged vs hashed strategy, hotspot, balancing and resharding
+- Status remains `Design Only / Not Implemented / Not Integrated / Not Verified at Scale` until a genuine scale requirement exists
+
+### 7.7 Event Sourcing and Offer state-machine relationship
+Day 35–36 Event Sourcing is limited to BuyerService Offer write-side.
+
+- Couchbase stores the append-only Offer event stream
+- Offer current state is rebuilt from events
+- the Day 22 state machine remains as transition/invariant guard over the rebuilt state
+- internal Event Sourcing domain events and Kafka integration events are separate contracts/vocabularies
+- `OfferCountered` is not introduced unless a real negotiation requirement exists
+- replay/audit are implemented; snapshots remain an optional optimization unless stream length/performance justifies them
+- Event Store append must not be followed by unprotected best-effort Kafka send; existing reliable-publication rules remain in force
+
+### 7.8 Saga Orchestration and Choreography relationship
+Day 37 Property Purchase Completion is a new workflow and does not replace Day 22 Offer/Reservation choreography.
+
+Ownership:
+- `PurchaseProcessService` -> saga/process state only
+- `ContractService` -> contract lifecycle
+- `EscrowService` -> escrow/payment lifecycle
+- `TitleTransferService` -> legal ownership transfer lifecycle
+- `PropertyService` -> canonical Property lifecycle
+- `AgentService` -> commission entitlement/record
+
+Compensatable, retryable and irreversible steps are modeled separately. Post-transfer failures may require retry/reconciliation instead of global rollback. No new broker, datastore or workflow engine is added solely for variety.
+
+### 7.9 Reactive and real-time boundary
+Day 38 and Day 39 intentionally solve different concerns.
+
+- Day 38 creates `PropertyWatchService` with Spring WebFlux + Project Reactor and a genuinely reactive datastore adapter chosen from the persistence need
+- SearchService remains on its imperative baseline
+- blocking JDBC/OpenFeign/`block()` calls are not allowed in the reactive processing path
+- Day 39 adds SSE as the primary one-way client delivery mechanism
+- WebSocket is deferred unless a true bidirectional requirement appears
+- Kafka contracts are mapped to client-facing notification contracts rather than exposed directly
+
+### 7.10 BFF and GraphQL Federation boundary
+Day 40 and Day 41 are complementary, not interchangeable.
+
+- `WebBffService` and `MobileBffService` provide client-specific composition and remain stateless where practical
+- API Gateway retains edge/platform responsibilities
+- BFFs do not own canonical state or domain invariants
+- Day 41 evolves the Day 16 Search GraphQL API into a Search subgraph and adds Property/Agent subgraphs
+- the federated router handles schema composition/entity resolution/query planning only
+- canonical ownership remains with the owning services; REST and gRPC remain valid boundaries
+
+### 7.11 Spring Batch boundary
+Day 42 uses Spring Batch for real batch semantics rather than as a scheduler substitute.
+
+- primary use-case: market statistics reporting
+- stale listing handling begins as detection/candidate processing, not automatic state mutation
+- automatic withdrawal requires an explicit business policy
+- Spring Batch owns Job/Step/chunk/restart/skip/retry semantics
+- Spring Cloud Task remains the short-lived task execution/orchestration capability
+
+### 7.12 Multi-Tenancy boundary
+Day 43 introduces `Agency` as the business tenant inside AgentService.
+
+- Agent initially belongs to exactly one Agency
+- tenant context is resolved from authenticated identity + membership, not an arbitrary client-supplied tenant header
+- first implementation uses row-level tenant isolation with application authorization + tenant-scoped persistence queries
+- schema-per-tenant and database-per-tenant are comparison alternatives documented in ADR, not implemented
+- only Agency-owned/scoped use-cases become tenant-aware
+- cross-tenant leakage, IDOR, cache namespace, BFF/GraphQL propagation and admin exceptions are explicit test concerns
+
+### 7.13 Event schema governance decision
+The earlier "evaluate if needed" decision becomes active at Day 44 because a real schema-evolution scenario is introduced.
+
+- Kafka event serialization -> Avro + Schema Registry
+- gRPC contracts -> Protobuf
+- preferred local/open-source Registry -> Apicurio Registry, exact compatible version verified at milestone start
+- JSON -> Avro migration uses a versioned migration path, not an in-place serializer switch
+- temporary dual publishing, if required, must use the reliable outbound/outbox path
+- SearchService is the real migration consumer
+- business event contract version and Registry schema version are distinct concepts
+- compatible additive and deliberately incompatible changes are both tested
+
+
 ## 8. Target Design vs Milestone Scope
 
 Dokümanlardaki end-state design ile Day implementation scope birbirine karıştırılmamalıdır.
@@ -323,6 +425,25 @@ Detaylı güncel sıra root `ROADMAP.md` dosyasındadır. Day 15 sonrası eski b
 
 Implementation'a hâlâ plan hazır olmadan geçilmez.
 
+
+
+### Extended Architecture completion rule
+
+Day 45 is not documentation-only cleanup. It is the final conformance and completion audit for Day 34–44 capabilities.
+
+The audit verifies:
+- architecture and ownership boundaries
+- security and cross-tenant isolation
+- failure/retry/compensation behavior
+- reactive-path blocking violations
+- SSE reconnect/backpressure/auth behavior
+- BFF business-logic drift
+- GraphQL Federation N+1/fan-out/canonical-ownership correctness
+- Spring Batch domain-mutation boundary
+- Schema Registry migration/compatibility behavior
+- ADR and Knowledge Base reconciliation
+
+A capability status matrix must distinguish `Infrastructure Ready`, `Implemented`, `Integrated`, `Verified` and `Design Only`. Nothing is marked `Verified` without evidence; Sharding/Partitioning remains `Design Only`.
 
 ## 13. Knowledge Base Maintenance
 

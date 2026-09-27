@@ -14,6 +14,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @Testcontainers
 @DataJpaTest(properties = {
         "spring.cloud.config.enabled=false",
+        "spring.config.import=optional:configserver:",
         "eureka.client.enabled=false",
         "spring.flyway.enabled=true",
         "spring.jpa.hibernate.ddl-auto=validate"

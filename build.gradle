@@ -52,4 +52,26 @@ subprojects {
     tasks.named('test') {
         useJUnitPlatform()
     }
+
+    // Local .env support for bootRun.
+    // Real OS environment variables keep precedence over values from .env.
+    tasks.named('bootRun') {
+        def envFile = rootProject.file('.env')
+
+        if (envFile.exists()) {
+            envFile.eachLine { rawLine ->
+                def line = rawLine.trim()
+
+                if (line && !line.startsWith('#') && line.contains('=')) {
+                    def separatorIndex = line.indexOf('=')
+                    def key = line.substring(0, separatorIndex).trim()
+                    def value = line.substring(separatorIndex + 1).trim()
+
+                    if (key && System.getenv(key) == null) {
+                        environment key, value
+                    }
+                }
+            }
+        }
+    }
 }

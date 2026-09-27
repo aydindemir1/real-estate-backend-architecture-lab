@@ -37,7 +37,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(controllers = AgentController.class)
+@WebMvcTest(
+        controllers = AgentController.class,
+        properties = {
+                "spring.cloud.config.enabled=false",
+                "spring.config.import=optional:configserver:",
+                "eureka.client.enabled=false"
+        }
+)
 @Import({AgentRestMapper.class, AgentExceptionHandler.class})
 class AgentControllerTest {
 

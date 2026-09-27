@@ -158,7 +158,7 @@ public class AgentExceptionHandler {
                 message,
                 fields,
                 Instant.now(),
-                status
+                status.name()
         );
 
         return ResponseEntity.status(status).body(body);

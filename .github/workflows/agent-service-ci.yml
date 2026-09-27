@@ -1,0 +1,47 @@
+name: AgentService CI
+
+on:
+  push:
+    branches:
+      - day/08-agent-mysql-clean
+    paths:
+      - "AgentService/**"
+      - "build.gradle"
+      - "dependencies.gradle"
+      - "settings.gradle"
+      - "gradle/**"
+      - "gradlew"
+      - "gradlew.bat"
+      - ".github/workflows/agent-service-ci.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: AgentService Build and Test
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Grant execute permission for Gradle wrapper
+        run: chmod +x gradlew
+
+      - name: Compile AgentService tests
+        run: ./gradlew :AgentService:testClasses --stacktrace
+
+      - name: Run AgentService tests
+        run: ./gradlew :AgentService:test --stacktrace

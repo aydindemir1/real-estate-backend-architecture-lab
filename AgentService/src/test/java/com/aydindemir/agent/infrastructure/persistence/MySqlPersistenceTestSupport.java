@@ -7,7 +7,7 @@ import org.springframework.boot.jdbc.test.autoconfigure.AutoConfigureTestDatabas
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
-import org.testcontainers.containers.MySQLContainer;
+import org.testcontainers.mysql.MySQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
@@ -23,7 +23,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 public abstract class MySqlPersistenceTestSupport {
 
     @Container
-    static final MySQLContainer<?> MYSQL = new MySQLContainer<>("mysql:8.4")
+    static final MySQLContainer MYSQL = new MySQLContainer("mysql:8.4")
             .withDatabaseName("agent_service_test")
             .withUsername("agent_test")
             .withPassword("agent_test");

@@ -15,4 +15,7 @@ dependencies {
     testImplementation libs.testcontainersJunitJupiter
     testImplementation libs.testcontainersMySql
     testImplementation libs.archUnitJunit5
+    
+    testImplementation libs.springBootDataJpaTest
+    testImplementation libs.springBootWebMvcTest
 }

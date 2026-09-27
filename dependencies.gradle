@@ -7,7 +7,9 @@ ext {
             postgreSql               : "42.7.8",
             swaggerApi               : "3.1.1",
             jwt                      : "4.6.1",
-            lombokMapstructBinding   : "0.2.0"
+            lombokMapstructBinding   : "0.2.0",
+            testcontainers          : "2.0.5",
+            archUnit                : "1.5.1",
     ]
 
     libs = [
@@ -20,6 +22,8 @@ ext {
             springBootDataElasticsearch                 : "org.springframework.boot:spring-boot-starter-data-elasticsearch:$versions.springBoot",
             springBootDataRedis                         : "org.springframework.boot:spring-boot-starter-data-redis:$versions.springBoot",
             springBootTest                              : "org.springframework.boot:spring-boot-starter-test:$versions.springBoot",
+            springBootDataJpaTest : "org.springframework.boot:spring-boot-starter-data-jpa-test:$versions.springBoot",
+            springBootWebMvcTest  : "org.springframework.boot:spring-boot-starter-webmvc-test:$versions.springBoot",
             springBootActuator                          : "org.springframework.boot:spring-boot-starter-actuator:$versions.springBoot",
             springBootZipkin                            : "org.springframework.boot:spring-boot-starter-zipkin:$versions.springBoot",
             springBootAmqp                              : "org.springframework.boot:spring-boot-starter-amqp:$versions.springBoot",
@@ -39,9 +43,9 @@ ext {
             mySql                                       : "com.mysql:mysql-connector-j",
             flywayCore                                  : "org.flywaydb:flyway-core",
             flywayMySql                                 : "org.flywaydb:flyway-mysql",
-            testcontainersJunitJupiter                  : "org.testcontainers:junit-jupiter",
-            testcontainersMySql                         : "org.testcontainers:mysql",
-            archUnitJunit5                              : "com.tngtech.archunit:archunit-junit5",
+            testcontainersJunitJupiter : "org.testcontainers:testcontainers-junit-jupiter:$versions.testcontainers",
+            testcontainersMySql        : "org.testcontainers:testcontainers-mysql:$versions.testcontainers",
+            archUnitJunit5             : "com.tngtech.archunit:archunit-junit5:$versions.archUnit",
 
             lombok                                      : "org.projectlombok:lombok:$versions.lombok",
             lombokMapstructBinding                      : "org.projectlombok:lombok-mapstruct-binding:$versions.lombokMapstructBinding",

@@ -30,7 +30,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class AgentServiceSmokeTest {
 
     @Container
-    static final MySQLContainer<?> MYSQL = new MySQLContainer<>("mysql:8.4")
+    static final MySQLContainer MYSQL = new MySQLContainer("mysql:8.4")
             .withDatabaseName("agent_service_smoke_test")
             .withUsername("agent_test")
             .withPassword("agent_test");

@@ -148,7 +148,7 @@ JWT ayarları environment variable ile değiştirilebilir:
 |---|---:|---|
 | AuthService | 9090 | Kayıt, giriş ve JWT |
 | UserProfileService | 9091 | Kullanıcı profil verisi |
-| AgentService | 9092 | Day 3 temel servis iskeleti |
+| AgentService | 9092 | Day 8: MySQL + Flyway + Clean Architecture + Agent domain/API |
 | BuyerService | 9093 | Day 3 temel servis iskeleti |
 | PropertyService | 9094 | Day 3 temel servis iskeleti |
 | SellerService | 9095 | Day 3 temel servis iskeleti |
@@ -1050,3 +1050,78 @@ Local infrastructure detayları:
 - `docs/infrastructure/local-data-services.md`
 
 Day 7 yalnızca build ve infrastructure foundation kapsamındadır. Service-level persistence migration'ları Day 8–13 arasında yapılacaktır.
+
+## Day 8 — AgentService / MySQL / Clean Architecture
+
+Day 8'de AgentService, temel servis iskeletinden gerçek persistence, domain model ve REST API içeren bağımsız bir mikroservise dönüştürülmüştür.
+
+Başlıca tamamlanan çalışmalar:
+
+- AgentService persistence katmanı PostgreSQL'den **MySQL**'e taşındı.
+- Şema yönetimi için **Flyway** standardı uygulandı.
+- Servis **Clean Architecture** katmanlarına ayrıldı: domain, application, infrastructure ve presentation.
+- `Agent` aggregate'i ve `AgentId`, `UserId`, `LicenseNumber`, `AgencyInfo` value object'leri oluşturuldu.
+- Agent lifecycle ve availability kuralları domain katmanında modellendi.
+- JPA persistence modeli domain modelinden ayrıldı.
+- Optimistic concurrency için Hibernate `@Version` kullanıldı.
+- Stable HTTP/error semantics tanımlandı.
+- Unit, application, REST slice, MySQL Testcontainers, optimistic locking ve ArchUnit testleri eklendi.
+- AgentService için GitHub Actions CI oluşturuldu ve **Run #18 green** olarak doğrulandı.
+
+### AgentService API
+
+| Method | Endpoint | Açıklama |
+|---|---|---|
+| `POST` | `/agents` | Yeni Agent oluşturur |
+| `GET` | `/agents/{agentId}` | Agent detayını getirir |
+| `PATCH` | `/agents/{agentId}/availability` | Availability durumunu değiştirir |
+
+Yeni Agent varsayılan olarak:
+
+```text
+status       = ACTIVE
+availability = OFFLINE
+```
+
+### Lokal runtime doğrulaması
+
+Day 8 aşağıdaki zincir üzerinde uçtan uca doğrulanmıştır:
+
+```text
+ConfigServerLocal :8888
+        |
+        v
+EurekaServer :8761
+        |
+        v
+ApiGatewayService :8080
+        |
+        v
+AgentService :9092
+        |
+        v
+MySQL :3307
+```
+
+Doğrulanan noktalar:
+
+- Config Server'dan AgentService configuration okunması
+- MySQL bağlantısı
+- Flyway migration/validation
+- JPA initialization
+- Eureka registration
+- API Gateway health
+- Gateway üzerinden create/get/change-availability akışları
+- 400 / 404 / 409 hata senaryoları
+- MySQL üzerinde kalıcı Agent kaydı
+
+Day 8 durumu: **Completed / Verified**
+
+Detaylı plan, kararlar ve kanıtlar:
+
+- `docs/roadmap/day-08-agent-mysql-clean.md`
+- `docs/roadmap/day-08-agent-mysql-clean-decisions.md`
+- `docs/roadmap/day-08-exact-file-plan.md`
+- `docs/knowledge-base/by-day/day-08.md`
+- `docs/day-08/evidence/README.md`
+

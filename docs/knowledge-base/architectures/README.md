@@ -2,16 +2,14 @@
 
 Sistem veya uygulamanın yüksek seviyeli yapısal organizasyonunu tanımlayan architecture konuları burada tutulur.
 
-## Day 1–7
+## Implemented
 
 - [Layered / N-Layer Architecture](layered-n-layer-architecture.md)
 - [Microservices Architecture](microservices-architecture.md)
+- [Clean Architecture](clean-architecture.md) — Day 8 / AgentService
 
-## Sonraki kapsam
+## Planned later
 
-Roadmap ilerledikçe aşağıdaki architecture konuları kendi milestone'larında canonical dosyalar olarak eklenecektir:
-
-- Clean Architecture
 - Hexagonal Architecture
 - Onion Architecture
 - Vertical Slice Architecture
@@ -19,4 +17,4 @@ Roadmap ilerledikçe aşağıdaki architecture konuları kendi milestone'larınd
 - Event-Driven Architecture
 - Saga tabanlı distributed workflow design
 
-Bir architecture henüz yalnız target design seviyesindeyse "Implemented" olarak işaretlenmez.
+Bir architecture yalnız target design seviyesindeyse Implemented olarak işaretlenmez.

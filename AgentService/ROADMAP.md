@@ -1,15 +1,35 @@
 # AgentService Roadmap
 
-## Mevcut baseline
-REST skeleton, Config Client, Eureka Client, Actuator ve tracing zaten mevcut.
+## Durum
 
-## Planlanan
-- Day 7: MySQL + Clean Architecture + agent domain/persistence
-- Day 8: OAuth2 Resource Server / Keycloak
-- Day 9: gRPC server capabilities
-- Day 14: Advanced Resilience
-- Day 16: Testcontainers / Integration Testing
-- Day 18: OpenTelemetry / metrics / logging
-- Day 20: Architecture Fitness kuralları
+Day 8 kapsamında AgentService için MySQL persistence ve Clean Architecture implementation tamamlandı.
+
+- Implementation: Implemented
+- Verification: Full build/test execution ayrıca doğrulanmalıdır.
+
+## Day 8 — AgentService / MySQL / Clean Architecture
+
+Uygulanan kapsam:
+- MySQL JDBC
+- Flyway schema migration
+- `ddl-auto=validate`
+- `open-in-view=false`
+- Clean Architecture package boundaries
+- Agent Aggregate + Value Objects
+- CreateAgent
+- GetAgent
+- ChangeAvailability
+- Stable REST error contract
+- Optimistic locking
+- MySQL Testcontainers
+- Controller slice tests
+- ArchUnit
+- Smoke tests
+
+## Sonraki AgentService milestone'ları
+
+- Day 14: OAuth2 Resource Server / Keycloak / authorization
+- Day 15: gRPC
+- Sonraki roadmap günleri: resilience, observability ve ileri testing genişletmeleri
 
 Detaylı tasarım: `docs/DESIGN.md`

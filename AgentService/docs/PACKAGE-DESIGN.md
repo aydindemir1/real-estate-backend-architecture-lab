@@ -1,12 +1,10 @@
 # AgentService — Package / Class-Level Design
 
 ## Architecture
+
 Clean Architecture
 
-## Amaç
-Domain ve application katmanlarını Spring/JPA gibi framework detaylarından bağımsız tutmak.
-
-## Package yapısı
+## Actual Day 8 package structure
 
 ```text
 com.aydindemir.agent
@@ -22,61 +20,34 @@ com.aydindemir.agent
 │   │   └── AvailabilityStatus
 │   ├── repository
 │   │   └── AgentRepository
-│   ├── service
-│   │   └── AgentDomainService
 │   └── exception
-│       ├── AgentNotFoundException
-│       ├── InvalidAgentStateException
-│       └── DuplicateLicenseNumberException
 ├── application
 │   ├── usecase
 │   │   ├── CreateAgentUseCase
 │   │   ├── GetAgentUseCase
-│   │   ├── UpdateAgentProfileUseCase
-│   │   ├── ChangeAgentStatusUseCase
-│   │   ├── ChangeAvailabilityUseCase
-│   │   └── CheckAvailabilityUseCase
+│   │   └── ChangeAvailabilityUseCase
 │   ├── command
-│   │   ├── CreateAgentCommand
-│   │   ├── UpdateAgentProfileCommand
-│   │   ├── ChangeAgentStatusCommand
-│   │   └── ChangeAvailabilityCommand
 │   ├── query
-│   │   ├── GetAgentQuery
-│   │   └── CheckAvailabilityQuery
 │   ├── result
-│   │   ├── AgentResult
-│   │   └── AvailabilityResult
+│   ├── exception
 │   └── service
 │       └── AgentApplicationService
 ├── infrastructure
 │   ├── persistence
-│   │   ├── entity
-│   │   │   └── AgentJpaEntity
-│   │   ├── repository
-│   │   │   └── SpringDataAgentRepository
-│   │   ├── mapper
-│   │   │   └── AgentPersistenceMapper
-│   │   └── adapter
-│   │       └── AgentRepositoryAdapter
-│   ├── grpc
-│   │   ├── AgentAvailabilityGrpcService
-│   │   └── GrpcAgentMapper
-│   └── configuration
-│       ├── PersistenceConfiguration
-│       └── GrpcConfiguration
+│   │   ├── entity/AgentJpaEntity
+│   │   ├── repository/SpringDataAgentRepository
+│   │   ├── mapper/AgentPersistenceMapper
+│   │   └── adapter/AgentRepositoryAdapter
+│   └── configuration/ApplicationClockConfiguration
 └── presentation
+    ├── error
+    │   ├── AgentErrorResponse
+    │   └── AgentExceptionHandler
     └── rest
         ├── AgentController
         ├── request
-        │   ├── CreateAgentRequest
-        │   ├── UpdateAgentProfileRequest
-        │   ├── ChangeAgentStatusRequest
-        │   └── ChangeAvailabilityRequest
         ├── response
-        │   └── AgentResponse
-        └── mapper
-            └── AgentRestMapper
+        └── mapper/AgentRestMapper
 ```
 
 ## Dependency rule
@@ -88,5 +59,28 @@ application -------> domain
 domain ------------> hiçbir outer layer'a bağımlı değil
 ```
 
-## Kritik kural
-`domain.model.Agent` JPA annotation taşımaz. `AgentJpaEntity` ayrı persistence model'dir.
+ArchUnit bu yönü enforce eder.
+
+## Day 8 scope
+
+Yalnız:
+- CreateAgent
+- GetAgent
+- ChangeAvailability
+
+Bu Day'de yok:
+- profile update
+- lifecycle status REST endpoint'leri
+- list/filter/pagination
+- get-by-userId
+- gRPC
+- Keycloak/RBAC
+- Idempotency-Key
+
+## Persistence ayrımı
+
+`domain.model.Agent` JPA annotation taşımaz.
+
+`AgentJpaEntity` infrastructure persistence modelidir.
+
+Persistence hydration sırasında `Agent.create(...)` değil, persisted identity/state/timestamp/version değerlerini koruyan `Agent.reconstitute(...)` kullanılır.

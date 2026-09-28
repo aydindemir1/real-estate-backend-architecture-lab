@@ -3,7 +3,7 @@
 ## Status
 
 - Implementation: Implemented
-- Verification: Pending full build/test execution
+- Verification: Verified
 - Branch: `day/08-agent-mysql-clean`
 
 ## Scope
@@ -59,7 +59,7 @@ Migration:
 - Persistence mapper explicit Java mapper'dır.
 - Empty/ceremonial PersistenceConfiguration oluşturulmadı.
 - `ApplicationClockConfiguration` ile UTC Clock bean sağlandı.
-- Config Client default URI baseline ile uyumlu olarak `http://localhost:8889` kaldı.
+- Lokal doğrulama baseline'ı `ConfigServerLocal` için `http://localhost:8888` olarak çalıştırıldı ve başarıyla doğrulandı.
 - Keycloak/RBAC Day 14'e bırakıldı.
 - Synchronous UserProfile existence check eklenmedi.
 
@@ -78,6 +78,21 @@ Migration:
 
 ## Completion state
 
-Implementation tamamlandı. Full build/test execution sonucu green olmadan Day 8 `Verified` sayılmaz.
+Implementation ve doğrulama tamamlandı.
+
+Doğrulanan kabul kriterleri:
+- AgentService CI green (`Run #18`)
+- AgentService lokal startup başarılı
+- Config Server (`8888`) entegrasyonu başarılı
+- MySQL bağlantısı ve Flyway validation başarılı
+- JPA initialization başarılı
+- Eureka registration `UP`
+- API Gateway health `UP`
+- Gateway üzerinden Create/Get/ChangeAvailability success senaryoları başarılı
+- 400/404/409 error semantics Postman ile doğrulandı
+- MySQL üzerinde kalıcı Agent kaydı doğrulandı
+- runtime/Postman kanıtları `docs/day-08/evidence/` altında saklandı
+
+Day 8 durumu: **Completed / Verified**.
 
 Knowledge Base impact reviewed and updated.

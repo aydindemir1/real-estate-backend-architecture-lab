@@ -107,10 +107,19 @@ e5ac228c3b37a1c16732c75bbf2b297ae7ecbcb4511232f8312ce6f3cefa00e6  agent-service-
 ```
 
 
-## Ekran görüntüsü arşivi
 
-Tüm Day 8 runtime/Postman ekran görüntüleri binary kanıt olarak aşağıdaki arşiv içinde branch'e eklenmiştir:
+## Sonuç
 
-- `day-08-screenshots.zip`
+Day 8 AgentService doğrulaması tamamlandı.
 
-Arşiv içindeki PNG dosya adları yukarıdaki evidence listesi ve SHA-256 manifest ile birebir eşleşir.
+- CI: ✅
+- Local runtime: ✅
+- Config Server: ✅
+- Eureka registration: ✅
+- API Gateway: ✅
+- MySQL persistence: ✅
+- Flyway: ✅
+- Success scenarios: ✅
+- Error scenarios: ✅
+
+Durum: **Completed / Verified**

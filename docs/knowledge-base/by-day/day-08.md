@@ -29,4 +29,6 @@ Day 8 ayrıca şu mevcut konuları derinleştirir:
 
 ## State note
 
-Implementation ve automated test sınıfları eklenmiştir. Full build/test execution sonucu ayrıca doğrulanmadan `Verified` sayılmaz.
+Implementation, automated testler, CI ve lokal runtime doğrulamaları tamamlandı.
+
+Day 8 **Completed / Verified** durumundadır. Kanıtlar `docs/day-08/evidence/` altında tutulur.

@@ -61,7 +61,7 @@ public class AgentController {
 
     @GetMapping("/{agentId}")
     public ResponseEntity<AgentResponse> getAgent(
-            @PathVariable UUID agentId
+            @PathVariable("agentId") UUID agentId
     ) {
         AgentResult result = getAgentUseCase.getAgent(new GetAgentQuery(agentId));
         return ResponseEntity.ok(mapper.toResponse(result));

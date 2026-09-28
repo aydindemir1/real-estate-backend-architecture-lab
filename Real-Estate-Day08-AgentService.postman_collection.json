@@ -1,0 +1,482 @@
+{
+  "info": {
+    "_postman_id": "real-estate-day08-agentservice",
+    "name": "Real Estate Backend - Day 08 AgentService",
+    "description": "Day 8 AgentService local validation collection: infrastructure checks, success scenarios, error scenarios and direct service verification.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "gatewayBaseUrl",
+      "value": "http://localhost:8080"
+    },
+    {
+      "key": "agentServiceBaseUrl",
+      "value": "http://localhost:9092"
+    },
+    {
+      "key": "configServerBaseUrl",
+      "value": "http://localhost:8888"
+    },
+    {
+      "key": "eurekaBaseUrl",
+      "value": "http://localhost:8761"
+    },
+    {
+      "key": "agentId",
+      "value": ""
+    },
+    {
+      "key": "userId",
+      "value": "33333333-3333-3333-3333-333333333333"
+    },
+    {
+      "key": "licenseNumber",
+      "value": "LIC-DAY08-003"
+    }
+  ],
+  "item": [
+    {
+      "name": "00 Infrastructure Checks",
+      "item": [
+        {
+          "name": "GET Config Server - AgentService Config",
+          "request": {
+            "method": "GET",
+            "url": "{{configServerBaseUrl}}/agent-service/default"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200', function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET Eureka Dashboard",
+          "request": {
+            "method": "GET",
+            "url": "{{eurekaBaseUrl}}/"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200', function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET Gateway Health",
+          "request": {
+            "method": "GET",
+            "url": "{{gatewayBaseUrl}}/actuator/health"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200', function () { pm.response.to.have.status(200); });",
+                  "pm.test('Gateway is UP', function () { pm.expect(pm.response.json().status).to.eql('UP'); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "01 Success Scenarios",
+      "item": [
+        {
+          "name": "POST Create Agent - 201",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"{{userId}}\",\n  \"licenseNumber\": \"{{licenseNumber}}\",\n  \"agencyName\": \"Day 08 Create Success Agency\",\n  \"agencyRegistrationNumber\": \"REG-DAY08-003\",\n  \"officePhone\": \"+90-262-555-0103\"\n}"
+            },
+            "url": "{{gatewayBaseUrl}}/agents"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 201', function () { pm.response.to.have.status(201); });",
+                  "const body = pm.response.json();",
+                  "pm.expect(body.status).to.eql('ACTIVE');",
+                  "pm.expect(body.availability).to.eql('OFFLINE');",
+                  "if (body.agentId) { pm.collectionVariables.set('agentId', body.agentId); }"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET Get Agent - 200",
+          "request": {
+            "method": "GET",
+            "url": "{{gatewayBaseUrl}}/agents/{{agentId}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200', function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "PATCH Change Availability to AVAILABLE - 200",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"availability\": \"AVAILABLE\"\n}"
+            },
+            "url": "{{gatewayBaseUrl}}/agents/{{agentId}}/availability"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200', function () { pm.response.to.have.status(200); });",
+                  "pm.test('Availability is AVAILABLE', function () { pm.expect(pm.response.json().availability).to.eql('AVAILABLE'); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "PATCH Change Availability to BUSY - 200",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"availability\": \"BUSY\"\n}"
+            },
+            "url": "{{gatewayBaseUrl}}/agents/{{agentId}}/availability"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200', function () { pm.response.to.have.status(200); });",
+                  "pm.test('Availability is BUSY', function () { pm.expect(pm.response.json().availability).to.eql('BUSY'); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "PATCH Change Availability to OFFLINE - 200",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"availability\": \"OFFLINE\"\n}"
+            },
+            "url": "{{gatewayBaseUrl}}/agents/{{agentId}}/availability"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200', function () { pm.response.to.have.status(200); });",
+                  "pm.test('Availability is OFFLINE', function () { pm.expect(pm.response.json().availability).to.eql('OFFLINE'); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "02 Error Scenarios",
+      "item": [
+        {
+          "name": "POST Duplicate User - 409",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"{{userId}}\",\n  \"licenseNumber\": \"LIC-DAY08-DIFFERENT\",\n  \"agencyName\": \"Duplicate User Agency\",\n  \"agencyRegistrationNumber\": \"REG-DUP-USER\",\n  \"officePhone\": \"+90-262-555-0191\"\n}"
+            },
+            "url": "{{gatewayBaseUrl}}/agents"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 409', function () { pm.response.to.have.status(409); });",
+                  "pm.test('Error code is AGENT_ALREADY_EXISTS_FOR_USER', function () { pm.expect(pm.response.json().code).to.eql('AGENT_ALREADY_EXISTS_FOR_USER'); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST Malformed JSON - 400",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"11111111-1111-1111-1111-111111111111\",\n  \"licenseNumber\": \"BROKEN\"\n"
+            },
+            "url": "{{gatewayBaseUrl}}/agents"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 400', function () { pm.response.to.have.status(400); });",
+                  "pm.test('Error code is MALFORMED_REQUEST_BODY', function () { pm.expect(pm.response.json().code).to.eql('MALFORMED_REQUEST_BODY'); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST Validation Error - 400",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": null,\n  \"licenseNumber\": \"\",\n  \"agencyName\": \"\"\n}"
+            },
+            "url": "{{gatewayBaseUrl}}/agents"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 400', function () { pm.response.to.have.status(400); });",
+                  "pm.test('Error code is VALIDATION_ERROR', function () { pm.expect(pm.response.json().code).to.eql('VALIDATION_ERROR'); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST Duplicate License - 409",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"44444444-4444-4444-4444-444444444444\",\n  \"licenseNumber\": \"{{licenseNumber}}\",\n  \"agencyName\": \"Duplicate License Agency\",\n  \"agencyRegistrationNumber\": \"REG-DUP-LICENSE\",\n  \"officePhone\": \"+90-262-555-0192\"\n}"
+            },
+            "url": "{{gatewayBaseUrl}}/agents"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 409', function () { pm.response.to.have.status(409); });",
+                  "pm.test('Error code is DUPLICATE_LICENSE_NUMBER', function () { pm.expect(pm.response.json().code).to.eql('DUPLICATE_LICENSE_NUMBER'); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "PATCH Missing Availability - 400",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            },
+            "url": "{{gatewayBaseUrl}}/agents/{{agentId}}/availability"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 400', function () { pm.response.to.have.status(400); });",
+                  "pm.test('Error code is VALIDATION_ERROR', function () { pm.expect(pm.response.json().code).to.eql('VALIDATION_ERROR'); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET Invalid UUID - 400",
+          "request": {
+            "method": "GET",
+            "url": "{{gatewayBaseUrl}}/agents/not-a-uuid"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 400', function () { pm.response.to.have.status(400); });",
+                  "pm.test('Error code is TYPE_MISMATCH', function () { pm.expect(pm.response.json().code).to.eql('TYPE_MISMATCH'); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "PATCH Invalid Availability Enum - 400",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"availability\": \"UNKNOWN\"\n}"
+            },
+            "url": "{{gatewayBaseUrl}}/agents/{{agentId}}/availability"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 400', function () { pm.response.to.have.status(400); });",
+                  "pm.test('Error code is MALFORMED_REQUEST_BODY', function () { pm.expect(pm.response.json().code).to.eql('MALFORMED_REQUEST_BODY'); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET Agent Not Found - 404",
+          "request": {
+            "method": "GET",
+            "url": "{{gatewayBaseUrl}}/agents/99999999-9999-9999-9999-999999999999"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 404', function () { pm.response.to.have.status(404); });",
+                  "pm.test('Error code is AGENT_NOT_FOUND', function () { pm.expect(pm.response.json().code).to.eql('AGENT_NOT_FOUND'); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "03 Direct AgentService Check",
+      "item": [
+        {
+          "name": "GET Get Agent Direct - 200",
+          "request": {
+            "method": "GET",
+            "url": "{{agentServiceBaseUrl}}/agents/{{agentId}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200', function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

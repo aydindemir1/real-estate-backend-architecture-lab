@@ -2,7 +2,10 @@ spring:
   application:
     name: agent-service
   config:
-    import: "configserver:"
+    import:
+      - "optional:file:.env[.properties]"
+      - "optional:file:../.env[.properties]"
+      - "configserver:"
   cloud:
     config:
       uri: ${CONFIG_SERVER_URL:http://localhost:8889}

@@ -15,3 +15,10 @@ dependencies {
     testImplementation libs.testcontainersCouchbase
     testImplementation libs.archUnitJunit5
 }
+
+
+tasks.named('test') {
+    systemProperty 'spring.config.import', ''
+    systemProperty 'spring.cloud.config.enabled', 'false'
+    systemProperty 'eureka.client.enabled', 'false'
+}

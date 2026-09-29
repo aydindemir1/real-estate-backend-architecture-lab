@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: buyer-service
+  config:
+    import: "optional:classpath:/buyer-test.properties"
+  cloud:
+    config:
+      enabled: false
+
+eureka:
+  client:
+    enabled: false

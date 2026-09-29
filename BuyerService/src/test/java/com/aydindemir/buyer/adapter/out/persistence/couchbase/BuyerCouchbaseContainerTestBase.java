@@ -19,7 +19,7 @@ import java.util.Optional;
         classes = BuyerServiceApplication.class,
         properties = {
                 "spring.cloud.config.enabled=false",
-                "spring.config.import=optional:configserver:",
+                "spring.config.import=optional:classpath:/buyer-test.properties",
                 "eureka.client.enabled=false"
         }
 )

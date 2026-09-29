@@ -3,9 +3,12 @@ dependencies {
     implementation libs.swaggerApi
     implementation libs.mapStruct
     implementation libs.springCloudEurekaClient
-    implementation libs.springBootDataJpa
+    implementation libs.springBootDataCouchbase
     implementation libs.springCloudStarterConfig
     implementation libs.springBootActuator
     implementation libs.springBootZipkin
-    runtimeOnly libs.postgreSql
+
+    testImplementation libs.testcontainersJunitJupiter
+    testImplementation libs.testcontainersCouchbase
+    testImplementation libs.archUnitJunit5
 }

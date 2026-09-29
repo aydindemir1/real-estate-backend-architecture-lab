@@ -18,7 +18,7 @@ dependencies {
 
 
 tasks.named('test') {
-    systemProperty 'spring.config.import', ''
+    systemProperty 'spring.config.import', 'optional:configserver:'
     systemProperty 'spring.cloud.config.enabled', 'false'
     systemProperty 'eureka.client.enabled', 'false'
 }

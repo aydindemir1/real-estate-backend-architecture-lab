@@ -1,0 +1,57 @@
+name: BuyerService CI
+
+on:
+  push:
+    branches:
+      - day/09-buyer-couchbase-hexagonal
+    paths:
+      - "BuyerService/**"
+      - "build.gradle"
+      - "dependencies.gradle"
+      - "settings.gradle"
+      - "gradle/**"
+      - "gradlew"
+      - "gradlew.bat"
+      - ".github/workflows/buyer-service-ci.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: BuyerService Build and Test
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Grant execute permission for Gradle wrapper
+        run: chmod +x gradlew
+
+      - name: Compile BuyerService tests
+        run: ./gradlew :BuyerService:testClasses --stacktrace
+
+      - name: Run BuyerService tests
+        run: ./gradlew :BuyerService:test --stacktrace
+
+      - name: Upload BuyerService test reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: buyer-service-test-reports
+          path: |
+            BuyerService/build/test-results/test/**
+            BuyerService/build/reports/tests/test/**
+          if-no-files-found: warn

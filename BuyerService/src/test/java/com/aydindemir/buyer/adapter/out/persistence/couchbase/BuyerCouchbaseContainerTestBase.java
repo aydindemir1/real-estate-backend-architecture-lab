@@ -3,6 +3,7 @@ package com.aydindemir.buyer.adapter.out.persistence.couchbase;
 import com.aydindemir.buyer.BuyerServiceApplication;
 import com.couchbase.client.java.Cluster;
 import com.couchbase.client.java.manager.collection.CollectionManager;
+import com.couchbase.client.java.manager.collection.ScopeSpec;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
@@ -12,6 +13,7 @@ import org.testcontainers.couchbase.CouchbaseService;
 import org.testcontainers.utility.DockerImageName;
 
 import java.time.Duration;
+import java.util.Optional;
 
 @SpringBootTest(
         classes = BuyerServiceApplication.class,
@@ -63,8 +65,29 @@ public abstract class BuyerCouchbaseContainerTestBase {
             bucket.waitUntilReady(Duration.ofSeconds(30));
 
             CollectionManager collections = bucket.collections();
-            collections.createScope(SCOPE);
-            collections.createCollection(SCOPE, COLLECTION);
+
+            Optional<ScopeSpec> scope = collections.getAllScopes()
+                    .stream()
+                    .filter(candidate -> SCOPE.equals(candidate.name()))
+                    .findFirst();
+
+            if (scope.isEmpty()) {
+                collections.createScope(SCOPE);
+                scope = collections.getAllScopes()
+                        .stream()
+                        .filter(candidate -> SCOPE.equals(candidate.name()))
+                        .findFirst();
+            }
+
+            boolean collectionExists = scope
+                    .map(existingScope -> existingScope.collections()
+                            .stream()
+                            .anyMatch(candidate -> COLLECTION.equals(candidate.name())))
+                    .orElse(false);
+
+            if (!collectionExists) {
+                collections.createCollection(SCOPE, COLLECTION);
+            }
         }
     }
 }

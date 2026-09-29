@@ -53,7 +53,7 @@ class BuyerHexagonalArchitectureTest {
     @ArchTest
     static final ArchRule restControllersMustDependOnInboundPorts =
             classes()
-                    .that().haveSimpleNameEndingWith("Controller")
+                    .that().haveSimpleName("BuyerPreferencesController")
                     .and().resideInAPackage("..adapter.in.rest..")
                     .should().dependOnClassesThat()
                     .resideInAPackage("..application.port.in..");

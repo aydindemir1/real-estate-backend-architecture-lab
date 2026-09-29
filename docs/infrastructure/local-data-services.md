@@ -82,3 +82,35 @@ Canonical target ownership:
 - Seller -> Cassandra
 - Property -> MongoDB
 - Search -> Elasticsearch derived projection
+
+## Buyer Couchbase bootstrap
+
+Day 9 BuyerService canonical local Couchbase layout:
+
+| Resource | Name |
+|---|---|
+| Bucket | `buyer` |
+| Scope | `buyer_service` |
+| Collection | `preferences` |
+| Document key | `buyer-preferences::{buyerId}` |
+
+Container ayağa kalktıktan sonra cluster ve logical data structure bootstrap işlemi version-controlled PowerShell script ile yapılır:
+
+```powershell
+docker compose --profile buyer up -d buyer-couchbase
+./infra/couchbase/bootstrap-buyer.ps1
+```
+
+Script idempotent olacak şekilde tasarlanmıştır:
+
+1. cluster daha önce initialize edilmemişse initialize eder,
+2. `buyer` bucket yoksa oluşturur,
+3. `buyer_service` scope yoksa oluşturur,
+4. `preferences` collection yoksa oluşturur,
+5. mevcut resource'ları yeniden oluşturmaya çalışmaz.
+
+Local tek-node development için bucket replica sayısı `0` tutulur.
+
+Day 9 persistence erişimi deterministic document key ile yapıldığı için secondary index oluşturulmaz. Yeni bir index ancak gerçek bir query pattern ortaya çıktığında eklenmelidir.
+
+Admin credential değerleri script içine yazılmaz. Script çalışan container içindeki `COUCHBASE_ADMIN_USERNAME` ve `COUCHBASE_ADMIN_PASSWORD` environment değerlerini kullanır.

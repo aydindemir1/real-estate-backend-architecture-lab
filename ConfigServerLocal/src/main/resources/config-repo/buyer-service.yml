@@ -2,15 +2,22 @@ server:
   port: 9093
 
 spring:
-  datasource:
-    url: ${BUYER_DB_URL:jdbc:postgresql://localhost:5436/micro_buyer_service_db}
-    username: ${BUYER_DB_USERNAME:aydin}
-    password: ${BUYER_DB_PASSWORD}
-  jpa:
-    hibernate:
-      ddl-auto: update
-    open-in-view: false
-    show-sql: true
+  couchbase:
+    connection-string: ${BUYER_COUCHBASE_CONNECTION_STRING:couchbase://localhost}
+    username: ${BUYER_COUCHBASE_USERNAME}
+    password: ${BUYER_COUCHBASE_PASSWORD}
+    env:
+      timeouts:
+        key-value: ${BUYER_COUCHBASE_KV_TIMEOUT:2500ms}
+        query: ${BUYER_COUCHBASE_QUERY_TIMEOUT:75s}
+  data:
+    couchbase:
+      bucket-name: ${BUYER_COUCHBASE_BUCKET:buyer}
+      scope-name: ${BUYER_COUCHBASE_SCOPE:buyer_service}
+
+buyer:
+  couchbase:
+    collection-name: ${BUYER_COUCHBASE_COLLECTION:preferences}
 
 springdoc:
   swagger-ui:

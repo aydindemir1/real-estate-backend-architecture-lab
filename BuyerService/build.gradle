@@ -9,6 +9,8 @@ dependencies {
     implementation libs.springBootActuator
     implementation libs.springBootZipkin
 
+    testImplementation libs.springBootTest
+    testImplementation libs.springBootWebMvcTest
     testImplementation libs.testcontainersJunitJupiter
     testImplementation libs.testcontainersCouchbase
     testImplementation libs.archUnitJunit5

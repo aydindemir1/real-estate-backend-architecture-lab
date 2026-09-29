@@ -39,7 +39,14 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(BuyerPreferencesController.class)
+@WebMvcTest(
+        controllers = BuyerPreferencesController.class,
+        properties = {
+                "spring.cloud.config.enabled=false",
+                "spring.config.import=optional:classpath:/buyer-test.properties",
+                "eureka.client.enabled=false"
+        }
+)
 @Import({BuyerPreferencesRestMapper.class, BuyerApiExceptionHandler.class})
 class BuyerPreferencesControllerTest {
 

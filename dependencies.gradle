@@ -46,6 +46,7 @@ ext {
             flywayCore                                  : "org.flywaydb:flyway-core",
             flywayMySql                                 : "org.flywaydb:flyway-mysql",
             testcontainersJunitJupiter : "org.testcontainers:testcontainers-junit-jupiter:$versions.testcontainers",
+            testcontainersCouchbase    : "org.testcontainers:testcontainers-couchbase:$versions.testcontainers",
             testcontainersMySql        : "org.testcontainers:testcontainers-mysql:$versions.testcontainers",
             archUnitJunit5             : "com.tngtech.archunit:archunit-junit5:$versions.archUnit",
 

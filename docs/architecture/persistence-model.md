@@ -49,42 +49,52 @@ Clean Architecture gereği domain model JPA annotation taşımaz. JPA Entity inf
 
 ## BuyerService — Couchbase
 
-### BuyerPreferences document key
-`buyer-preferences::{buyerId}`
+### Day 9 — Implemented / Verified
+
+Physical hierarchy:
+- bucket: `buyer`
+- scope: `buyer_service`
+- collection: `preferences`
+
+BuyerPreferences document key:
+
+```text
+buyer-preferences::{buyerId}
+```
 
 Document:
+- id
 - type
 - buyerId
-- budget
+- priceRange
 - preferredLocations
 - propertyTypes
-- roomRange
-- areaRange
+- minRooms
+- maxRooms
+- minArea
+- maxArea
 - preferredFeatures
 - notificationSettings
 - savedSearches
 - createdAt
 - updatedAt
 
-### Offer document key
-`offer::{offerId}`
+Primary access path:
+- direct document-key lookup
 
-Document:
-- type
-- offerId
-- buyerId
-- propertyId
-- amount
-- currency
-- status
-- createdAt
-- updatedAt
-- expiresAt
+Day 9'da secondary index yoktur.
 
-Secondary index candidate'ları:
-- buyerId + createdAt
-- propertyId
-- status
+Storage backend:
+- `couchstore`
+
+Application role:
+- `bucket_full_access[buyer]`
+
+CAS / optimistic concurrency Day 9'da bilinçli olarak ertelenmiştir.
+
+### Sonraki Day'ler için planlanan
+
+Offer document/persistence Day 9 kapsamında implemente edilmemiştir. Offer key, index ve query modelleri ilgili implementation Day'inde kesinleştirilecektir.
 
 ## SellerService — Cassandra
 

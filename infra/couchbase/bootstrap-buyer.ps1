@@ -78,9 +78,26 @@ if ($collectionList -notmatch "(?m)^$([regex]::Escape($collectionPath))$") {
     Write-Host "Creating collection '$collectionPath'..."
     Invoke-CouchbaseCli collection-manage --cluster 127.0.0.1:8091 --username $username --password $password --bucket $Bucket --create-collection $collectionPath
 }
+$appUsername = (& docker exec $ContainerName printenv BUYER_COUCHBASE_USERNAME).Trim()
+$appPassword = (& docker exec $ContainerName printenv BUYER_COUCHBASE_PASSWORD).Trim()
+if ([string]::IsNullOrWhiteSpace($appUsername) -or [string]::IsNullOrWhiteSpace($appPassword)) {
+    throw "BuyerService Couchbase credentials are not available inside the container."
+}
+
+$userList = (& docker exec $ContainerName /opt/couchbase/bin/couchbase-cli user-manage --cluster 127.0.0.1:8091 --username $username --password $password --list --auth-domain local) -join "`n"
+if ($userList -notmatch "(?m)^id: $([regex]::Escape($appUsername))$") {
+    Write-Host "Creating BuyerService Couchbase application user '$appUsername'..."
+    $applicationRole = "data_writer[$Bucket`:$Scope`:$Collection]"
+    Invoke-CouchbaseCli user-manage --cluster 127.0.0.1:8091 --username $username --password $password --set --rbac-username $appUsername --rbac-password $appPassword --roles $applicationRole --auth-domain local
+}
+else {
+    Write-Host "BuyerService Couchbase application user '$appUsername' already exists."
+}
 
 Write-Host "Buyer Couchbase bootstrap complete."
 Write-Host "Bucket: $Bucket"
 Write-Host "Scope: $Scope"
 Write-Host "Collection: $Collection"
+Write-Host "Application user: $appUsername"
+Write-Host "Application role: data_writer[$Bucket`:$Scope`:$Collection]"
 Write-Host "Secondary indexes: none (direct document-key access only)"

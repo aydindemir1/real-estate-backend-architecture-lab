@@ -63,7 +63,7 @@ elseif ($bucketProbe -ne "404") {
 
 if (-not $bucketExists) {
     Write-Host "Creating bucket '$Bucket'..."
-    Invoke-CouchbaseCli bucket-create --cluster 127.0.0.1:8091 --username $username --password $password --bucket $Bucket --bucket-type couchbase --bucket-ramsize $BucketRamMb --bucket-replica 0 --wait
+    Invoke-CouchbaseCli bucket-create --cluster 127.0.0.1:8091 --username $username --password $password --bucket $Bucket --bucket-type couchbase --storage-backend couchstore --bucket-ramsize $BucketRamMb --bucket-replica 0 --wait
 }
 
 $scopeList = (& docker exec $ContainerName /opt/couchbase/bin/couchbase-cli collection-manage --cluster 127.0.0.1:8091 --username $username --password $password --bucket $Bucket --list-scopes) -join "`n"

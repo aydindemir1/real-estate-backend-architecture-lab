@@ -110,10 +110,10 @@ if ($null -eq $collectionEntry) {
     Invoke-CouchbaseCli collection-manage --cluster 127.0.0.1:8091 --username $username --password $password --bucket $Bucket --create-collection $collectionPath
 }
 
-$appUsername = Get-LocalSetting "BUYER_COUCHBASE_USERNAME"
-$appPassword = Get-LocalSetting "BUYER_COUCHBASE_PASSWORD"
+$appUsername = Get-LocalSetting "BUYER_DB_USERNAME"
+$appPassword = Get-LocalSetting "BUYER_DB_PASSWORD"
 if ([string]::IsNullOrWhiteSpace($appUsername) -or [string]::IsNullOrWhiteSpace($appPassword)) {
-    throw "BUYER_COUCHBASE_USERNAME and BUYER_COUCHBASE_PASSWORD must be set in the OS environment or root .env file."
+    throw "BUYER_DB_USERNAME and BUYER_DB_PASSWORD must be set in the OS environment or root .env file."
 }
 
 $userList = ((& docker exec $ContainerName /opt/couchbase/bin/couchbase-cli user-manage --cluster 127.0.0.1:8091 --username $username --password $password --list --auth-domain local) | Out-String)

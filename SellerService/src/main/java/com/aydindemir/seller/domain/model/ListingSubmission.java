@@ -1,5 +1,7 @@
 package com.aydindemir.seller.domain.model;
 
+import com.aydindemir.seller.domain.exception.InvalidListingSubmissionStateException;
+
 import java.time.Instant;
 import java.util.Objects;
 
@@ -115,8 +117,7 @@ public final class ListingSubmission {
         updatedAt = Instant.now();
     }
 
-    private IllegalStateException invalidTransition(ListingSubmissionStatus targetStatus) {
-        return new IllegalStateException(
-                "Invalid listing submission state transition from " + status + " to " + targetStatus);
+    private InvalidListingSubmissionStateException invalidTransition(ListingSubmissionStatus targetStatus) {
+        return new InvalidListingSubmissionStateException(submissionId, status, targetStatus);
     }
 }

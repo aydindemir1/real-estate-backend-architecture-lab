@@ -1,5 +1,7 @@
 package com.aydindemir.seller.domain.model;
 
+import com.aydindemir.seller.domain.exception.SellerNotActiveException;
+
 import java.time.Instant;
 import java.util.Objects;
 
@@ -51,7 +53,7 @@ public final class Seller {
 
     public void assertCanSubmitListing() {
         if (status != SellerStatus.ACTIVE) {
-            throw new IllegalStateException("Only ACTIVE sellers can submit listings");
+            throw new SellerNotActiveException(sellerId, status);
         }
     }
 

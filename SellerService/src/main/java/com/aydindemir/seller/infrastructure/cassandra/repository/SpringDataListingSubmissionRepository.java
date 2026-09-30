@@ -1,7 +1,6 @@
 package com.aydindemir.seller.infrastructure.cassandra.repository;
 
 import com.aydindemir.seller.infrastructure.cassandra.table.ListingSubmissionBySellerMonthTable;
-import org.springframework.data.cassandra.core.mapping.MapId;
 import org.springframework.data.cassandra.repository.MapIdCassandraRepository;
 import org.springframework.data.cassandra.repository.Query;
 import org.springframework.data.domain.Pageable;

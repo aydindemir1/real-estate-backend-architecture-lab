@@ -40,6 +40,16 @@ public final class Seller {
                 now);
     }
 
+    public static Seller rehydrate(
+            SellerId sellerId,
+            UserId userId,
+            String displayName,
+            SellerStatus status,
+            Instant createdAt,
+            Instant updatedAt) {
+        return new Seller(sellerId, userId, displayName, status, createdAt, updatedAt);
+    }
+
     public void changeStatus(SellerStatus newStatus) {
         SellerStatus targetStatus = Objects.requireNonNull(newStatus, "newStatus must not be null");
 

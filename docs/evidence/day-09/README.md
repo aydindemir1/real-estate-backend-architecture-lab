@@ -20,30 +20,30 @@ Aşağıdaki kanıtlar, test sırasında paylaşılan ekran görüntülerinin **
 
 ### Couchbase ve altyapı
 
-- [01 - Postman öncesi boş preferences collection](original/01-couchbase-preferences-baslangic-bos.svg)
-- [04 - İlk başarılı PUT sonrası preferences collection: 1 item](original/04-couchbase-preferences-1-item.svg)
-- [14 - Eureka üzerinde BUYER-SERVICE UP](original/14-eureka-buyer-service-up.svg)
-- [15 - buyer bucket durumu: 1 item, CouchStore](original/15-couchbase-buyer-bucket.svg)
+- [01 - Postman öncesi boş preferences collection](png/01-couchbase-preferences-baslangic-bos.png)
+- [04 - İlk başarılı PUT sonrası preferences collection: 1 item](png/04-couchbase-preferences-1-item.png)
+- [14 - Eureka üzerinde BUYER-SERVICE UP](png/14-eureka-buyer-service-up.png)
+- [15 - buyer bucket durumu: 1 item, CouchStore](png/15-couchbase-buyer-bucket.png)
 
 ### Başarılı Postman senaryoları
 
-- [03 - PUT preferences - 200 OK](original/03-put-preferences-200.svg)
-- [05 - GET preferences - 200 OK](original/05-get-preferences-200.svg)
-- [06 - POST saved search - 201 Created](original/06-post-saved-search-201.svg)
-- [07 - POST saved search - response detayı](original/07-post-saved-search-201-detay.svg)
-- [08 - Saved search sonrası GET - 200 OK](original/08-get-after-saved-search-200.svg)
+- [03 - PUT preferences - 200 OK](png/03-put-preferences-200.png)
+- [05 - GET preferences - 200 OK](png/05-get-preferences-200.png)
+- [06 - POST saved search - 201 Created](png/06-post-saved-search-201.png)
+- [07 - POST saved search - response detayı](png/07-post-saved-search-201-detay.png)
+- [08 - Saved search sonrası GET - 200 OK](png/08-get-after-saved-search-200.png)
 
 ### Hata senaryoları
 
-- [09 - Olmayan preferences - 404](original/09-get-missing-preferences-404.svg)
-- [10 - Bean Validation hatası - 400](original/10-put-validation-error-400.svg)
-- [11 - Semantic range ihlali - 422](original/11-put-semantic-range-error-422.svg)
-- [12 - Geçersiz UUID - 400](original/12-get-invalid-uuid-400.svg)
-- [13 - Bozuk JSON - 400](original/13-put-malformed-json-400.svg)
+- [09 - Olmayan preferences - 404](png/09-get-missing-preferences-404.png)
+- [10 - Bean Validation hatası - 400](png/10-put-validation-error-400.png)
+- [11 - Semantic range ihlali - 422](png/11-put-semantic-range-error-422.png)
+- [12 - Geçersiz UUID - 400](png/12-get-invalid-uuid-400.png)
+- [13 - Bozuk JSON - 400](png/13-put-malformed-json-400.png)
 
 ### Runtime sırasında bulunan hata
 
-- [02 - İlk PUT denemesinde PathVariable runtime hatası](original/02-ilk-put-path-variable-hatasi.svg)
+- [02 - İlk PUT denemesinde PathVariable runtime hatası](png/02-ilk-put-path-variable-hatasi.png)
 
 ## Startup log kanıtı
 

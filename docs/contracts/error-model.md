@@ -15,6 +15,7 @@ Malformed veya syntactic validation:
 
 Örnek:
 - VALIDATION_ERROR
+- INVALID_REQUEST
 - INVALID_EMAIL
 
 ### 401 Unauthorized
@@ -34,6 +35,7 @@ Resource yok:
 - OFFER_NOT_FOUND
 - AGENT_NOT_FOUND
 - SELLER_NOT_FOUND
+- BUYER_PREFERENCES_NOT_FOUND
 
 ### 409 Conflict
 Mevcut resource/state ile conflict:
@@ -51,6 +53,7 @@ Request syntactically valid fakat domain semantic'i bağımsız business rule ne
 - SELLER_NOT_ACTIVE
 - AGENT_NOT_ACTIVE
 - OFFER_AMOUNT_MUST_BE_POSITIVE
+- INVALID_BUYER_PREFERENCES
 
 Bir hata mevcut resource state conflict'ine dayanıyorsa 409; request'in business semantic'i kendi başına geçersizse 422 kullanılır.
 
@@ -59,7 +62,7 @@ Rate limit.
 
 ### 500 / 503 / 504
 - 500 unexpected internal
-- 503 dependency/service unavailable
+- 503 dependency/service unavailable (`BUYER_PERSISTENCE_UNAVAILABLE` gibi)
 - 504 downstream timeout
 
 ## REST error response

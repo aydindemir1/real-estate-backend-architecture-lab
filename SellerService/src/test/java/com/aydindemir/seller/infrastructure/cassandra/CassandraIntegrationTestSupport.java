@@ -5,11 +5,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.cassandra.CassandraContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
-@Testcontainers
 @SpringBootTest(
         classes = SellerServiceApplication.class,
         properties = {
@@ -23,10 +20,13 @@ public abstract class CassandraIntegrationTestSupport {
 
     protected static final String KEYSPACE = "seller_service";
 
-    @Container
     protected static final CassandraContainer CASSANDRA =
             new CassandraContainer(DockerImageName.parse("cassandra:5.0.9"))
                     .withInitScript("cassandra/schema/V1__seller_tables.cql");
+
+    static {
+        CASSANDRA.start();
+    }
 
     @DynamicPropertySource
     static void configureCassandra(DynamicPropertyRegistry registry) {

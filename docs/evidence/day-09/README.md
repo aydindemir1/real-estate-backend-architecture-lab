@@ -14,6 +14,13 @@ This directory records the local runtime acceptance evidence for **BuyerService 
 - Local runtime: STS / Spring Boot App
 - Couchbase edition: Community 8.0.2
 
+## Visual evidence
+
+- [Infrastructure: Couchbase before/after + Eureka registration](visual/day09-infrastructure-evidence.svg)
+- [Postman success scenarios](visual/day09-success-scenarios.svg)
+- [Postman error scenarios](visual/day09-error-scenarios.svg)
+- [Runtime troubleshooting: initial path-variable failure](visual/day09-troubleshooting-evidence.svg)
+
 ## Startup evidence
 
 The captured BuyerService startup log proves that:

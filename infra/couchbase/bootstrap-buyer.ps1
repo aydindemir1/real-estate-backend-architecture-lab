@@ -46,7 +46,7 @@ elseif ($clusterProbe -ne "404") {
 
 if (-not $clusterReady) {
     Write-Host "Initializing Couchbase cluster..."
-    Invoke-CouchbaseCli cluster-init --cluster 127.0.0.1:8091 --cluster-username $username --cluster-password $password --services data,index,query --cluster-ramsize $ClusterRamMb --cluster-index-ramsize $IndexRamMb
+    Invoke-CouchbaseCli cluster-init --cluster 127.0.0.1:8091 --cluster-username $username --cluster-password $password --services "data,index,query" --cluster-ramsize $ClusterRamMb --cluster-index-ramsize $IndexRamMb
 }
 
 $bucketExists = $false

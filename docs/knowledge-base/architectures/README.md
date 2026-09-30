@@ -7,10 +7,10 @@ Sistem veya uygulamanın yüksek seviyeli yapısal organizasyonunu tanımlayan a
 - [Layered / N-Layer Architecture](layered-n-layer-architecture.md)
 - [Microservices Architecture](microservices-architecture.md)
 - [Clean Architecture](clean-architecture.md) — Day 8 / AgentService
+- [Hexagonal Architecture](hexagonal-architecture.md) — Day 9 / BuyerService
 
 ## Planned later
 
-- Hexagonal Architecture
 - Onion Architecture
 - Vertical Slice Architecture
 - CQRS

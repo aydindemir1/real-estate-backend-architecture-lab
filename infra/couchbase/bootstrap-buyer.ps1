@@ -41,8 +41,19 @@ if (-not $clusterReady) {
     Invoke-CouchbaseCli cluster-init --cluster 127.0.0.1:8091 --cluster-username $username --cluster-password $password --services data,index,query --cluster-ramsize $ClusterRamMb --cluster-index-ramsize $IndexRamMb
 }
 
-& docker exec $ContainerName curl -fsS -u "${username}:${password}" "http://127.0.0.1:8091/pools/default/buckets/$Bucket" *> $null
+$bucketExists = $false
+$bucketProbe = & docker exec $ContainerName curl -sS -o /dev/null -w "%{http_code}" -u "${username}:${password}" "http://127.0.0.1:8091/pools/default/buckets/$Bucket"
 if ($LASTEXITCODE -ne 0) {
+    throw "Failed to query Couchbase bucket '$Bucket'."
+}
+if ($bucketProbe -eq "200") {
+    $bucketExists = $true
+}
+elseif ($bucketProbe -ne "404") {
+    throw "Unexpected HTTP status '$bucketProbe' while checking bucket '$Bucket'."
+}
+
+if (-not $bucketExists) {
     Write-Host "Creating bucket '$Bucket'..."
     Invoke-CouchbaseCli bucket-create --cluster 127.0.0.1:8091 --username $username --password $password --bucket $Bucket --bucket-type couchbase --bucket-ramsize $BucketRamMb --bucket-replica 0 --wait
 }

@@ -11,7 +11,10 @@ public interface ListingSubmissionRepository {
 
     ListingSubmission save(ListingSubmission submission);
 
-    Optional<ListingSubmission> findById(ListingSubmissionId submissionId);
+    Optional<ListingSubmission> findBySellerAndMonthAndId(
+            SellerId sellerId,
+            YearMonth yearMonth,
+            ListingSubmissionId submissionId);
 
     ListingSubmissionPage listBySellerAndMonth(
             SellerId sellerId,

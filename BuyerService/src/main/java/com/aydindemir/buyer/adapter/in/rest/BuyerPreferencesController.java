@@ -53,7 +53,7 @@ public class BuyerPreferencesController {
 
     @PutMapping("/preferences")
     public ResponseEntity<BuyerPreferencesResponse> updatePreferences(
-            @PathVariable UUID buyerId,
+            @PathVariable("buyerId") UUID buyerId,
             @Valid @RequestBody UpdateBuyerPreferencesRequest request
     ) {
         var result = updateBuyerPreferencesUseCase.update(
@@ -65,7 +65,7 @@ public class BuyerPreferencesController {
 
     @GetMapping("/preferences")
     public ResponseEntity<BuyerPreferencesResponse> getPreferences(
-            @PathVariable UUID buyerId
+            @PathVariable("buyerId") UUID buyerId
     ) {
         var result = getBuyerPreferencesUseCase.get(
                 mapper.toGetQuery(buyerId)
@@ -76,7 +76,7 @@ public class BuyerPreferencesController {
 
     @PostMapping("/saved-searches")
     public ResponseEntity<BuyerPreferencesResponse> addSavedSearch(
-            @PathVariable UUID buyerId,
+            @PathVariable("buyerId") UUID buyerId,
             @Valid @RequestBody AddSavedSearchRequest request
     ) {
         var result = addSavedSearchUseCase.add(

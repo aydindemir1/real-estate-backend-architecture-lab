@@ -2,8 +2,8 @@
 
 **Category:** Technology  
 **Introduced:** Day 7  
-**Project status:** Infrastructure Ready  
-**Scope:** Target document/key-value datastore for BuyerService
+**Project status:** Implemented / Verified  
+**Scope:** BuyerService
 
 ## 1. Nedir?
 
@@ -13,119 +13,130 @@ JSON document storage ile key-value access ve SQL++ query capability'lerini birl
 
 ## 2. Veri modeli
 
-Temel logical hierarchy:
+```text
+Cluster
+  └── Bucket
+      └── Scope
+          └── Collection
+              └── Document
+```
+
+## 3. Bu projede nasıl kullanılıyor?
+
+Day 7'de BuyerService için Couchbase infrastructure hazırlanmıştır.
+
+Day 9'da application-level persistence tamamlanmıştır.
+
+Gerçek logical hierarchy:
 
 ```text
 Cluster
-  |
-  v
-Bucket
-  |
-  v
-Scope
-  |
-  v
-Collection
-  |
-  v
-Document
+└── bucket: buyer
+    └── scope: buyer_service
+        └── collection: preferences
 ```
 
-## 3. Key-value access
+Couchbase sürümü:
+- Community 8.0.2
 
-Document key biliniyorsa direct KV lookup çok düşük latency ile yapılabilir.
+Storage backend:
+- `couchstore`
 
-Örnek key:
+## 4. Document key
+
+BuyerPreferences için deterministic key:
+
 ```text
 buyer-preferences::{buyerId}
-offer::{offerId}
 ```
 
-## 4. SQL++
+Primary access path direct document-key lookup'tır.
 
-Couchbase JSON documents üzerinde SQL-benzeri query language sağlar.
+Bu nedenle Day 9 use-case'leri için secondary index eklenmemiştir.
 
-KV access ile ad-hoc query ihtiyacı farklı access path'lerdir.
+## 5. Spring Data Couchbase
 
-## 5. Distributed architecture
+BuyerService:
+- `BuyerPreferencesDocument`
+- `SpringDataBuyerPreferencesRepository`
+- `BuyerPreferencesDocumentMapper`
+- `CouchbaseBuyerPreferencesAdapter`
 
-Data cluster node'ları arasında partition/shard edilir.
+kullanır.
 
-Couchbase terminology'sinde vBucket mekanizması distribution için temel role sahiptir.
+Domain Aggregate Couchbase document değildir.
 
-## 6. Replication
+## 6. Bootstrap
 
-Data replica'ları farklı node'larda tutulabilir.
+Script:
+- `infra/couchbase/bootstrap-buyer.ps1`
 
-Node failure durumunda failover mekanizmaları devreye girebilir.
+Script:
+- cluster init
+- bucket oluşturma
+- scope oluşturma
+- collection oluşturma
+- application user oluşturma
 
-## 7. Indexing
+işlemlerini idempotent şekilde yürütür.
 
-SQL++ query için secondary indexes gerekir.
+Application role:
+- `bucket_full_access[buyer]`
 
-Primary index development kolaylığı sağlayabilir ancak production query design için explicit index daha uygundur.
+Credentials:
+- `BUYER_DB_USERNAME`
+- `BUYER_DB_PASSWORD`
 
-## 8. Bu projede nasıl kullanılıyor?
+Secret değerler repository'ye yazılmaz.
 
-Day 7'de BuyerService için:
-- Couchbase Community 8.x container
-- admin credentials
-- persistent volume
-- HTTP healthcheck
+## 7. Testcontainers
 
-hazırlanmıştır.
+Persistence integration testleri shared lokal Couchbase yerine Testcontainers foundation kullanır.
 
-Bucket/scope/collection/index initialization Day 9'a bırakılmıştır.
+Kapsam:
+- save/load
+- deterministic key
+- same-document update
+- nested value round-trip
+- saved search round-trip
+- missing document
 
-## 9. Day 7 statüsü
+## 8. Runtime doğrulaması
 
-`Infrastructure Ready`.
+Day 9'da:
+- bucket açıldı
+- preferences collection başlangıçta 0 item idi
+- başarılı PUT sonrası item sayısı 1 oldu
+- GET ile veri geri okundu
+- saved search persistence üzerinden geri döndü
 
-Buyer persistence implementation henüz yapılmamıştır.
+Evidence:
+- `docs/evidence/day-09/`
 
-## 10. Target Buyer data
+## 9. CAS / optimistic concurrency
 
-Buyer tarafında:
-- preferences
-- offer state
-- durable idempotency record
+Day 9'da bilinçli olarak ertelenmiştir.
 
-gibi document/KV oriented access modelleri planlanmaktadır.
+Neden:
+- mevcut Hexagonal port contract CAS token'ını application/domain boyunca taşımıyor
 
-## 11. Avantajları
+Detay:
+- `docs/day-09/cas-concurrency-decision.md`
 
-- key-value performance
-- JSON document model
-- SQL++ query
-- distributed architecture
-- flexible schema
-
-## 12. Trade-off'ları
-
-- cluster operations relational DB'den farklıdır
-- index consistency seçenekleri anlaşılmalıdır
-- durability level doğru seçilmelidir
-- KV ve query access modelleri ayrı tasarlanmalıdır
-
-## 13. Production considerations
+## 10. Production considerations
 
 - bucket sizing
-- memory quotas
-- durability level
 - replicas
-- indexes
-- failover
+- durability level
 - backup
 - rebalance
+- failover
+- index design
 - query consistency
+- CAS/concurrency
+- monitoring
 
-## 14. Reliability ile ilişkisi
-
-BuyerService ileride OfferRequested gibi critical event publish edecektir.
-
-Committed state ile outbound event kaybını önleyecek durable publication strategy ayrıca finalize edilmelidir.
-
-## 15. İleri öğrenme konuları
+## 11. İleri öğrenme konuları
 
 - vBuckets
 - DCP

@@ -2,6 +2,7 @@ package com.aydindemir.seller.infrastructure.cassandra.table;
 
 import org.springframework.data.cassandra.core.cql.Ordering;
 import org.springframework.data.cassandra.core.cql.PrimaryKeyType;
+import org.springframework.data.cassandra.core.mapping.Column;
 import org.springframework.data.cassandra.core.mapping.PrimaryKeyColumn;
 import org.springframework.data.cassandra.core.mapping.Table;
 
@@ -37,16 +38,21 @@ public record ListingSubmissionBySellerMonthTable(
         UUID submissionId,
 
         String status,
+        @Column("updated_at")
         Instant updatedAt,
 
         String title,
         String description,
+        @Column("property_type")
         String propertyType,
         String city,
         String district,
+        @Column("address_line")
         String addressLine,
+        @Column("price_amount")
         BigDecimal priceAmount,
         String currency,
         BigDecimal area,
+        @Column("room_count")
         int roomCount) {
 }

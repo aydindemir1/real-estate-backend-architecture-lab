@@ -1,6 +1,6 @@
-# Day 9 — Exact File / Class / Commit Plan
+# Day 9 — Exact File / Class / Commit Planı
 
-## 0. Scope
+## 0. Kapsam
 
 Day 9 yalnızca BuyerService içindir.
 
@@ -16,553 +16,399 @@ Hedef:
 
 Day 9 içinde Offer, Saga, Kafka, gRPC ve Redis idempotency yoktur.
 
-## Task 1 — Existing BuyerService source audit
+## Task 1 — Mevcut BuyerService kaynak denetimi
 
-Verify:
-- BuyerService/build.gradle
-- BuyerService/src/main/resources/application.yml
+Kontrol:
+- `BuyerService/build.gradle`
+- `BuyerService/src/main/resources/application.yml`
 - mevcut bootstrap class/package
 
-Target base package: com.aydindemir.buyer
-
-Mevcut package farklıysa controlled refactor yapılır.
-
-Commit: refactor(buyer): align application base package
+Target base package:
+- `com.aydindemir.buyer`
 
 ## Task 2 — Build dependencies
 
-Modify: BuyerService/build.gradle
+`BuyerService/build.gradle`:
 
-Remove:
+Kaldır:
 - Spring Data JPA
 - PostgreSQL driver
 
-Keep:
+Koru:
 - Eureka Client
 - Config Client
 - Actuator
 - tracing baseline
-- Web MVC if REST adapter remains
-- OpenAPI if service-local docs retained
+- Spring Web MVC
+- OpenAPI
 
-Add:
+Ekle:
 - Spring Data Couchbase
 - Testcontainers JUnit Jupiter
-- Couchbase integration test support as appropriate
-- ArchUnit if not common
-
-Commit: build(buyer): switch persistence dependencies to Couchbase
+- Couchbase Testcontainers
+- ArchUnit
 
 ## Task 3 — Configuration
 
-Modify: BuyerService/src/main/resources/application.yml
-
-Keep bootstrap:
+`BuyerService/src/main/resources/application.yml`:
 - application name
+- root `.env` optional imports
 - Config Server import
 - Config Server URL
 
-External config non-secret:
-- Couchbase connection string
-- bucket name
-- scope name
-- collection name
-- query timeout
-- key/value timeout
-- actuator baseline
+Config repository:
+- `ConfigServerLocal/src/main/resources/config-repo/buyer-service.yml`
 
-Secrets:
-- BUYER_DB_USERNAME
-- BUYER_DB_PASSWORD
+Kullanılan anahtarlar:
+- `BUYER_COUCHBASE_CONNECTION_STRING`
+- `BUYER_DB_USERNAME`
+- `BUYER_DB_PASSWORD`
+- `BUYER_COUCHBASE_KV_TIMEOUT`
+- `BUYER_COUCHBASE_QUERY_TIMEOUT`
+- `BUYER_COUCHBASE_BUCKET`
+- `BUYER_COUCHBASE_SCOPE`
+- `BUYER_COUCHBASE_COLLECTION`
 
-No literal secret in repository.
-
-Commit: config(buyer): add Couchbase connection configuration
+Literal secret repository'ye yazılmaz.
 
 ## Task 4 — Hexagonal package skeleton
 
-Target tree:
+Target:
 
-BuyerService/src/main/java/com/aydindemir/buyer/
-- BuyerServiceApplication.java
-- domain/model/
-- domain/exception/
-- application/port/in/
-- application/port/out/
-- application/service/
-- adapter/in/rest/request/
-- adapter/in/rest/response/
-- adapter/in/rest/mapper/
-- adapter/out/persistence/couchbase/document/
-- adapter/out/persistence/couchbase/repository/
-- adapter/out/persistence/couchbase/mapper/
-- adapter/out/persistence/couchbase/adapter/
+```text
+com.aydindemir.buyer
+├── domain/model
+├── application/port/in
+├── application/port/out
+├── application/service
+├── adapter/in/rest
+└── adapter/out/persistence/couchbase
+```
 
-No empty future gRPC/Kafka classes.
+Day 9'da boş future gRPC/Kafka/Redis package/class oluşturulmaz.
 
-Commit: refactor(buyer): establish Hexagonal Architecture package boundaries
+## Task 5 — Domain Value Object'leri
 
-## Task 5 — Domain value objects
+- `BuyerId`
+- `PriceRange`
+- `RoomRange`
+- `AreaRange`
+- `LocationPreference`
+- `NotificationSettings`
+- `SavedSearch`
 
-Create:
-- domain/model/BuyerId.java
-- domain/model/PriceRange.java
-- domain/model/RoomRange.java
-- domain/model/AreaRange.java
-- domain/model/LocationPreference.java
-- domain/model/NotificationSettings.java
-- domain/model/SavedSearch.java
-
-BuyerId: immutable UUID wrapper.
-
-PriceRange:
-- BigDecimal min
-- BigDecimal max
-- Currency currency
-- min >= 0
+Kurallar:
+- immutable model
+- range invariant'ları
+- negatif olmayan değerler
 - max >= min
-
-RoomRange:
-- min >= 0
-- max >= min
-
-AreaRange:
-- min non-negative/positive according to business rule
-- max >= min
-
-LocationPreference initially city + optional district; no premature geo complexity.
-
-SavedSearch must not contain Elasticsearch DSL.
-
-Commit: feat(buyer): add BuyerPreferences value objects
+- gereksiz geo/search engine detail'i yok
 
 ## Task 6 — BuyerPreferences Aggregate
 
-Create: domain/model/BuyerPreferences.java
-
-Fields:
-- BuyerId buyerId
-- PriceRange priceRange
+`BuyerPreferences` alanları:
+- buyerId
+- priceRange
 - preferredLocations
 - propertyTypes
-- RoomRange
-- AreaRange
+- roomRange
+- areaRange
 - preferredFeatures
-- NotificationSettings
+- notificationSettings
 - savedSearches
 - createdAt
 - updatedAt
 
-Behavior:
-- create/update preferences
-- addSavedSearch
-- removeSavedSearch only if needed now
+Davranış:
+- preferences oluştur/güncelle
+- saved search ekle
 
-Invariants:
-- nested values valid
+Kurallar:
+- nested values geçerli
 - collections defensively copied
-- no public setters
-- embedded saved-search growth risk documented
-
-Create exceptions only if used:
-- BuyerPreferencesNotFoundException
-- InvalidBuyerPreferencesException
-- DuplicateSavedSearchException only if uniqueness is a real rule
-
-Commit: feat(buyer): add BuyerPreferences aggregate
+- public setter yok
 
 ## Task 7 — Inbound ports
 
-Create:
-- application/port/in/UpdateBuyerPreferencesUseCase.java
-- application/port/in/GetBuyerPreferencesUseCase.java
-- application/port/in/AddSavedSearchUseCase.java
+- `UpdateBuyerPreferencesUseCase`
+- `GetBuyerPreferencesUseCase`
+- `AddSavedSearchUseCase`
 
-Also create immutable application inputs:
-- UpdateBuyerPreferencesCommand
-- AddSavedSearchCommand
-- GetBuyerPreferencesQuery
-
-Commit: feat(buyer): define inbound ports
+Application input:
+- `UpdateBuyerPreferencesCommand`
+- `GetBuyerPreferencesQuery`
+- `AddSavedSearchCommand`
 
 ## Task 8 — Outbound persistence ports
 
-Create:
-- application/port/out/SaveBuyerPreferencesPort.java
-- application/port/out/LoadBuyerPreferencesPort.java
+- `SaveBuyerPreferencesPort`
+- `LoadBuyerPreferencesPort`
 
-Methods:
-- save(BuyerPreferences)
-- Optional<BuyerPreferences> load(BuyerId)
+Port contract'larında Couchbase/Spring Data type'ı bulunmaz.
 
-No Couchbase or Spring Data types in ports.
+## Task 9 — Application service
 
-Commit: feat(buyer): define outbound persistence ports
+- `BuyerPreferencesResult`
+- `BuyerPreferencesApplicationService`
 
-## Task 9 — Application result and service
+Application service:
+- inbound port'ları implement eder
+- domain behavior'ı orchestrate eder
+- persistence için outbound port kullanır
+- Couchbase API'sini bilmez
 
-Create:
-- application/service/BuyerPreferencesResult.java
-- application/service/BuyerPreferencesApplicationService.java
+## Task 10 — Couchbase document modeli
 
-Service implements all three inbound ports.
+- `BuyerPreferencesDocument`
+- nested document record'ları
 
-Update flow:
-1. load existing if needed
-2. create/update domain
-3. save through outbound port
-4. return result
+Deterministic key:
 
-Get flow:
-1. load
-2. not-found semantic
-3. return result
+```text
+buyer-preferences::{buyerId}
+```
 
-AddSavedSearch flow:
-1. load
-2. domain behavior
-3. save
-4. return result
+Persistence document domain model değildir.
 
-No Couchbase API dependency.
+## Task 11 — Spring Data Couchbase repository
 
-Commit: feat(buyer): implement BuyerPreferences application service
+- `SpringDataBuyerPreferencesRepository`
 
-## Task 10 — Couchbase document model
+Primary access:
+- document ID
 
-Create: adapter/out/persistence/couchbase/document/BuyerPreferencesDocument.java
-
-Document fields:
-- id
-- optional type discriminator
-- buyerId
-- price range
-- preferred locations
-- property types
-- room range
-- area range
-- features
-- notification settings
-- saved searches
-- createdAt
-- updatedAt
-
-Deterministic key: buyer-preferences::{buyerId}
-
-Document model is not the domain model.
-
-Commit: feat(buyer): add Couchbase document model
-
-## Task 11 — Couchbase repository
-
-Create: adapter/out/persistence/couchbase/repository/SpringDataBuyerPreferencesRepository.java
-
-Primary lookup is document ID.
-
-Do not add secondary queries/indexes if direct key access is enough.
-
-Commit: feat(buyer): add Couchbase repository
+Direct key access yeterli olduğu için speculative secondary query/index eklenmez.
 
 ## Task 12 — Persistence mapper
 
-Create: adapter/out/persistence/couchbase/mapper/BuyerPreferencesDocumentMapper.java
+- `BuyerPreferencesDocumentMapper`
 
-Mappings:
+Mapping:
 - domain -> document
 - document -> domain
 
-Explicit mapper preferred if nested reconstruction is non-trivial.
-
-Commit: feat(buyer): add Couchbase persistence mapping
-
 ## Task 13 — Persistence adapter
 
-Create: adapter/out/persistence/couchbase/adapter/CouchbaseBuyerPreferencesAdapter.java
+- `CouchbaseBuyerPreferencesAdapter`
 
-Implements SaveBuyerPreferencesPort and LoadBuyerPreferencesPort.
-
-Responsibilities:
+Sorumluluk:
 - deterministic key
 - repository delegation
 - mapping
-- persistence exception translation when needed
+- outbound port implementation
 
-Commit: feat(buyer): add Couchbase persistence adapter
+## Task 14 — Bucket / scope / collection bootstrap
 
-## Task 14 — Bucket / scope / collection strategy
+Gerçekleşen isimler:
+- bucket: `buyer`
+- scope: `buyer_service`
+- collection: `preferences`
 
-Suggested logical names:
-- bucket: buyer
-- scope: buyer_service
-- collection: preferences
+Script:
+- `infra/couchbase/bootstrap-buyer.ps1`
 
-Exact names may be adjusted to existing conventions.
+Storage backend:
+- `couchstore`
 
-Day 9 bootstrap setup should be version-controlled/documented.
+Application role:
+- `bucket_full_access[buyer]`
 
-Direct key access means no speculative secondary index is required.
+Secondary index:
+- yok
 
-Commit: infra(buyer): document Couchbase bucket and collection setup
+## Task 15 — REST request contract'ları
 
-## Task 15 — REST request contracts
+- `UpdateBuyerPreferencesRequest`
+- `AddSavedSearchRequest`
 
-Create:
-- adapter/in/rest/request/UpdateBuyerPreferencesRequest.java
-- adapter/in/rest/request/AddSavedSearchRequest.java
+Boundary validation:
+- required
+- non-negative
+- temel format/constraint
 
-Boundary validation includes required/non-negative/basic size constraints.
+Cross-field semantic rule'lar domain tarafından korunur.
 
-Cross-field range rules remain protected by domain value objects.
+## Task 16 — REST response ve mapper
 
-Commit: feat(buyer): add REST request contracts
+- `BuyerPreferencesResponse`
+- `BuyerPreferencesRestMapper`
 
-## Task 16 — REST response and mapper
-
-Create:
-- adapter/in/rest/response/BuyerPreferencesResponse.java
-- adapter/in/rest/mapper/BuyerPreferencesRestMapper.java
-
-Mapper:
-- request + buyerId -> command
-- application result -> response
-
-No business logic.
-
-Commit: feat(buyer): add REST response and mapping
+Mapper business logic içermez.
 
 ## Task 17 — REST controller
 
-Create: adapter/in/rest/BuyerPreferencesController.java
+- `PUT /buyers/{buyerId}/preferences`
+- `GET /buyers/{buyerId}/preferences`
+- `POST /buyers/{buyerId}/saved-searches`
 
-Endpoints:
-- PUT /buyers/{buyerId}/preferences
-- GET /buyers/{buyerId}/preferences
-- POST /buyers/{buyerId}/saved-searches
-
-PUT can return 200 with current representation for simple idempotent semantics.
-
-GET absent -> 404.
-
-SavedSearch POST -> 201 candidate.
-
-Commit: feat(buyer): expose preferences and saved-search API
+Expected:
+- PUT -> 200
+- GET -> 200
+- POST -> 201
+- absent GET -> 404
 
 ## Task 18 — Error mapping
 
-Stable error mappings:
-- BuyerPreferencesNotFoundException -> 404 BUYER_PREFERENCES_NOT_FOUND
-- invalid price/room/area semantic -> 422
-- malformed validation -> 400
+Stable mapping:
+- `BUYER_PREFERENCES_NOT_FOUND` -> 404
+- `VALIDATION_ERROR` -> 400
+- `INVALID_REQUEST` -> 400
+- `INVALID_BUYER_PREFERENCES` -> 422
+- `BUYER_PERSISTENCE_UNAVAILABLE` -> 503
+- `INTERNAL_ERROR` -> 500
 
-Raw Couchbase exception must not leak.
-
-Commit: feat(buyer): map Buyer domain failures to API errors
+Raw Couchbase exception dış API'ye sızmaz.
 
 ## Task 19 — Domain tests
 
-Create:
-- PriceRangeTest.java
-- RoomRangeTest.java
-- AreaRangeTest.java
-- BuyerPreferencesTest.java
+- `PriceRangeTest`
+- `RoomRangeTest`
+- `AreaRangeTest`
+- `BuyerPreferencesTest`
 
-Cases:
-- valid ranges
-- invalid ranges
+Kapsam:
+- valid/invalid ranges
 - defensive copies
-- add saved search
-
-Commit: test(buyer): add domain invariant tests
+- saved search behavior
 
 ## Task 20 — Test fake
 
-Create test-only:
-- application/support/InMemoryBuyerPreferencesStore.java
+- `InMemoryBuyerPreferencesStore`
 
-Implements outbound ports for readable application tests.
+Outbound persistence port'larını test amacıyla implement eder.
 
 ## Task 21 — Application tests
 
-Create: BuyerPreferencesApplicationServiceTest.java
+- `BuyerPreferencesApplicationServiceTest`
 
-Cases:
-- create/update success
-- get success
-- get not-found
+Kapsam:
+- create/update
+- get
+- not-found
 - add saved search
 - invalid domain input
-- expected saved aggregate state
-
-Commit: test(buyer): add application port tests
 
 ## Task 22 — Couchbase Testcontainers foundation
 
-Create test support:
-- BuyerCouchbaseContainerTestBase.java or equivalent
+- `BuyerCouchbaseContainerTestBase`
 
-Responsibilities:
-- start Couchbase container
-- bootstrap bucket/scope/collection
+Sorumluluk:
+- Couchbase container
+- bucket/scope/collection bootstrap
 - dynamic Spring properties
 
-No hard-coded shared local Couchbase for tests.
-
-Commit: test(buyer): add Couchbase Testcontainers foundation
+Shared lokal Couchbase integration test baseline değildir.
 
 ## Task 23 — Persistence integration tests
 
-Create: CouchbaseBuyerPreferencesAdapterIntegrationTest.java
+- `CouchbaseBuyerPreferencesAdapterIntegrationTest`
 
-Cases:
+Kapsam:
 - save/load
 - deterministic key
-- update same document
-- nested value round-trip
-- saved search round-trip
-- missing document -> Optional.empty
+- same-document update
+- nested round-trip
+- saved-search round-trip
+- missing document
 
-Commit: test(buyer): add Couchbase persistence integration tests
+## Task 24 — CAS / concurrency kararı
 
-## Task 24 — CAS / concurrency decision
+Day 9'da CAS **bilinçli olarak ertelenmiştir**.
 
-If Spring Data Couchbase CAS/version support fits cleanly, add version and concurrency test.
+Detay:
+- `docs/day-09/cas-concurrency-decision.md`
 
-If not, explicitly defer rather than fake concurrency protection.
+Fake optimistic locking eklenmez.
 
-Optional class: BuyerPreferencesConcurrencyIntegrationTest.java
+## Task 25 — REST controller tests
 
-Optional commit: test(buyer): verify Couchbase CAS concurrency
+- `BuyerPreferencesControllerTest`
 
-## Task 25 — REST slice tests
-
-Create: BuyerPreferencesControllerTest.java
-
-Cases:
+Kapsam:
 - PUT 200
 - GET 200
 - GET 404
 - invalid request
 - POST saved search
 
-Use inbound port mocks, not Couchbase.
+Couchbase yerine inbound port mocks kullanılır.
 
-Commit: test(buyer): add REST adapter tests
+## Task 26 — Hexagonal Architecture tests
 
-## Task 26 — Hexagonal architecture tests
+- `BuyerHexagonalArchitectureTest`
 
-Create: architecture/BuyerHexagonalArchitectureTest.java
+ArchUnit kuralları:
+- domain -> application/adapter yok
+- domain -> Spring/Couchbase/Jakarta yok
+- application -> adapter yok
+- adapter.in -> adapter.out yok
+- REST controller inbound ports kullanır
+- Couchbase adapter outbound ports implement eder
+- top-level package cycle yok
 
-Rules:
-- domain does not depend on application/adapter/Spring/Couchbase
-- application does not depend on adapter
-- adapter.in depends on application.port.in
-- adapter.out depends on/implements application.port.out
-- adapter.in must not directly depend on adapter.out
-- no cycles
+## Task 27 — Runtime smoke / acceptance
 
-Commit: test(buyer): enforce Hexagonal Architecture boundaries
+Çalıştır:
+- Config Server
+- Eureka
+- Couchbase
+- BuyerService
 
-## Task 27 — Runtime smoke
-
-Start Config Server, Eureka, Couchbase, BuyerService.
-
-Verify:
-- service registration
+Doğrula:
+- Config Server config load
+- Eureka registration
 - PUT preferences
 - GET preferences
 - POST saved search
+- Couchbase write/read
+- error scenarios
 
-Automated tests remain acceptance baseline.
+Evidence:
+- `docs/evidence/day-09/`
+- `docs/collections/day-09/Day-09-BuyerService.postman_collection.json`
 
 ## Task 28 — Documentation
 
-Modify:
-- BuyerService/docs/DESIGN.md
-- BuyerService/docs/PACKAGE-DESIGN.md
-- BuyerService/ROADMAP.md
-- docs/roadmap/day-09-buyer-couchbase-hexagonal.md
+Güncelle:
+- `BuyerService/docs/DESIGN.md`
+- `BuyerService/docs/PACKAGE-DESIGN.md`
+- `BuyerService/ROADMAP.md`
+- `docs/roadmap/day-09-buyer-couchbase-hexagonal.md`
+- Knowledge Base impact
 
-Record actual:
-- bucket/scope/collection
+Kaydet:
+- actual bucket/scope/collection
 - document key
-- exact config keys
+- config keys
 - test coverage
-- deferred Offer/gRPC/Kafka/Redis work
-
-Commit: docs(buyer): finalize Couchbase Hexagonal implementation
-
-## Recommended Commit Sequence
-
-1. refactor(buyer): align application base package
-2. build(buyer): switch persistence dependencies to Couchbase
-3. config(buyer): add Couchbase connection configuration
-4. refactor(buyer): establish Hexagonal Architecture package boundaries
-5. feat(buyer): add BuyerPreferences value objects
-6. feat(buyer): add BuyerPreferences aggregate
-7. feat(buyer): define inbound ports
-8. feat(buyer): define outbound persistence ports
-9. feat(buyer): implement BuyerPreferences application service
-10. feat(buyer): add Couchbase document model
-11. feat(buyer): add Couchbase repository
-12. feat(buyer): add Couchbase persistence mapping
-13. feat(buyer): add Couchbase persistence adapter
-14. infra(buyer): document Couchbase bucket and collection setup
-15. feat(buyer): add REST request contracts
-16. feat(buyer): add REST response and mapping
-17. feat(buyer): expose preferences and saved-search API
-18. feat(buyer): map Buyer domain failures to API errors
-19. test(buyer): add domain invariant tests
-20. test(buyer): add application port tests
-21. test(buyer): add Couchbase Testcontainers foundation
-22. test(buyer): add Couchbase persistence integration tests
-23. test(buyer): add REST adapter tests
-24. test(buyer): enforce Hexagonal Architecture boundaries
-25. docs(buyer): finalize Couchbase Hexagonal implementation
-
-Adjacent tiny commits can be merged when they represent one coherent change, but unrelated architectural layers should not be collapsed into one giant commit.
-
-## Explicitly Deferred from Day 9
-
-Do not implement:
-- Offer Aggregate
-- CreateOffer
-- Offer idempotency
-- Redis business adapter
-- AgentAvailability gRPC implementation
-- Kafka publisher
-- Saga
-- notification delivery
-- Elasticsearch query logic
-
-Future interfaces should not be added unless a current Day 9 class genuinely needs them.
+- CAS defer kararı
+- scope dışındaki Offer/gRPC/Kafka/Redis işleri
 
 ## Day 9 Final Gate
 
-Day 9 closes only if:
-- BuyerService no longer uses JPA/PostgreSQL
-- Couchbase connection/config works
-- BuyerPreferences domain is framework-free
-- range value objects enforce invariants
-- collections are defensively copied
-- inbound ports exist
-- outbound persistence ports exist
-- application service depends only on ports/domain
-- Couchbase document is separate from domain
-- deterministic document key works
-- save/load/update integration test passes
-- REST PUT/GET/saved-search endpoints work
-- raw Couchbase exception does not leak
-- Hexagonal dependency rules are automated
-- Config/Eureka/Actuator baseline works
-- no Offer/Kafka/gRPC/Redis business implementation leaks into Day 9
-- docs match actual implementation
+- [x] BuyerService JPA/PostgreSQL persistence kullanmıyor
+- [x] Couchbase connection/config çalışıyor
+- [x] BuyerPreferences domain framework-free
+- [x] range invariant'ları uygulanıyor
+- [x] collections defensively copied
+- [x] inbound ports mevcut
+- [x] outbound persistence ports mevcut
+- [x] application service yalnız domain/ports'a bağlı
+- [x] Couchbase document domain'den ayrı
+- [x] deterministic document key çalışıyor
+- [x] save/load/update integration test kapsamı mevcut
+- [x] REST endpoint'leri çalışıyor
+- [x] raw Couchbase exception API'ye sızmıyor
+- [x] Hexagonal dependency rules otomatik
+- [x] Config/Eureka baseline çalışıyor
+- [x] Offer/Kafka/gRPC/Redis business implementation Day 9'a sızmıyor
+- [x] docs actual implementation ile hizalı
 
-## Day 9 Completion Note
+## Completion
 
-Bu plan Day 9 implementation'ında uygulanmıştır. Runtime doğrulaması, evidence ve CAS defer kararı için:
+Day 9 **Completed / Verified**.
 
+Kanıt:
 - `docs/evidence/day-09/README.md`
 - `docs/day-09/cas-concurrency-decision.md`
 - `docs/collections/day-09/Day-09-BuyerService.postman_collection.json`
-
-Day 9 **Completed / Verified** durumundadır.

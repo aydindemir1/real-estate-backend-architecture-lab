@@ -1,96 +1,160 @@
 # BuyerService — Package / Class-Level Design
 
 ## Architecture
-Hexagonal Architecture
 
-## Amaç
-Application core'u inbound ve outbound adapter'lardan ayırmak.
+**Hexagonal Architecture**
 
-## Package yapısı
+Day 9 implementation'ı yalnız BuyerPreferences / SavedSearch capability'sini kapsar.
+
+## Gerçekleşen package yapısı
 
 ```text
 com.aydindemir.buyer
 ├── BuyerServiceApplication
 ├── domain
-│   ├── model
-│   │   ├── BuyerPreferences
-│   │   ├── Offer
-│   │   ├── BuyerId
-│   │   ├── OfferId
-│   │   ├── PropertyId
-│   │   ├── PriceRange
-│   │   ├── AreaRange
-│   │   ├── RoomRange
-│   │   ├── LocationPreference
-│   │   ├── NotificationSettings
-│   │   ├── SavedSearch
-│   │   └── OfferStatus
-│   ├── service
-│   │   └── OfferDomainService
-│   └── exception
-│       ├── OfferNotFoundException
-│       ├── InvalidOfferStateException
-│       └── BuyerPreferencesNotFoundException
+│   └── model
+│       ├── BuyerId
+│       ├── BuyerPreferences
+│       ├── PriceRange
+│       ├── RoomRange
+│       ├── AreaRange
+│       ├── LocationPreference
+│       ├── NotificationSettings
+│       └── SavedSearch
 ├── application
+│   ├── exception
+│   │   └── BuyerPreferencesNotFoundException
 │   ├── port
 │   │   ├── in
-│   │   │   ├── CreateBuyerPreferencesUseCase
 │   │   │   ├── UpdateBuyerPreferencesUseCase
 │   │   │   ├── GetBuyerPreferencesUseCase
 │   │   │   ├── AddSavedSearchUseCase
-│   │   │   ├── CreateOfferUseCase
-│   │   │   ├── CancelOfferUseCase
-│   │   │   ├── ListBuyerOffersUseCase
-│   │   │   └── RequestViewingUseCase
+│   │   │   ├── UpdateBuyerPreferencesCommand
+│   │   │   ├── GetBuyerPreferencesQuery
+│   │   │   └── AddSavedSearchCommand
 │   │   └── out
 │   │       ├── SaveBuyerPreferencesPort
-│   │       ├── LoadBuyerPreferencesPort
-│   │       ├── SaveOfferPort
-│   │       ├── LoadOfferPort
-│   │       ├── ListBuyerOffersPort
-│   │       ├── AgentAvailabilityPort
-│   │       ├── PublishOfferEventPort
-│   │       └── IdempotencyPort
+│   │       └── LoadBuyerPreferencesPort
 │   └── service
 │       ├── BuyerPreferencesApplicationService
-│       ├── OfferApplicationService
-│       └── ViewingApplicationService
+│       └── BuyerPreferencesResult
 ├── adapter
 │   ├── in
-│   │   ├── rest
-│   │   │   ├── BuyerPreferencesController
-│   │   │   ├── OfferController
-│   │   │   ├── ViewingController
-│   │   │   ├── request
-│   │   │   ├── response
-│   │   │   └── mapper
-│   │   └── messaging
-│   │       ├── PropertyHeldEventConsumer
-│   │       ├── PropertyReservedEventConsumer
-│   │       └── PropertyHoldReleasedEventConsumer
+│   │   └── rest
+│   │       ├── BuyerPreferencesController
+│   │       ├── error
+│   │       │   ├── ApiErrorResponse
+│   │       │   └── BuyerApiExceptionHandler
+│   │       ├── mapper
+│   │       │   └── BuyerPreferencesRestMapper
+│   │       ├── request
+│   │       │   ├── UpdateBuyerPreferencesRequest
+│   │       │   └── AddSavedSearchRequest
+│   │       └── response
+│   │           └── BuyerPreferencesResponse
 │   └── out
-│       ├── persistence
-│       │   ├── couchbase
-│       │   │   ├── BuyerPreferencesDocument
-│       │   │   ├── OfferDocument
-│       │   │   ├── SpringDataBuyerPreferencesRepository
-│       │   │   └── SpringDataOfferRepository
-│       │   ├── mapper
-│       │   │   └── BuyerPersistenceMapper
-│       │   └── BuyerPersistenceAdapter
-│       ├── grpc
-│       │   └── AgentAvailabilityGrpcAdapter
-│       ├── messaging
-│       │   └── KafkaOfferEventPublisher
-│       └── redis
-│           └── RedisIdempotencyAdapter
-└── configuration
-    ├── CouchbaseConfiguration
-    ├── KafkaConfiguration
-    ├── RedisConfiguration
-    └── GrpcClientConfiguration
+│       └── persistence
+│           └── couchbase
+│               ├── adapter
+│               │   └── CouchbaseBuyerPreferencesAdapter
+│               ├── document
+│               │   ├── BuyerPreferencesDocument
+│               │   ├── MoneyRangeDocument
+│               │   ├── LocationPreferenceDocument
+│               │   ├── NotificationSettingsDocument
+│               │   └── SavedSearchDocument
+│               ├── mapper
+│               │   └── BuyerPreferencesDocumentMapper
+│               └── repository
+│                   └── SpringDataBuyerPreferencesRepository
+└── config
+    └── BuyerApplicationConfiguration
 ```
 
-## Hexagonal rule
+## Dependency kuralları
 
-Application yalnızca `port.in` ve `port.out` contract'larını bilir. Couchbase, Kafka, Redis ve gRPC adapter detayları core'a sızmaz.
+### Domain
+Domain:
+- Spring bilmez
+- Couchbase bilmez
+- application bilmez
+- adapter bilmez
+
+### Application
+Application:
+- domain'i bilir
+- inbound/outbound port contract'larını taşır
+- adapter implementation'larını bilmez
+- Couchbase API'si bilmez
+
+### Inbound adapter
+REST adapter:
+- inbound port'ları kullanır
+- outbound persistence adapter'a doğrudan gitmez
+
+### Outbound adapter
+Couchbase adapter:
+- outbound port'ları implement eder
+- Spring Data repository ve persistence document modelini içeride tutar
+
+## Domain / persistence model ayrımı
+
+`BuyerPreferences`:
+- business model / Aggregate
+
+`BuyerPreferencesDocument`:
+- Couchbase persistence modeli
+
+İki model `BuyerPreferencesDocumentMapper` ile çevrilir.
+
+Bu ayrım Couchbase annotation ve persistence detail'lerinin domain'e sızmasını engeller.
+
+## Deterministic key
+
+```java
+public static final String KEY_PREFIX = "buyer-preferences::";
+```
+
+Key:
+
+```text
+buyer-preferences::{buyerId}
+```
+
+## Test package'ları
+
+```text
+src/test/java/com/aydindemir/buyer
+├── domain/model
+├── application/service
+├── application/support
+├── adapter/in/rest
+├── adapter/out/persistence/couchbase
+├── architecture
+└── smoke
+```
+
+Önemli test sınıfları:
+- `BuyerPreferencesTest`
+- `PriceRangeTest`
+- `RoomRangeTest`
+- `AreaRangeTest`
+- `BuyerPreferencesApplicationServiceTest`
+- `InMemoryBuyerPreferencesStore`
+- `BuyerPreferencesControllerTest`
+- `BuyerCouchbaseContainerTestBase`
+- `CouchbaseBuyerPreferencesAdapterIntegrationTest`
+- `BuyerHexagonalArchitectureTest`
+- `BuyerServiceSmokeTest`
+
+## Day 9'da bulunmayan package/class'lar
+
+Aşağıdaki gelecekteki tasarımlar Day 9 implementation'ına dahil değildir:
+
+- Offer domain/application/persistence
+- gRPC adapter
+- Kafka adapter
+- Redis adapter
+- Saga classes
+
+Dokümantasyon bunları gerçekleşmiş package yapısı olarak göstermemelidir.

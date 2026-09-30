@@ -36,26 +36,48 @@ Day 8 sonrasında primary authentication Keycloak'a taşınacağı için mevcut 
 Public REST dışında Agent availability için gRPC contract ayrıca tanımlanır.
 
 ## BuyerService
-### PUT /buyers/{buyerId}/preferences
-### GET /buyers/{buyerId}/preferences
-### POST /buyers/{buyerId}/saved-searches
-### GET /buyers/{buyerId}/offers
-### POST /buyers/{buyerId}/offers
 
-Header:
-- Idempotency-Key
+### Day 9 — Implemented / Verified
 
-Request:
-- propertyId
-- amount
-- currency
+#### PUT /buyers/{buyerId}/preferences
+Buyer preferences create/update.
 
-Response:
-- offerId
-- status
+Başarılı response:
+- 200 OK
 
-### POST /buyers/{buyerId}/offers/{offerId}/cancel
-### POST /buyers/{buyerId}/viewing-requests
+#### GET /buyers/{buyerId}/preferences
+Buyer preferences read.
+
+Başarılı response:
+- 200 OK
+
+Bulunamadığında:
+- 404 `BUYER_PREFERENCES_NOT_FOUND`
+
+#### POST /buyers/{buyerId}/saved-searches
+Buyer preferences aggregate içine saved search ekler.
+
+Başarılı response:
+- 201 Created
+
+### Day 9 error semantics
+
+- 400 `VALIDATION_ERROR`
+- 400 `INVALID_REQUEST`
+- 404 `BUYER_PREFERENCES_NOT_FOUND`
+- 422 `INVALID_BUYER_PREFERENCES`
+- 503 `BUYER_PERSISTENCE_UNAVAILABLE`
+- 500 `INTERNAL_ERROR`
+
+### Sonraki Day'ler için planlanan
+
+Aşağıdakiler Day 9 implementation'ı değildir:
+- GET `/buyers/{buyerId}/offers`
+- POST `/buyers/{buyerId}/offers`
+- POST `/buyers/{buyerId}/offers/{offerId}/cancel`
+- POST `/buyers/{buyerId}/viewing-requests`
+
+Offer idempotency, Saga, gRPC ve messaging contract'ları ilgili sonraki Day'lerde kesinleştirilecektir.
 
 ## SellerService
 ### POST /sellers

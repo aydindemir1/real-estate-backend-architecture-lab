@@ -9,6 +9,7 @@ dependencies {
     implementation libs.springBootActuator
     implementation libs.springBootZipkin
 
+    testImplementation libs.springBootWebMvcTest
     testImplementation libs.testcontainersJunitJupiter
     testImplementation "org.testcontainers:testcontainers-cassandra:$versions.testcontainers"
     testImplementation libs.archUnitJunit5

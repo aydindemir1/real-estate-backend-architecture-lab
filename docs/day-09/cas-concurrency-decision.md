@@ -1,48 +1,59 @@
-# Day 9 — Couchbase CAS / Optimistic Concurrency Decision
+# Day 9 — Couchbase CAS / Optimistic Concurrency Kararı
 
-## Status
+## Durum
 
-Deferred intentionally.
+**Bilinçli olarak ertelendi.**
 
-## Context
+## Bağlam
 
-Spring Data Couchbase supports optimistic locking through Couchbase CAS by placing `@Version` on a persistence document field. A document loaded through Spring Data receives the current CAS value; a stale save fails with `OptimisticLockingFailureException`.
+Spring Data Couchbase, persistence document üzerindeki bir alana `@Version` ekleyerek Couchbase CAS tabanlı optimistic locking desteği sağlayabilir.
 
-Day 9's Hexagonal persistence contract is currently:
+Spring Data üzerinden yüklenen bir document mevcut CAS değerini taşır. Stale bir representation ile yapılan save işlemi `OptimisticLockingFailureException` üretebilir.
+
+Day 9 Hexagonal persistence contract'ı şu şekildedir:
 
 ```text
 LoadBuyerPreferencesPort.load(BuyerId) -> Optional<BuyerPreferences>
 SaveBuyerPreferencesPort.save(BuyerPreferences) -> BuyerPreferences
 ```
 
-The persistence document is intentionally separated from the domain aggregate.
+Persistence document ile domain Aggregate bilinçli olarak birbirinden ayrılmıştır.
 
-## Why CAS is not enabled in Day 9
+## Day 9'da CAS neden etkinleştirilmedi?
 
-Adding `@Version` only to `BuyerPreferencesDocument` would not provide correct optimistic concurrency with the current port design.
+Yalnızca `BuyerPreferencesDocument` üzerine `@Version` eklemek mevcut port tasarımında doğru optimistic concurrency sağlamaz.
 
-The CAS value would be populated on the Couchbase document during load, but `BuyerPreferencesDocumentMapper.toDomain(...)` intentionally returns only the domain aggregate. The CAS value would therefore be lost before the application modifies and saves the aggregate.
+Load sırasında CAS değeri Couchbase document üzerinde bulunur. Ancak:
 
-Recreating a new document with version `0` or an unset version on every save would not preserve the original CAS token and would create misleading concurrency semantics.
+```text
+BuyerPreferencesDocumentMapper.toDomain(...)
+```
 
-Day 9 does not introduce a hidden persistence-specific token into the domain or silently change the established port contracts.
+yalnızca domain Aggregate'i döndürür.
 
-## Correct future options
+Böylece CAS değeri application katmanı Aggregate'i değiştirip tekrar save etmeden önce kaybolur.
 
-A later concurrency-focused milestone may choose one of these explicit designs:
+Her save işleminde version değeri `0` veya boş olan yeni bir document üretmek, daha önce yüklenmiş CAS token'ını korumaz ve yanıltıcı bir concurrency koruması oluşturur.
 
-1. Add a persistence-agnostic aggregate version/concurrency token to `BuyerPreferences` and carry it through the ports.
-2. Change the persistence port contract to return/save a wrapper that carries both the aggregate and concurrency metadata.
-3. Introduce a dedicated update port whose adapter owns the load-modify-save CAS cycle.
+Day 9:
+- persistence-specific gizli token'ı domain'e sokmaz,
+- mevcut port contract'larını sessizce değiştirmez,
+- çalışmayan optimistic locking'i varmış gibi göstermez.
 
-Any selected approach must include an integration test proving that two independently loaded stale representations cannot overwrite each other.
+## Gelecekteki doğru seçenekler
 
-## Day 9 decision
+Concurrency odaklı sonraki bir milestone aşağıdaki tasarımlardan birini açıkça seçebilir:
 
-No `@Version` field is added in Day 9.
+1. `BuyerPreferences` içine persistence bağımsız bir aggregate version / concurrency token eklemek ve bunu port'lardan taşımak.
+2. Persistence port contract'ını Aggregate + concurrency metadata taşıyan bir wrapper döndürecek/kaydedecek şekilde değiştirmek.
+3. Load-modify-save CAS döngüsünü adapter'ın yönettiği dedicated update port tasarlamak.
 
-No fake optimistic-locking test is added.
+Seçilen yaklaşım mutlaka iki bağımsız stale representation'ın birbirini overwrite edemediğini kanıtlayan integration test içermelidir.
 
-The existing deterministic-key Couchbase persistence remains the Day 9 baseline.
+## Day 9 kararı
 
-This is an explicit deferred item, not an unimplemented claim.
+- `@Version` eklenmedi.
+- Fake optimistic-locking test eklenmedi.
+- Deterministic-key Couchbase persistence Day 9 baseline olarak korundu.
+
+Bu, eksik implementation iddiası değil; açıkça verilmiş bir **defer kararıdır**.

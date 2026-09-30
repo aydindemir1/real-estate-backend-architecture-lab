@@ -37,53 +37,73 @@
 
 ## BuyerService
 
-### UpsertBuyerPreferencesRequest
-- minimumBudget
-- maximumBudget
+### Day 9 — Implemented / Verified
+
+#### UpdateBuyerPreferencesRequest
+- minPrice
+- maxPrice
 - currency
 - preferredLocations[]
+  - city
+  - district?
 - propertyTypes[]
-- minRoomCount?
-- maxRoomCount?
+- minRooms?
+- maxRooms?
 - minArea?
 - maxArea?
 - preferredFeatures[]
 - notificationSettings
+  - emailEnabled
+  - pushEnabled
+  - smsEnabled
 
-### BuyerPreferencesResponse
+#### AddSavedSearchRequest
+- name
+- minPrice?
+- maxPrice?
+- currency?
+- locations[]
+  - city
+  - district?
+- propertyTypes[]
+- minRooms?
+- maxRooms?
+- minArea?
+- maxArea?
+- preferredFeatures[]
+
+#### BuyerPreferencesResponse
 - buyerId
-- budget
-- preferredLocations
-- propertyTypes
+- priceRange
+  - min
+  - max
+  - currency
+- preferredLocations[]
+- propertyTypes[]
 - roomRange
+  - min
+  - max
 - areaRange
-- preferredFeatures
+  - min
+  - max
+- preferredFeatures[]
 - notificationSettings
-- savedSearches
-
-### CreateOfferRequest
-- propertyId
-- amount
-- currency
-
-Header:
-- Idempotency-Key
-
-### OfferResponse
-- offerId
-- buyerId
-- propertyId
-- amount
-- currency
-- status
+- savedSearches[]
+  - id
+  - name
+  - priceRange
+  - locations[]
+  - propertyTypes[]
+  - roomRange
+  - areaRange
+  - preferredFeatures[]
+  - createdAt
 - createdAt
 - updatedAt
-- expiresAt?
 
-### CreateViewingRequest
-- propertyId
-- agentId
-- requestedAt
+### Sonraki Day'ler için planlanan DTO'lar
+
+Offer ve Viewing DTO'ları Day 9 implementation'ı değildir. İlgili capability implemente edildiği Day'de contract'ları kesinleştirilecektir.
 
 ## SellerService
 

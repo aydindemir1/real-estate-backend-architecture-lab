@@ -9,6 +9,7 @@ import com.datastax.oss.driver.api.core.cql.Row;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.time.temporal.ChronoUnit;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -35,8 +36,8 @@ class CassandraSellerRepositoryAdapterIntegrationTest
         assertThat(loaded.userId()).isEqualTo(userId);
         assertThat(loaded.displayName()).isEqualTo("Aydın Demir");
         assertThat(loaded.status()).isEqualTo(SellerStatus.ACTIVE);
-        assertThat(loaded.createdAt()).isEqualTo(original.createdAt());
-        assertThat(loaded.updatedAt()).isEqualTo(original.updatedAt());
+        assertThat(loaded.createdAt()).isEqualTo(original.createdAt().truncatedTo(ChronoUnit.MILLIS));
+        assertThat(loaded.updatedAt()).isEqualTo(original.updatedAt().truncatedTo(ChronoUnit.MILLIS));
     }
 
     @Test
@@ -58,7 +59,7 @@ class CassandraSellerRepositoryAdapterIntegrationTest
         assertThat(row.getUuid("user_id")).isEqualTo(seller.userId().value());
         assertThat(row.getString("display_name")).isEqualTo("Physical Model Seller");
         assertThat(row.getString("status")).isEqualTo("ACTIVE");
-        assertThat(row.getInstant("created_at")).isEqualTo(seller.createdAt());
-        assertThat(row.getInstant("updated_at")).isEqualTo(seller.updatedAt());
+        assertThat(row.getInstant("created_at")).isEqualTo(seller.createdAt().truncatedTo(ChronoUnit.MILLIS));
+        assertThat(row.getInstant("updated_at")).isEqualTo(seller.updatedAt().truncatedTo(ChronoUnit.MILLIS));
     }
 }

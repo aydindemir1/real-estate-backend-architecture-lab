@@ -2,16 +2,25 @@ server:
   port: 9095
 
 spring:
-  datasource:
-    url: ${SELLER_DB_URL:jdbc:postgresql://localhost:5438/micro_seller_service_db}
-    username: ${SELLER_DB_USERNAME:aydin}
-    password: ${SELLER_DB_PASSWORD}
-  jpa:
-    hibernate:
-      ddl-auto: update
-    open-in-view: false
-    show-sql: true
+  cassandra:
+    contact-points: ${SELLER_CASSANDRA_CONTACT_POINTS:localhost}
+    port: ${SELLER_CASSANDRA_PORT:9042}
+    keyspace-name: ${SELLER_CASSANDRA_KEYSPACE:seller_service}
+    local-datacenter: ${SELLER_CASSANDRA_LOCAL_DATACENTER:datacenter1}
+    username: ${SELLER_CASSANDRA_USERNAME:}
+    password: ${SELLER_CASSANDRA_PASSWORD:}
+    schema-action: none
+    request:
+      timeout: ${SELLER_CASSANDRA_REQUEST_TIMEOUT:5s}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
 
 springdoc:
+  api-docs:
+    path: /api-docs
   swagger-ui:
     path: /swagger-ui.html

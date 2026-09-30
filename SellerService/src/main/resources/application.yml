@@ -6,19 +6,3 @@ spring:
   cloud:
     config:
       uri: ${CONFIG_SERVER_URL:http://localhost:8889}
-  cassandra:
-    contact-points: ${SELLER_CASSANDRA_CONTACT_POINTS:localhost}
-    port: ${SELLER_CASSANDRA_PORT:9042}
-    keyspace-name: ${SELLER_CASSANDRA_KEYSPACE:seller_service}
-    local-datacenter: ${SELLER_CASSANDRA_LOCAL_DATACENTER:datacenter1}
-    username: ${SELLER_CASSANDRA_USERNAME:}
-    password: ${SELLER_CASSANDRA_PASSWORD:}
-    schema-action: none
-    request:
-      timeout: ${SELLER_CASSANDRA_REQUEST_TIMEOUT:5s}
-
-management:
-  endpoints:
-    web:
-      exposure:
-        include: health,info

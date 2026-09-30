@@ -4,8 +4,8 @@ server:
 spring:
   couchbase:
     connection-string: ${BUYER_COUCHBASE_CONNECTION_STRING:couchbase://localhost}
-    username: ${BUYER_COUCHBASE_USERNAME}
-    password: ${BUYER_COUCHBASE_PASSWORD}
+    username: ${BUYER_DB_USERNAME}
+    password: ${BUYER_DB_PASSWORD}
     env:
       timeouts:
         key-value: ${BUYER_COUCHBASE_KV_TIMEOUT:2500ms}

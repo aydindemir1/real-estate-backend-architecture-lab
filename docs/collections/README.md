@@ -14,6 +14,7 @@ Bu klasör, `docs/backend-roadmap-design` branch'inde gün bazlı Postman collec
 
 - `day-03/Microservices-Project.postman_collection.json` — Day 3 mikroservis/API çalışma collection'ı.
 - `day-08/Real-Estate-Day08-AgentService.postman_collection.json` — Day 8 AgentService runtime ve API doğrulama collection'ı.
+- `day-09/Day-09-BuyerService.postman_collection.json` — Day 9 BuyerService Couchbase/Hexagonal runtime ve API kabul collection'ı.
 
 Yeni günler tamamlandıkça aynı yapı devam ettirilir:
 

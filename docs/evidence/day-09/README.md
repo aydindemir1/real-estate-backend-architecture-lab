@@ -17,6 +17,7 @@ This directory records the local runtime acceptance evidence for **BuyerService 
 ## Visual evidence
 
 - [Infrastructure: Couchbase before/after + Eureka registration](visual/day09-infrastructure-evidence.svg)
+- [Couchbase bucket status after persistence](visual/day09-couchbase-bucket-evidence.svg)
 - [Postman success scenarios](visual/day09-success-scenarios.svg)
 - [Postman error scenarios](visual/day09-error-scenarios.svg)
 - [Runtime troubleshooting: initial path-variable failure](visual/day09-troubleshooting-evidence.svg)

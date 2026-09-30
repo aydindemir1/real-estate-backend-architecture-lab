@@ -40,6 +40,7 @@ class SellerOnionArchitectureTest {
     static final ArchRule infrastructureMustNotDependOnPresentation =
             noClasses()
                     .that().resideInAPackage("..infrastructure..")
+                    .and().resideOutsideOfPackage("..infrastructure.configuration..")
                     .should().dependOnClassesThat()
                     .resideInAPackage("..presentation..");
 

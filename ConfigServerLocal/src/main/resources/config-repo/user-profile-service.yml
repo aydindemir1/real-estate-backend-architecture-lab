@@ -4,7 +4,7 @@ server:
 spring:
   datasource:
     url: ${USER_PROFILE_DB_URL:jdbc:postgresql://localhost:5434/micro_user_profile_service_db}
-    username: ${USER_PROFILE_DB_USERNAME:aydin}
+    username: ${USER_PROFILE_DB_USERNAME}
     password: ${USER_PROFILE_DB_PASSWORD}
   rabbitmq:
     host: ${RABBITMQ_HOST:localhost}

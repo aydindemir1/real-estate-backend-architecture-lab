@@ -4,7 +4,7 @@ server:
 spring:
   datasource:
     url: ${AUTH_DB_URL:jdbc:postgresql://localhost:5433/micro_auth_service_db}
-    username: ${AUTH_DB_USERNAME:aydin}
+    username: ${AUTH_DB_USERNAME}
     password: ${AUTH_DB_PASSWORD}
   rabbitmq:
     host: ${RABBITMQ_HOST:localhost}
@@ -33,4 +33,3 @@ authservice:
   issuer: ${AUTH_JWT_ISSUER:java-44-auth-service}
   expire:
     date: ${AUTH_JWT_EXPIRE_MS:300000}
-

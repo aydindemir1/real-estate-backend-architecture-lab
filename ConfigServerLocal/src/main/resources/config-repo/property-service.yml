@@ -4,7 +4,7 @@ server:
 spring:
   datasource:
     url: ${PROPERTY_DB_URL:jdbc:postgresql://localhost:5437/micro_property_service_db}
-    username: ${PROPERTY_DB_USERNAME:aydin}
+    username: ${PROPERTY_DB_USERNAME}
     password: ${PROPERTY_DB_PASSWORD}
   jpa:
     hibernate:

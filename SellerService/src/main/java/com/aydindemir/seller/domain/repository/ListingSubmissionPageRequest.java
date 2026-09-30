@@ -1,7 +1,5 @@
 package com.aydindemir.seller.domain.repository;
 
-import java.util.Objects;
-
 public record ListingSubmissionPageRequest(
         int pageSize,
         String pageState) {

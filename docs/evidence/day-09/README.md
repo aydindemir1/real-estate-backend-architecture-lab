@@ -1,8 +1,8 @@
-# Day 09 - BuyerService Local Runtime Evidence
+# Day 09 - BuyerService Lokal Runtime Kanıtları
 
-This directory records the local runtime acceptance evidence for **BuyerService - Couchbase + Hexagonal Architecture**.
+Bu klasör, **BuyerService - Couchbase + Hexagonal Architecture** çalışmasının lokal runtime kabul testlerine ait gerçek kanıtları içerir.
 
-## Environment
+## Ortam
 
 - BuyerService: `http://localhost:9093`
 - Config Server: `http://localhost:8888`
@@ -11,112 +11,129 @@ This directory records the local runtime acceptance evidence for **BuyerService 
 - Couchbase bucket: `buyer`
 - Couchbase scope: `buyer_service`
 - Couchbase collection: `preferences`
-- Local runtime: STS / Spring Boot App
-- Couchbase edition: Community 8.0.2
+- Lokal çalışma şekli: STS / Spring Boot App
+- Couchbase sürümü: Community 8.0.2
 
-## Visual evidence
+## Orijinal ekran görüntüleri
 
-- [Infrastructure: Couchbase before/after + Eureka registration](visual/day09-infrastructure-evidence.svg)
-- [Couchbase bucket status after persistence](visual/day09-couchbase-bucket-evidence.svg)
-- [Postman success scenarios](visual/day09-success-scenarios.svg)
-- [Postman error scenarios](visual/day09-error-scenarios.svg)
-- [Runtime troubleshooting: initial path-variable failure](visual/day09-troubleshooting-evidence.svg)
+Aşağıdaki kanıtlar, test sırasında paylaşılan ekran görüntülerinin **orijinal çözünürlükleri korunarak** ayrı ayrı arşivlenmiş halleridir.
 
-## Startup evidence
+### Couchbase ve altyapı
 
-The captured BuyerService startup log proves that:
+- [01 - Postman öncesi boş preferences collection](original/01-couchbase-preferences-baslangic-bos.svg)
+- [04 - İlk başarılı PUT sonrası preferences collection: 1 item](original/04-couchbase-preferences-1-item.svg)
+- [14 - Eureka üzerinde BUYER-SERVICE UP](original/14-eureka-buyer-service-up.svg)
+- [15 - buyer bucket durumu: 1 item, CouchStore](original/15-couchbase-buyer-bucket.svg)
 
-- configuration is loaded from Config Server on port 8888,
-- the Couchbase `buyer` bucket opens successfully,
-- BuyerService starts on port 9093,
-- BuyerService registers with Eureka as `UP`.
+### Başarılı Postman senaryoları
 
-Raw evidence:
+- [03 - PUT preferences - 200 OK](original/03-put-preferences-200.svg)
+- [05 - GET preferences - 200 OK](original/05-get-preferences-200.svg)
+- [06 - POST saved search - 201 Created](original/06-post-saved-search-201.svg)
+- [07 - POST saved search - response detayı](original/07-post-saved-search-201-detay.svg)
+- [08 - Saved search sonrası GET - 200 OK](original/08-get-after-saved-search-200.svg)
+
+### Hata senaryoları
+
+- [09 - Olmayan preferences - 404](original/09-get-missing-preferences-404.svg)
+- [10 - Bean Validation hatası - 400](original/10-put-validation-error-400.svg)
+- [11 - Semantic range ihlali - 422](original/11-put-semantic-range-error-422.svg)
+- [12 - Geçersiz UUID - 400](original/12-get-invalid-uuid-400.svg)
+- [13 - Bozuk JSON - 400](original/13-put-malformed-json-400.svg)
+
+### Runtime sırasında bulunan hata
+
+- [02 - İlk PUT denemesinde PathVariable runtime hatası](original/02-ilk-put-path-variable-hatasi.svg)
+
+## Startup log kanıtı
+
+Kaydedilen BuyerService startup logu aşağıdaki noktaları doğrular:
+
+- Config Server konfigürasyonu `8888` portundan başarıyla alınmıştır.
+- Couchbase `buyer` bucket başarıyla açılmıştır.
+- BuyerService `9093` portunda başlamıştır.
+- BuyerService Eureka'ya `UP` olarak kayıt olmuştur.
+
+Ham log:
 
 - `buyer-service-startup-success.log`
 
-## Couchbase persistence evidence
+## Couchbase persistence kanıtı
 
-Before Postman runtime tests:
+Postman testlerinden önce:
 
-- `buyer_service.preferences` existed,
-- item count was `0`.
+- `buyer_service.preferences` collection mevcuttu.
+- item sayısı `0` idi.
 
-After the first successful preferences PUT:
+İlk başarılı preferences PUT işleminden sonra:
 
-- item count changed from `0` to `1`,
-- subsequent GET returned the same persisted preferences,
-- a saved search was added,
-- a later GET returned the saved search from persistence.
+- item sayısı `0 -> 1` oldu.
+- sonraki GET isteği aynı preferences verisini Couchbase üzerinden geri okudu.
+- saved search eklendi.
+- sonraki GET isteğinde saved search kalıcı veriden geri döndü.
 
-This confirms a real Couchbase write/read cycle rather than only an in-memory API response.
+Bu sonuç, yalnızca API response üretildiğini değil, gerçek Couchbase write/read persistence döngüsünün çalıştığını doğrular.
 
-## Eureka evidence
+## Eureka kanıtı
 
-The Eureka dashboard was captured during local runtime.
+Lokal runtime sırasında Eureka Dashboard üzerinde aşağıdaki servisler `UP` olarak görüntülendi:
 
-Registered instances shown as `UP`:
+- `API-GATEWAY-SERVICE` - port `8080`
+- `BUYER-SERVICE` - port `9093`
 
-- `API-GATEWAY-SERVICE` on port `8080`
-- `BUYER-SERVICE` on port `9093`
+Lokal geliştirme ortamında az sayıda instance bulunduğu için Eureka self-preservation/renewal uyarısı görüntülenmiştir. Bu uyarı, ekranda görülen `UP` registration durumunu geçersiz kılmaz.
 
-The development Eureka dashboard also displayed its normal low-renewal/self-preservation warning for the small local instance count; this does not invalidate the recorded `UP` registrations.
-
-## Postman acceptance results
+## Postman kabul testleri
 
 Collection:
 
 - `Day-09-BuyerService.postman_collection.json`
 
-### Success scenarios
+### Başarılı senaryolar
 
-| Scenario | Expected | Result |
+| Senaryo | Beklenen HTTP | Sonuç |
 |---|---:|---:|
-| PUT `/buyers/{buyerId}/preferences` | 200 | PASS - 3/3 tests |
-| GET `/buyers/{buyerId}/preferences` | 200 | PASS - 2/2 tests |
-| POST `/buyers/{buyerId}/saved-searches` | 201 | PASS - 3/3 tests |
-| GET preferences after saved search | 200 | PASS - 2/2 tests |
+| PUT `/buyers/{buyerId}/preferences` | 200 | PASS - 3/3 test |
+| GET `/buyers/{buyerId}/preferences` | 200 | PASS - 2/2 test |
+| POST `/buyers/{buyerId}/saved-searches` | 201 | PASS - 3/3 test |
+| Saved search sonrası GET preferences | 200 | PASS - 2/2 test |
 
-### Error scenarios
+### Hata senaryoları
 
-| Scenario | Expected | Error code | Result |
+| Senaryo | Beklenen HTTP | Error code | Sonuç |
 |---|---:|---|---:|
-| Missing preferences | 404 | `BUYER_PREFERENCES_NOT_FOUND` | PASS - 2/2 |
-| Bean Validation failure | 400 | `VALIDATION_ERROR` | PASS - 3/3 |
-| Semantic range violation | 422 | `INVALID_BUYER_PREFERENCES` | PASS - 2/2 |
-| Invalid UUID path variable | 400 | `INVALID_REQUEST` | PASS - 2/2 |
-| Malformed JSON | 400 | `INVALID_REQUEST` | PASS - 2/2 |
+| Preferences bulunamadı | 404 | `BUYER_PREFERENCES_NOT_FOUND` | PASS - 2/2 |
+| Bean Validation hatası | 400 | `VALIDATION_ERROR` | PASS - 3/3 |
+| Semantic range ihlali | 422 | `INVALID_BUYER_PREFERENCES` | PASS - 2/2 |
+| Geçersiz UUID path variable | 400 | `INVALID_REQUEST` | PASS - 2/2 |
+| Bozuk JSON | 400 | `INVALID_REQUEST` | PASS - 2/2 |
 
-## Runtime defect found during acceptance
+## Kabul testi sırasında bulunan runtime problemi
 
-The initial PUT request exposed a runtime issue:
+İlk PUT isteği sırasında aşağıdaki hata görüldü:
 
-```
+```text
 Name for argument of type [java.util.UUID] not specified,
 and parameter name information not available via reflection.
 ```
 
-The controller had relied on implicit path-variable parameter-name discovery.
+Controller, path variable adının implicit parameter-name discovery ile çözülmesine güveniyordu.
 
-It was fixed by declaring the path variable explicitly:
+Sorun tüm ilgili endpoint'lerde path variable adının açıkça belirtilmesiyle giderildi:
 
 ```java
 @PathVariable("buyerId") UUID buyerId
 ```
 
-for all three BuyerService REST operations.
+Düzeltmeden sonra tüm başarılı ve hata senaryoları geçti.
 
-After the fix, the complete success and error acceptance set passed.
+## Day 09 runtime kabul durumu
 
-## Acceptance status
-
-Day 09 BuyerService runtime acceptance:
-
-- Config Server integration: **PASS**
+- Config Server entegrasyonu: **PASS**
 - Couchbase authentication: **PASS**
-- Couchbase bucket open: **PASS**
+- Couchbase bucket açılışı: **PASS**
 - Couchbase persistence write/read: **PASS**
 - Eureka registration: **PASS**
-- REST success scenarios: **PASS**
-- REST validation/error scenarios: **PASS**
-- Correlation/trace error envelope: **observed**
+- REST başarılı senaryolar: **PASS**
+- REST validation/error senaryoları: **PASS**
+- Correlation/trace error envelope: **gözlemlendi**

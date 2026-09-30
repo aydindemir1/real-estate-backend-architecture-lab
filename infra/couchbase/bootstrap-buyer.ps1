@@ -118,7 +118,7 @@ if ([string]::IsNullOrWhiteSpace($appUsername) -or [string]::IsNullOrWhiteSpace(
 
 $userList = ((& docker exec $ContainerName /opt/couchbase/bin/couchbase-cli user-manage --cluster 127.0.0.1:8091 --username $username --password $password --list --auth-domain local) | Out-String)
 $userExists = $userList -match "(?m)^id: $([regex]::Escape($appUsername))$"
-$applicationRole = "data_writer[" + $Bucket + ":" + $Scope + ":" + $Collection + "]"
+$applicationRole = "bucket_full_access[" + $Bucket + "]"
 
 if (-not $userExists) {
     Write-Host "Creating BuyerService Couchbase application user '$appUsername'..."

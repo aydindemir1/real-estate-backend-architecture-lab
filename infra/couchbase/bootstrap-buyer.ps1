@@ -33,8 +33,16 @@ if ([string]::IsNullOrWhiteSpace($username) -or [string]::IsNullOrWhiteSpace($pa
 }
 
 $clusterReady = $false
-& docker exec $ContainerName curl -fsS -u "${username}:${password}" http://127.0.0.1:8091/pools/default *> $null
-if ($LASTEXITCODE -eq 0) { $clusterReady = $true }
+$clusterProbe = & docker exec $ContainerName curl -sS -o /dev/null -w "%{http_code}" -u "${username}:${password}" http://127.0.0.1:8091/pools/default
+if ($LASTEXITCODE -ne 0) {
+    throw "Failed to query Couchbase cluster status."
+}
+if ($clusterProbe -eq "200") {
+    $clusterReady = $true
+}
+elseif ($clusterProbe -ne "404") {
+    throw "Unexpected HTTP status '$clusterProbe' while checking Couchbase cluster status."
+}
 
 if (-not $clusterReady) {
     Write-Host "Initializing Couchbase cluster..."

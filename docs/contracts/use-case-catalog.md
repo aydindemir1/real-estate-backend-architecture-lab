@@ -27,18 +27,24 @@ Day 8 sonrası primary authentication Keycloak'a kaydıkça bazı use-case'ler a
 
 ## BuyerService
 
-### BuyerPreferences
-- CreateBuyerPreferences
+### Day 9 — Implemented / Verified
+
+BuyerPreferences:
 - UpdateBuyerPreferences
 - GetBuyerPreferences
 - AddSavedSearch
-- RemoveSavedSearch
 
-### Viewing
+Not:
+- create/update semantics PUT endpoint ve `UpdateBuyerPreferencesUseCase` içinde birleştirilmiştir.
+- Day 9'da `RemoveSavedSearch` implemente edilmemiştir.
+
+### Sonraki Day'ler için planlanan
+
+Viewing:
 - RequestViewing
 - CheckAssignedAgentAvailability
 
-### Offer
+Offer:
 - CreateOffer
 - GetOffer
 - ListBuyerOffers
@@ -49,7 +55,7 @@ Day 8 sonrası primary authentication Keycloak'a kaydıkça bazı use-case'ler a
 - MarkOfferExpired
 - MarkOfferFailed
 
-Son beş use-case public endpoint olmak zorunda değildir; event handler tarafından çağrılabilir.
+Bu use-case'ler Day 9 implementation'ı olarak değerlendirilmez.
 
 ## SellerService
 

@@ -49,6 +49,7 @@ public final class ListingSubmissionApplicationService {
                 .findBySellerAndMonthAndId(
                         command.sellerId(),
                         command.yearMonth(),
+                        command.createdAt(),
                         command.submissionId())
                 .orElseThrow(() -> new ListingSubmissionNotFoundException(command.submissionId()));
 

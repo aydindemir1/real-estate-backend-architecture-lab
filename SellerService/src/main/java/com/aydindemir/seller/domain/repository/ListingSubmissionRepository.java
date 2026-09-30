@@ -4,6 +4,7 @@ import com.aydindemir.seller.domain.model.ListingSubmission;
 import com.aydindemir.seller.domain.model.ListingSubmissionId;
 import com.aydindemir.seller.domain.model.SellerId;
 
+import java.time.Instant;
 import java.time.YearMonth;
 import java.util.Optional;
 
@@ -14,6 +15,7 @@ public interface ListingSubmissionRepository {
     Optional<ListingSubmission> findBySellerAndMonthAndId(
             SellerId sellerId,
             YearMonth yearMonth,
+            Instant createdAt,
             ListingSubmissionId submissionId);
 
     ListingSubmissionPage listBySellerAndMonth(

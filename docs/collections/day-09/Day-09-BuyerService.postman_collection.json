@@ -1,0 +1,487 @@
+{
+  "info": {
+    "_postman_id": "0e0c335a-7d82-4f06-8c36-6ef45c54d909",
+    "name": "Day 09 - BuyerService Couchbase Hexagonal",
+    "description": "Local runtime acceptance: success and error scenarios for BuyerService.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:9093"
+    },
+    {
+      "key": "buyerId",
+      "value": ""
+    },
+    {
+      "key": "missingBuyerId",
+      "value": ""
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "if (!pm.collectionVariables.get('buyerId')) {",
+          "  pm.collectionVariables.set('buyerId', pm.variables.replaceIn('{{$guid}}'));",
+          "}",
+          "if (!pm.collectionVariables.get('missingBuyerId')) {",
+          "  pm.collectionVariables.set('missingBuyerId', pm.variables.replaceIn('{{$guid}}'));",
+          "}"
+        ]
+      }
+    }
+  ],
+  "item": [
+    {
+      "name": "01 - Success Scenarios",
+      "item": [
+        {
+          "name": "01 - PUT Preferences - 200",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Correlation-Id",
+                "value": "postman-day09-{{$guid}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/buyers/{{buyerId}}/preferences",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "buyers",
+                "{{buyerId}}",
+                "preferences"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"minPrice\": 1000000,\n  \"maxPrice\": 5000000,\n  \"currency\": \"TRY\",\n  \"preferredLocations\": [\n    {\n      \"city\": \"Istanbul\",\n      \"district\": \"Kadikoy\"\n    }\n  ],\n  \"propertyTypes\": [\n    \"APARTMENT\"\n  ],\n  \"minRooms\": 1,\n  \"maxRooms\": 3,\n  \"minArea\": 70,\n  \"maxArea\": 140,\n  \"preferredFeatures\": [\n    \"BALCONY\"\n  ],\n  \"notificationSettings\": {\n    \"emailEnabled\": true,\n    \"pushEnabled\": false,\n    \"smsEnabled\": false\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "const body = pm.response.json();",
+                  "pm.test('buyerId matches', () => pm.expect(body.buyerId).to.eql(pm.collectionVariables.get('buyerId')));",
+                  "pm.test('currency is TRY', () => pm.expect(body.priceRange.currency).to.eql('TRY'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "02 - GET Preferences - 200",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Correlation-Id",
+                "value": "postman-day09-{{$guid}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/buyers/{{buyerId}}/preferences",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "buyers",
+                "{{buyerId}}",
+                "preferences"
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "const body = pm.response.json();",
+                  "pm.test('buyerId matches', () => pm.expect(body.buyerId).to.eql(pm.collectionVariables.get('buyerId')));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "03 - POST Saved Search - 201",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Correlation-Id",
+                "value": "postman-day09-{{$guid}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/buyers/{{buyerId}}/saved-searches",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "buyers",
+                "{{buyerId}}",
+                "saved-searches"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Kadikoy apartments\",\n  \"minPrice\": 1500000,\n  \"maxPrice\": 4500000,\n  \"currency\": \"TRY\",\n  \"locations\": [\n    {\n      \"city\": \"Istanbul\",\n      \"district\": \"Kadikoy\"\n    }\n  ],\n  \"propertyTypes\": [\n    \"APARTMENT\"\n  ],\n  \"minRooms\": 1,\n  \"maxRooms\": 3,\n  \"minArea\": 70,\n  \"maxArea\": 140,\n  \"preferredFeatures\": [\n    \"BALCONY\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 201', () => pm.response.to.have.status(201));",
+                  "const body = pm.response.json();",
+                  "pm.test('buyerId matches', () => pm.expect(body.buyerId).to.eql(pm.collectionVariables.get('buyerId')));",
+                  "pm.test('saved search added', () => pm.expect(body.savedSearches.length).to.be.above(0));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "04 - GET Preferences After Saved Search - 200",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Correlation-Id",
+                "value": "postman-day09-{{$guid}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/buyers/{{buyerId}}/preferences",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "buyers",
+                "{{buyerId}}",
+                "preferences"
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "const body = pm.response.json();",
+                  "pm.test('saved search persisted', () => pm.expect(body.savedSearches.length).to.be.above(0));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "02 - Error Scenarios",
+      "item": [
+        {
+          "name": "01 - GET Missing Preferences - 404",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Correlation-Id",
+                "value": "postman-day09-{{$guid}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/buyers/{{missingBuyerId}}/preferences",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "buyers",
+                "{{missingBuyerId}}",
+                "preferences"
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 404', () => pm.response.to.have.status(404));",
+                  "const body = pm.response.json();",
+                  "pm.test('Error code', () => pm.expect(body.code).to.eql('BUYER_PREFERENCES_NOT_FOUND'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "02 - PUT Validation Error - 400",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Correlation-Id",
+                "value": "postman-day09-{{$guid}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/buyers/{{buyerId}}/preferences",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "buyers",
+                "{{buyerId}}",
+                "preferences"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"minPrice\": -1,\n  \"maxPrice\": 5000000,\n  \"currency\": \"\",\n  \"notificationSettings\": null\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 400', () => pm.response.to.have.status(400));",
+                  "const body = pm.response.json();",
+                  "pm.test('Error code', () => pm.expect(body.code).to.eql('VALIDATION_ERROR'));",
+                  "pm.test('Field errors exist', () => pm.expect(body.errors.length).to.be.above(0));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "03 - PUT Semantic Range Error - 422",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Correlation-Id",
+                "value": "postman-day09-{{$guid}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/buyers/{{buyerId}}/preferences",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "buyers",
+                "{{buyerId}}",
+                "preferences"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"minPrice\": 5000000,\n  \"maxPrice\": 1000000,\n  \"currency\": \"TRY\",\n  \"preferredLocations\": [],\n  \"propertyTypes\": [\n    \"APARTMENT\"\n  ],\n  \"minRooms\": 1,\n  \"maxRooms\": 3,\n  \"minArea\": 70,\n  \"maxArea\": 140,\n  \"preferredFeatures\": [\n    \"BALCONY\"\n  ],\n  \"notificationSettings\": {\n    \"emailEnabled\": true,\n    \"pushEnabled\": false,\n    \"smsEnabled\": false\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 422', () => pm.response.to.have.status(422));",
+                  "const body = pm.response.json();",
+                  "pm.test('Error code', () => pm.expect(body.code).to.eql('INVALID_BUYER_PREFERENCES'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "04 - GET Invalid UUID - 400",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Correlation-Id",
+                "value": "postman-day09-{{$guid}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/buyers/not-a-uuid/preferences",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "buyers",
+                "not-a-uuid",
+                "preferences"
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 400', () => pm.response.to.have.status(400));",
+                  "const body = pm.response.json();",
+                  "pm.test('Error code', () => pm.expect(body.code).to.eql('INVALID_REQUEST'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "05 - PUT Malformed JSON - 400",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Correlation-Id",
+                "value": "postman-day09-{{$guid}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"minPrice\": 1000000,\n  \"maxPrice\": 5000000,\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/buyers/{{buyerId}}/preferences",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "buyers",
+                "{{buyerId}}",
+                "preferences"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 400', () => pm.response.to.have.status(400));",
+                  "const body = pm.response.json();",
+                  "pm.test('Error code', () => pm.expect(body.code).to.eql('INVALID_REQUEST'));"
+                ]
+              }
+            }
+          ],
+          "response": []
+        }
+      ]
+    }
+  ]
+}

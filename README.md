@@ -151,7 +151,7 @@ JWT ayarları environment variable ile değiştirilebilir:
 | AgentService | 9092 | Day 8: MySQL + Flyway + Clean Architecture + Agent domain/API |
 | BuyerService | 9093 | Day 9: Couchbase + Hexagonal Architecture + BuyerPreferences/SavedSearch |
 | PropertyService | 9094 | Day 3 temel servis iskeleti |
-| SellerService | 9095 | Day 3 temel servis iskeleti |
+| SellerService | 9095 | Day 10: Cassandra + Onion Architecture + Seller/ListingSubmission |
 
 ### Auth -> UserProfile akışı
 
@@ -1328,3 +1328,86 @@ Detaylı plan, tasarım, Knowledge Base ve runtime kanıtları:
 - `docs/evidence/day-09/README.md`
 - `docs/collections/day-09/Day-09-BuyerService.postman_collection.json`
 
+
+
+## Day 10 — SellerService / Cassandra / Onion Architecture
+
+Day 10'da SellerService, temel servis iskeletinden gerçek domain modeli, query-first Cassandra persistence ve REST API içeren bağımsız bir mikroservise dönüştürülmüştür.
+
+Başlıca tamamlanan çalışmalar:
+
+- PostgreSQL/JPA yaklaşımı kaldırılarak **Apache Cassandra 5.0.9** kullanıldı.
+- Servis **Onion Architecture** sınırlarına ayrıldı.
+- Framework-independent `Seller` Aggregate ve `ListingSubmission` state modeli oluşturuldu.
+- `PropertyDraftData`, identity/value tipleri ve domain exception'ları eklendi.
+- Domain repository contract'ları Cassandra implementation'ından ayrıldı.
+- Query-first fiziksel model oluşturuldu:
+  - `seller_by_id`
+  - `listing_submissions_by_seller_and_month`
+- Listing history partition key'i `(seller_id, year_month)` olarak tasarlandı.
+- Clustering order `created_at DESC, submission_id ASC` olarak tanımlandı.
+- `ALLOW FILTERING` ve cross-partition scan kullanılmadı.
+- Version-controlled CQL schema ve explicit `cqlsh` bootstrap yaklaşımı uygulandı.
+- Spring Data Cassandra repository, mapper ve adapter katmanları implemente edildi.
+- Seller ve ListingSubmission REST API'leri eklendi.
+- Domain, application, REST, Cassandra Testcontainers ve ArchUnit testleri eklendi.
+- GitHub Actions CI, lokal runtime, Config Server, Eureka, Cassandra persistence ve Postman acceptance doğrulandı.
+- Cassandra Admin lokal inspection aracı olarak eklendi; listing table UI stale-rendering gözlemi ayrıca kaydedildi ve persistence `cqlsh` ile doğrulandı.
+
+### SellerService API
+
+| Method | Endpoint | Başarılı response |
+|---|---|---:|
+| POST | `/sellers` | 201 |
+| GET | `/sellers/{sellerId}` | 200 |
+| POST | `/sellers/{sellerId}/listing-submissions` | 201 |
+| GET | `/sellers/{sellerId}/listing-submissions?yearMonth=YYYY-MM&pageSize=N&pageState=...` | 200 |
+| POST | `/sellers/{sellerId}/listing-submissions/{submissionId}/submit` | 200 |
+
+Day 10 runtime state akışı:
+
+```text
+CREATED -> SUBMITTED
+```
+
+Aynı submission'ın tekrar submit edilmesi `409 INVALID_LISTING_SUBMISSION_STATE` ile reddedilir.
+
+### Cassandra veri modeli
+
+```text
+seller_service
+├── seller_by_id
+└── listing_submissions_by_seller_and_month
+      partition: (seller_id, year_month)
+      clustering: created_at DESC, submission_id ASC
+```
+
+### Lokal runtime doğrulaması
+
+```text
+ConfigServerLocal :8888
+        |
+        v
+SellerService :9095
+        |
+        v
+Cassandra :9042
+        |
+        v
+EurekaServer :8761
+```
+
+Day 10 durumu: **Completed / Verified**
+
+Detaylı dokümanlar:
+
+- `SellerService/ROADMAP.md`
+- `SellerService/docs/DESIGN.md`
+- `SellerService/docs/PACKAGE-DESIGN.md`
+- `docs/roadmap/day-10-seller-cassandra-onion.md`
+- `docs/roadmap/day-10-exact-file-plan.md`
+- `docs/knowledge-base/architectures/onion-architecture.md`
+- `docs/knowledge-base/technologies/datastores/cassandra.md`
+- `docs/knowledge-base/by-day/day-10.md`
+- `docs/evidence/day-10/README.md`
+- `docs/collections/day-10/Day-10-SellerService.postman_collection.json`

@@ -149,7 +149,7 @@ JWT ayarları environment variable ile değiştirilebilir:
 | AuthService | 9090 | Kayıt, giriş ve JWT |
 | UserProfileService | 9091 | Kullanıcı profil verisi |
 | AgentService | 9092 | Day 8: MySQL + Flyway + Clean Architecture + Agent domain/API |
-| BuyerService | 9093 | Day 3 temel servis iskeleti |
+| BuyerService | 9093 | Day 9: Couchbase + Hexagonal Architecture + BuyerPreferences/SavedSearch |
 | PropertyService | 9094 | Day 3 temel servis iskeleti |
 | SellerService | 9095 | Day 3 temel servis iskeleti |
 
@@ -1124,4 +1124,207 @@ Detaylı plan, kararlar ve kanıtlar:
 - `docs/roadmap/day-08-exact-file-plan.md`
 - `docs/knowledge-base/by-day/day-08.md`
 - `docs/day-08/evidence/README.md`
+
+## Day 9 — BuyerService / Couchbase / Hexagonal Architecture
+
+Day 9'da BuyerService, temel servis iskeletinden gerçek domain modeli, application katmanı, Couchbase persistence ve REST API içeren bağımsız bir mikroservise dönüştürülmüştür.
+
+Başlıca tamamlanan çalışmalar:
+
+- BuyerService persistence yaklaşımı PostgreSQL/JPA'dan **Couchbase**'e taşındı.
+- Servis **Hexagonal Architecture** sınırlarına ayrıldı.
+- Framework-independent domain modeli oluşturuldu.
+- `BuyerPreferences` Aggregate'i geliştirildi.
+- `BuyerId`, `PriceRange`, `RoomRange`, `AreaRange`, `LocationPreference`, `NotificationSettings` ve `SavedSearch` domain modelleri oluşturuldu.
+- Inbound use-case port'ları ve outbound persistence port'ları tanımlandı.
+- Application katmanı Couchbase detaylarından bağımsız tutuldu.
+- Domain model ile Couchbase document modeli birbirinden ayrıldı.
+- Deterministic document-key stratejisi uygulandı.
+- Spring Data Couchbase repository, mapper ve persistence adapter geliştirildi.
+- Couchbase bucket/scope/collection bootstrap süreci version control altına alındı.
+- REST request/response contract'ları ve merkezi error mapping eklendi.
+- Domain, application, REST, Couchbase Testcontainers ve ArchUnit testleri eklendi.
+- GitHub Actions CI başarılı olarak doğrulandı.
+- STS üzerinden lokal runtime, Config Server, Eureka ve gerçek Couchbase write/read akışı doğrulandı.
+- Postman success ve error acceptance senaryoları tamamlandı.
+- Runtime kanıtları startup log ve orijinal PNG ekran görüntüleriyle arşivlendi.
+
+### Hexagonal Architecture
+
+Day 9 BuyerService dependency yönü özetle:
+
+```text
+REST Adapter
+    |
+    v
+Inbound Ports
+    |
+    v
+Application Service
+    |
+    v
+Domain
+    |
+    v
+Outbound Ports
+    ^
+    |
+Couchbase Persistence Adapter
+```
+
+Temel kurallar:
+
+- Domain katmanı Spring, Couchbase ve adapter detaylarını bilmez.
+- Application katmanı adapter implementation'larına bağımlı değildir.
+- REST inbound adapter yalnız inbound port'lar üzerinden application katmanına erişir.
+- Couchbase adapter outbound persistence port'larını implement eder.
+- Domain ile persistence modeli mapper üzerinden ayrıştırılır.
+- Architecture boundaries ArchUnit ile otomatik olarak doğrulanır.
+
+### BuyerService API
+
+| Method | Endpoint | Açıklama |
+|---|---|---|
+| `PUT` | `/buyers/{buyerId}/preferences` | Buyer preferences oluşturur/günceller |
+| `GET` | `/buyers/{buyerId}/preferences` | Buyer preferences bilgisini getirir |
+| `POST` | `/buyers/{buyerId}/saved-searches` | Buyer preferences içine saved search ekler |
+
+Başarılı response'lar:
+
+```text
+PUT  preferences     -> 200 OK
+GET  preferences     -> 200 OK
+POST saved-searches  -> 201 Created
+```
+
+Doğrulanan hata senaryoları:
+
+```text
+404 BUYER_PREFERENCES_NOT_FOUND
+400 VALIDATION_ERROR
+400 INVALID_REQUEST
+422 INVALID_BUYER_PREFERENCES
+```
+
+Persistence dependency hataları için `503 BUYER_PERSISTENCE_UNAVAILABLE`, beklenmeyen hatalar için `500 INTERNAL_ERROR` error contract'ı tanımlanmıştır.
+
+### Couchbase veri modeli
+
+Day 9'da kullanılan fiziksel yapı:
+
+```text
+Couchbase
+└── bucket: buyer
+    └── scope: buyer_service
+        └── collection: preferences
+```
+
+BuyerPreferences document key:
+
+```text
+buyer-preferences::{buyerId}
+```
+
+Primary access path doğrudan document-key lookup'tır. Day 9 use-case'leri için secondary index eklenmemiştir.
+
+Lokal Couchbase:
+
+- Couchbase Community 8.0.2
+- storage backend: `couchstore`
+- application role: `bucket_full_access[buyer]`
+
+Uygulama credential contract'ı:
+
+- `BUYER_DB_USERNAME`
+- `BUYER_DB_PASSWORD`
+
+Secret değerler repository'ye yazılmaz.
+
+### Lokal runtime doğrulaması
+
+Day 9 aşağıdaki zincir üzerinde doğrulanmıştır:
+
+```text
+ConfigServerLocal :8888
+        |
+        v
+EurekaServer :8761
+        |
+        v
+BuyerService :9093
+        |
+        v
+Couchbase :8091 / 11210
+```
+
+Doğrulanan noktalar:
+
+- Config Server configuration load
+- STS `Run As -> Spring Boot App`
+- root `.env` yükleme
+- Couchbase authentication
+- `buyer` bucket açılışı
+- Eureka üzerinde `BUYER-SERVICE` -> `UP`
+- preferences PUT/GET
+- saved search POST
+- gerçek Couchbase persistence write/read
+- collection item sayısının `0 -> 1` değişmesi
+- saved search verisinin sonraki GET isteğinde persistence üzerinden geri okunması
+- validation ve error response senaryoları
+
+### Test kapsamı
+
+Day 9 BuyerService için:
+
+- domain unit tests
+- application service tests
+- in-memory fake persistence port
+- REST controller tests
+- Couchbase Testcontainers integration tests
+- deterministic-key persistence testleri
+- nested document round-trip testleri
+- saved-search round-trip testleri
+- ArchUnit Hexagonal Architecture kuralları
+- smoke test
+- GitHub Actions CI
+
+### CAS / optimistic concurrency kararı
+
+Couchbase CAS tabanlı optimistic concurrency Day 9'da bilinçli olarak ertelenmiştir.
+
+Mevcut Hexagonal port contract CAS token'ını domain/application boyunca taşımadığı için yalnız persistence document üzerine `@Version` eklemek gerçek stale-write koruması sağlamayacaktır.
+
+Detay:
+
+- `docs/day-09/cas-concurrency-decision.md`
+
+### Day 9 kapsamı dışında bırakılanlar
+
+Aşağıdaki konular Day 9 implementation'ı değildir:
+
+- Offer Aggregate / Offer persistence
+- Saga
+- Kafka
+- gRPC
+- Redis idempotency
+- Keycloak authorization
+
+Bu konular ilgili sonraki Day çalışmalarında ele alınacaktır.
+
+### Day 9 durumu
+
+**Day 9 — BuyerService + Couchbase + Hexagonal Architecture: Completed / Verified**
+
+Detaylı plan, tasarım, Knowledge Base ve runtime kanıtları:
+
+- `BuyerService/ROADMAP.md`
+- `BuyerService/docs/DESIGN.md`
+- `BuyerService/docs/PACKAGE-DESIGN.md`
+- `docs/roadmap/day-09-buyer-couchbase-hexagonal.md`
+- `docs/roadmap/day-09-exact-file-plan.md`
+- `docs/knowledge-base/architectures/hexagonal-architecture.md`
+- `docs/knowledge-base/technologies/datastores/couchbase.md`
+- `docs/knowledge-base/by-day/day-09.md`
+- `docs/evidence/day-09/README.md`
+- `docs/collections/day-09/Day-09-BuyerService.postman_collection.json`
 

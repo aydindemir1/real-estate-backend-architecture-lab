@@ -118,7 +118,7 @@ Day 10'a dahil edilmemiştir:
 - [x] local Cassandra write/read
 - [x] Postman success/error acceptance
 - [x] original PNG evidence GitHub binary sync
-- [ ] canonical planning branch final sync
+- [x] canonical planning branch final sync
 
 
 ## Exact plan

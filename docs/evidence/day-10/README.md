@@ -188,7 +188,7 @@ Orijinal PNG'ler crop/resize/re-encode yapılmadan ayrı evidence paketinde koru
 
 GitHub connector üzerinden ilk binary denemesinde bozulma görüldüğü için orijinal PNG'ler lokal Git üzerinden repository'ye commit edilmiştir.
 
-Day 10 implementation/runtime kabulü ve original binary evidence sync doğrulanmıştır. Canonical planning-branch sync ayrıca Day Close Protocol kapsamında yapılır.
+Day 10 implementation/runtime kabulü ve original binary evidence sync doğrulanmıştır. Canonical planning-branch sync Day Close Protocol kapsamında tamamlanmıştır.
 
 
 ## Orijinal ekran görüntüleri

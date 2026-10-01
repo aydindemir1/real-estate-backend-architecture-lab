@@ -1,0 +1,841 @@
+{
+  "info": {
+    "_postman_id": "a2dcbf92-2cd6-4ab2-927c-10f9eec48d10",
+    "name": "Day 10 - SellerService Cassandra Onion",
+    "description": "Local runtime acceptance: success and error scenarios for Day 10 SellerService.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:9095"
+    },
+    {
+      "key": "userId",
+      "value": ""
+    },
+    {
+      "key": "sellerId",
+      "value": ""
+    },
+    {
+      "key": "missingSellerId",
+      "value": ""
+    },
+    {
+      "key": "submissionId",
+      "value": ""
+    },
+    {
+      "key": "createdAt",
+      "value": ""
+    },
+    {
+      "key": "yearMonth",
+      "value": ""
+    },
+    {
+      "key": "missingSubmissionId",
+      "value": ""
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "if (!pm.collectionVariables.get('userId')) pm.collectionVariables.set('userId', pm.variables.replaceIn('{{$guid}}'));",
+          "if (!pm.collectionVariables.get('missingSellerId')) pm.collectionVariables.set('missingSellerId', pm.variables.replaceIn('{{$guid}}'));",
+          "if (!pm.collectionVariables.get('missingSubmissionId')) pm.collectionVariables.set('missingSubmissionId', pm.variables.replaceIn('{{$guid}}'));"
+        ]
+      }
+    }
+  ],
+  "item": [
+    {
+      "name": "01 - Success Scenarios",
+      "item": [
+        {
+          "name": "01 - POST Create Seller - 201",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"{{userId}}\",\n  \"displayName\": \"Aydın Demir\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/sellers",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "sellers"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 201', () => pm.response.to.have.status(201));",
+                  "const body = pm.response.json();",
+                  "pm.test('Seller is ACTIVE', () => pm.expect(body.status).to.eql('ACTIVE'));",
+                  "pm.test('userId matches', () => pm.expect(body.userId).to.eql(pm.collectionVariables.get('userId')));",
+                  "pm.collectionVariables.set('sellerId', body.sellerId);"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "02 - GET Seller - 200",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/sellers/{{sellerId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "sellers",
+                "{{sellerId}}"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "const body = pm.response.json();",
+                  "pm.test('sellerId matches', () => pm.expect(body.sellerId).to.eql(pm.collectionVariables.get('sellerId')));",
+                  "pm.test('Seller is ACTIVE', () => pm.expect(body.status).to.eql('ACTIVE'));"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "03 - POST Create Listing Submission - 201",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Gebze Merkez Daire\",\n  \"description\": \"Day 10 runtime acceptance listing\",\n  \"propertyType\": \"APARTMENT\",\n  \"city\": \"Kocaeli\",\n  \"district\": \"Gebze\",\n  \"addressLine\": \"Örnek Mah. No:1\",\n  \"priceAmount\": 3500000,\n  \"currency\": \"TRY\",\n  \"area\": 120,\n  \"roomCount\": 3\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/sellers/{{sellerId}}/listing-submissions",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "sellers",
+                "{{sellerId}}",
+                "listing-submissions"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 201', () => pm.response.to.have.status(201));",
+                  "const body = pm.response.json();",
+                  "pm.test('Listing is CREATED', () => pm.expect(body.status).to.eql('CREATED'));",
+                  "pm.test('sellerId matches', () => pm.expect(body.sellerId).to.eql(pm.collectionVariables.get('sellerId')));",
+                  "pm.collectionVariables.set('submissionId', body.submissionId);",
+                  "pm.collectionVariables.set('createdAt', body.createdAt);",
+                  "pm.collectionVariables.set('yearMonth', body.createdAt.substring(0, 7));"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "04 - GET List Seller Submissions - 200",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/sellers/{{sellerId}}/listing-submissions?yearMonth={{yearMonth}}&pageSize=20",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "sellers",
+                "{{sellerId}}",
+                "listing-submissions"
+              ],
+              "query": [
+                {
+                  "key": "yearMonth",
+                  "value": "{{yearMonth}}"
+                },
+                {
+                  "key": "pageSize",
+                  "value": "20"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "const body = pm.response.json();",
+                  "pm.test('Items exist', () => pm.expect(body.items.length).to.be.above(0));",
+                  "pm.test('Created submission is listed', () => pm.expect(body.items.map(x => x.submissionId)).to.include(pm.collectionVariables.get('submissionId')));"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "05 - POST Submit Listing - 200",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"yearMonth\": \"{{yearMonth}}\",\n  \"createdAt\": \"{{createdAt}}\",\n  \"submissionId\": \"{{submissionId}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/sellers/{{sellerId}}/listing-submissions/{{submissionId}}/submit",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "sellers",
+                "{{sellerId}}",
+                "listing-submissions",
+                "{{submissionId}}",
+                "submit"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "const body = pm.response.json();",
+                  "pm.test('Listing is SUBMITTED', () => pm.expect(body.status).to.eql('SUBMITTED'));",
+                  "pm.test('submissionId matches', () => pm.expect(body.submissionId).to.eql(pm.collectionVariables.get('submissionId')));"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "06 - GET List After Submit - 200",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/sellers/{{sellerId}}/listing-submissions?yearMonth={{yearMonth}}&pageSize=20",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "sellers",
+                "{{sellerId}}",
+                "listing-submissions"
+              ],
+              "query": [
+                {
+                  "key": "yearMonth",
+                  "value": "{{yearMonth}}"
+                },
+                {
+                  "key": "pageSize",
+                  "value": "20"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "const body = pm.response.json();",
+                  "const item = body.items.find(x => x.submissionId === pm.collectionVariables.get('submissionId'));",
+                  "pm.test('Submitted listing persisted', () => pm.expect(item && item.status).to.eql('SUBMITTED'));"
+                ]
+              }
+            }
+          ],
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "02 - Error Scenarios",
+      "item": [
+        {
+          "name": "01 - GET Missing Seller - 404",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/sellers/{{missingSellerId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "sellers",
+                "{{missingSellerId}}"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 404', () => pm.response.to.have.status(404));",
+                  "const body = pm.response.json();",
+                  "pm.test('Error code', () => pm.expect(body.code).to.eql('SELLER_NOT_FOUND'));"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "02 - POST Seller Validation Error - 400",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": null,\n  \"displayName\": \"\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/sellers",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "sellers"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 400', () => pm.response.to.have.status(400));",
+                  "const body = pm.response.json();",
+                  "pm.test('Error code', () => pm.expect(body.code).to.eql('VALIDATION_ERROR'));",
+                  "pm.test('Validation details exist', () => pm.expect(body.details.length).to.be.above(0));"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "03 - POST Listing for Missing Seller - 404",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Missing seller listing\",\n  \"description\": \"Should fail\",\n  \"propertyType\": \"APARTMENT\",\n  \"city\": \"Kocaeli\",\n  \"district\": \"Gebze\",\n  \"addressLine\": \"Örnek Mah. No:2\",\n  \"priceAmount\": 2500000,\n  \"currency\": \"TRY\",\n  \"area\": 90,\n  \"roomCount\": 2\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/sellers/{{missingSellerId}}/listing-submissions",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "sellers",
+                "{{missingSellerId}}",
+                "listing-submissions"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 404', () => pm.response.to.have.status(404));",
+                  "const body = pm.response.json();",
+                  "pm.test('Error code', () => pm.expect(body.code).to.eql('SELLER_NOT_FOUND'));"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "04 - POST Listing Validation Error - 400",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"\",\n  \"description\": \"\",\n  \"propertyType\": \"\",\n  \"city\": \"\",\n  \"district\": \"\",\n  \"addressLine\": \"\",\n  \"priceAmount\": 0,\n  \"currency\": \"\",\n  \"area\": 0,\n  \"roomCount\": -1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/sellers/{{sellerId}}/listing-submissions",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "sellers",
+                "{{sellerId}}",
+                "listing-submissions"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 400', () => pm.response.to.have.status(400));",
+                  "const body = pm.response.json();",
+                  "pm.test('Error code', () => pm.expect(body.code).to.eql('VALIDATION_ERROR'));",
+                  "pm.test('Validation details exist', () => pm.expect(body.details.length).to.be.above(0));"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "05 - GET Invalid Page Size - 400",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/sellers/{{sellerId}}/listing-submissions?yearMonth={{yearMonth}}&pageSize=101",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "sellers",
+                "{{sellerId}}",
+                "listing-submissions"
+              ],
+              "query": [
+                {
+                  "key": "yearMonth",
+                  "value": "{{yearMonth}}"
+                },
+                {
+                  "key": "pageSize",
+                  "value": "101"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 400', () => pm.response.to.have.status(400));",
+                  "const body = pm.response.json();",
+                  "pm.test('Error code', () => pm.expect(body.code).to.eql('VALIDATION_ERROR'));"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "06 - GET Invalid Year Month Format - 400",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/sellers/{{sellerId}}/listing-submissions?yearMonth=2026/10&pageSize=20",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "sellers",
+                "{{sellerId}}",
+                "listing-submissions"
+              ],
+              "query": [
+                {
+                  "key": "yearMonth",
+                  "value": "2026/10"
+                },
+                {
+                  "key": "pageSize",
+                  "value": "20"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 400', () => pm.response.to.have.status(400));",
+                  "const body = pm.response.json();",
+                  "pm.test('Error code', () => pm.expect(body.code).to.eql('VALIDATION_ERROR'));"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "07 - POST Submit Path Body Mismatch - 400",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"yearMonth\": \"{{yearMonth}}\",\n  \"createdAt\": \"{{createdAt}}\",\n  \"submissionId\": \"{{missingSubmissionId}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/sellers/{{sellerId}}/listing-submissions/{{submissionId}}/submit",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "sellers",
+                "{{sellerId}}",
+                "listing-submissions",
+                "{{submissionId}}",
+                "submit"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 400', () => pm.response.to.have.status(400));",
+                  "const body = pm.response.json();",
+                  "pm.test('Error code', () => pm.expect(body.code).to.eql('BAD_REQUEST'));"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "08 - POST Submit Missing Submission - 404",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"yearMonth\": \"{{yearMonth}}\",\n  \"createdAt\": \"{{createdAt}}\",\n  \"submissionId\": \"{{missingSubmissionId}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/sellers/{{sellerId}}/listing-submissions/{{missingSubmissionId}}/submit",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "sellers",
+                "{{sellerId}}",
+                "listing-submissions",
+                "{{missingSubmissionId}}",
+                "submit"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 404', () => pm.response.to.have.status(404));",
+                  "const body = pm.response.json();",
+                  "pm.test('Error code', () => pm.expect(body.code).to.eql('LISTING_SUBMISSION_NOT_FOUND'));"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "09 - POST Submit Same Listing Again - 409",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"yearMonth\": \"{{yearMonth}}\",\n  \"createdAt\": \"{{createdAt}}\",\n  \"submissionId\": \"{{submissionId}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/sellers/{{sellerId}}/listing-submissions/{{submissionId}}/submit",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "sellers",
+                "{{sellerId}}",
+                "listing-submissions",
+                "{{submissionId}}",
+                "submit"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 409', () => pm.response.to.have.status(409));",
+                  "const body = pm.response.json();",
+                  "pm.test('Error code', () => pm.expect(body.code).to.eql('INVALID_LISTING_SUBMISSION_STATE'));"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "10 - POST Malformed JSON - 400",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"{{userId}}\",\n  \"displayName\": \"Broken JSON\"",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/sellers",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "sellers"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 400', () => pm.response.to.have.status(400));",
+                  "const body = pm.response.json();",
+                  "pm.test('Error code', () => pm.expect(body.code).to.eql('MALFORMED_REQUEST_BODY'));"
+                ]
+              }
+            }
+          ],
+          "response": []
+        }
+      ]
+    }
+  ]
+}

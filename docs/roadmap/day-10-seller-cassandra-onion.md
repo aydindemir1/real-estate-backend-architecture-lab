@@ -2,9 +2,9 @@
 
 ## Durum
 
-**Implementation / CI / Local Runtime / Postman Verified**
+**Completed / Verified**
 
-Final repository evidence binary sync ve canonical planning-branch sync kapanış adımı olarak beklemektedir.
+Implementation, automated tests, CI, lokal runtime/Postman acceptance ve original PNG evidence repository sync tamamlanmıştır.
 
 ## Gerçekleşen kapsam
 
@@ -117,5 +117,10 @@ Day 10'a dahil edilmemiştir:
 - [x] Eureka
 - [x] local Cassandra write/read
 - [x] Postman success/error acceptance
-- [ ] original PNG evidence GitHub binary sync
+- [x] original PNG evidence GitHub binary sync
 - [ ] canonical planning branch final sync
+
+
+## Exact plan
+
+- `docs/roadmap/day-10-exact-file-plan.md`

@@ -179,13 +179,52 @@ Bu davranış application persistence hatası değil, Cassandra Admin UI limitat
 | 10 error Postman scenario | ✅ PASS |
 | State transition | ✅ PASS |
 | cqlsh partition query | ✅ PASS |
-| Original evidence package | ✅ Prepared |
-| Original PNG GitHub binary sync | ⏳ Pending local commit |
+| Original evidence package | ✅ PASS |
+| Original PNG GitHub binary sync | ✅ PASS |
 
 ## Evidence packaging
 
 Orijinal PNG'ler crop/resize/re-encode yapılmadan ayrı evidence paketinde korunmuştur.
 
-GitHub connector binary image aktarımında bozulma oluşturduğu için orijinal PNG'lerin son repository commit'i lokal Git üzerinden yapılacaktır.
+GitHub connector üzerinden ilk binary denemesinde bozulma görüldüğü için orijinal PNG'ler lokal Git üzerinden repository'ye commit edilmiştir.
 
-Day 10 implementation/runtime kabulü doğrulanmıştır; yalnızca orijinal binary evidence sync ve canonical planning-branch sync kapanış adımıdır.
+Day 10 implementation/runtime kabulü ve original binary evidence sync doğrulanmıştır. Canonical planning-branch sync ayrıca Day Close Protocol kapsamında yapılır.
+
+
+## Orijinal ekran görüntüleri
+
+### Altyapı / Cassandra
+- [01 - Eureka SELLER-SERVICE UP](png/01-eureka-seller-service-up.png)
+- [02 - Cassandra Admin seller_service schema](png/02-cassandra-admin-seller-service-schema.png)
+- [03 - seller_by_id başlangıç görünümü](png/03-cassandra-admin-seller-by-id-empty.png)
+- [04 - listing submissions başlangıç görünümü](png/04-cassandra-admin-listing-submissions-empty.png)
+- [08 - seller_by_id persisted row](png/08-cassandra-admin-seller-persisted.png)
+- [11 - Cassandra Admin listing stale-view observation](png/11-cassandra-admin-listing-stale-view-observation.png)
+
+### Success acceptance
+- [05 - Create Seller 201](png/05-postman-create-seller-201.png)
+- [07 - Get Seller 200](png/07-postman-get-seller-200.png)
+- [09 - Create Listing Submission 201](png/09-postman-create-listing-submission-201.png)
+- [10 - List Seller Submissions 200](png/10-postman-list-seller-submissions-200.png)
+- [12 - Submit Listing 200](png/12-postman-submit-listing-200.png)
+- [13 - List After Submit 200](png/13-postman-list-after-submit-200.png)
+
+### Runtime defect evidence
+- [06 - GET Seller parameter binding defect 400](png/06-postman-get-seller-runtime-defect-400.png)
+
+### Error acceptance
+- [14 - Missing Seller 404](png/14-postman-get-missing-seller-404.png)
+- [15 - Seller Validation 400](png/15-postman-seller-validation-error-400.png)
+- [16 - Submit Same Listing Again 409](png/16-postman-submit-same-listing-again-409.png)
+- [17 - Listing For Missing Seller 404](png/17-postman-listing-for-missing-seller-404.png)
+- [18 - Listing Validation 400](png/18-postman-listing-validation-error-400.png)
+- [19 - Invalid Page Size 400](png/19-postman-invalid-page-size-400.png)
+- [20 - Invalid Year Month 400](png/20-postman-invalid-year-month-400.png)
+- [21 - Submit Path/Body Mismatch 400](png/21-postman-submit-path-body-mismatch-400.png)
+- [22 - Submit Missing Submission 404](png/22-postman-submit-missing-submission-404.png)
+- [23 - Malformed JSON 400](png/23-postman-malformed-json-400.png)
+
+## Ek ham kanıtlar
+- `logs/cassandra-listing-persistence-cqlsh.txt`
+- `logs/seller-service-startup-success-original.md`
+- `seller-service-startup-success.log`

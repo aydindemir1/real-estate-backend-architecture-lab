@@ -1,0 +1,9 @@
+C:\real-estate-backend-architecture-lab>docker compose exec seller-cassandra cqlsh -e "SELECT * FROM seller_service.listing_submissions_by_seller_and_month WHERE seller_id = 1359ae82-5f8e-4e73-9b75-3d2cff518a51 AND year_month = '2026-10';"
+
+ seller_id                            | year_month | created_at                      | submission_id                        | address_line    | area | city    | currency | description                       | district | price_amount | property_type | room_count | status  | title              | updated_at
+--------------------------------------+------------+---------------------------------+--------------------------------------+-----------------+------+---------+----------+-----------------------------------+----------+--------------+---------------+------------+---------+--------------------+---------------------------------
+ 1359ae82-5f8e-4e73-9b75-3d2cff518a51 |    2026-10 | 2026-10-01 21:56:41.252000+0000 | 1c0f567f-c36a-4309-ad1d-d535a42adbe0 | Örnek Mah. No:1 |  120 | Kocaeli |      TRY | Day 10 runtime acceptance listing |    Gebze |      3500000 |     APARTMENT |          3 | CREATED | Gebze Merkez Daire | 2026-10-01 21:56:41.252000+0000
+
+(1 rows)
+
+C:\real-estate-backend-architecture-lab>

@@ -15,6 +15,7 @@ Day dosyaları canonical açıklamaları tekrar etmez.
 - [Day 7](day-07.md)
 - [Day 8](day-08.md)
 - [Day 9](day-09.md)
+- [Day 10](day-10.md)
 
 ## Maintenance rule
 

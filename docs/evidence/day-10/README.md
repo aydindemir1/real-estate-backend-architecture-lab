@@ -1,10 +1,8 @@
 # Day 10 — SellerService Runtime Evidence
 
-Bu klasör, `day/10-seller-cassandra-onion` branch'inde Day 10 SellerService çalışmalarının lokal runtime doğrulama kanıtlarını kayıt altına alır.
+Bu klasör, `day/10-seller-cassandra-onion` branch'inde Day 10 SellerService çalışmalarının lokal runtime doğrulama kayıtlarını tutar.
 
-> Bu kayıt yalnızca şu ana kadar gerçekten doğrulanan runtime adımlarını içerir. Eureka ekran görüntüsü kanıtı eklenmiştir; Postman kabul testleri ve Cassandra ekran görüntüsü henüz tamamlanmamıştır.
-
-## Doğrulanan çalışma zinciri
+## Doğrulanan runtime zinciri
 
 ```text
 ConfigServerLocal :8888
@@ -14,144 +12,180 @@ SellerService :9095
 Cassandra :9042
         ↓
 EurekaServer :8761
+        ↓
+Postman acceptance
 ```
 
 ## Lokal ortam
 
-- Spring Boot: `4.1.1`
 - Java: `21.0.8`
-- SellerService portu: `9095`
-- ConfigServerLocal: `http://localhost:8888`
+- Spring Boot: `4.1.1`
+- SellerService: `9095`
+- ConfigServerLocal: `8888`
+- Eureka: `8761`
 - Cassandra: `localhost:9042`
 - Cassandra image: `cassandra:5.0.9`
-- Cassandra keyspace: `seller_service`
-- Eureka: `http://localhost:8761/eureka/`
+- keyspace: `seller_service`
+- Cassandra Admin: `localhost:8002`
 
-## Cassandra bootstrap doğrulaması
+## Cassandra schema
 
-Lokal Cassandra container aşağıdaki komutla doğrulandı:
+Version-controlled schema:
 
-```cmd
-docker compose --profile seller up -d seller-cassandra
-docker compose ps seller-cassandra
-```
+`SellerService/src/main/resources/cassandra/schema/V1__seller_tables.cql`
 
-Container durumu:
+Doğrulanan tablolar:
+
+- `seller_by_id`
+- `listing_submissions_by_seller_and_month`
+
+Listing partition key:
 
 ```text
-real-estate-seller-cassandra   cassandra:5.0.9   Up (...) (healthy)   0.0.0.0:9042->9042/tcp
+(seller_id, year_month)
 ```
 
-İlk kontrolde yalnızca Cassandra system keyspace'leri bulunuyordu ve `seller_service` henüz mevcut değildi.
+Clustering:
 
-Version-controlled Day 10 CQL schema aşağıdaki komutla uygulandı:
-
-```cmd
-type SellerService\src\main\resources\cassandra\schema\V1__seller_tables.cql | docker compose exec -T seller-cassandra cqlsh
+```text
+created_at DESC, submission_id ASC
 ```
 
-Ardından:
+`ALLOW FILTERING` kullanılmamaktadır.
 
-```cmd
-docker compose exec seller-cassandra cqlsh -e "DESCRIBE KEYSPACE seller_service;"
-```
+## SellerService startup
 
-ile aşağıdaki fiziksel model doğrulandı:
+Başarılı runtime oturumunda:
 
-- keyspace: `seller_service`
-- table: `seller_by_id`
-- table: `listing_submissions_by_seller_and_month`
-- composite partition key: `(seller_id, year_month)`
-- clustering columns: `created_at, submission_id`
-- clustering order: `created_at DESC, submission_id ASC`
+- config `http://localhost:8888` üzerinden alındı
+- iki Cassandra repository bulundu
+- Cassandra session açıldı
+- Tomcat `9095` portunda başladı
+- `SELLER-SERVICE` Eureka'ya `UP` olarak register edildi
+- Eureka registration status `204` oldu
 
-## SellerService startup doğrulaması
-
-Başarılı startup oturumunda aşağıdaki noktalar doğrulandı:
-
-- `SellerServiceApplication` Java 21 ile başladı.
-- Config Server konfigürasyonu `http://localhost:8888` üzerinden alındı.
-- `seller-service/default` environment başarıyla bulundu.
-- Spring Data Cassandra iki repository interface'i buldu.
-- Cassandra driver `localhost:9042` contact point'ine bağlandı.
-- SellerService Eureka'dan registry bilgisini `200` ile aldı.
-- `SELLER-SERVICE` Eureka'ya `UP` olarak register edildi.
-- Eureka registration sonucu `204` oldu.
-- Tomcat `9095` portunda başladı.
-- `SellerServiceApplication` başarılı şekilde startup tamamladı.
-
-Ham başarı logu:
+Ham log:
 
 - `seller-service-startup-success.log`
 
-## Eureka screenshot kanıtı
+## Postman success acceptance
 
-Lokal Eureka Dashboard üzerinde aşağıdaki servisler `UP` olarak doğrulandı:
+Collection:
 
-- `API-GATEWAY-SERVICE` — port `8080`
-- `SELLER-SERVICE` — port `9095`
+- `docs/collections/day-10/Day-10-SellerService.postman_collection.json`
 
-Orijinal PNG kanıtı kırpılmadan, yeniden boyutlandırılmadan ve yeniden encode edilmeden saklanmıştır:
+Başarılı senaryolar:
 
-- [01-eureka-seller-service-up.png](png/01-eureka-seller-service-up.png)
+| # | Senaryo | Sonuç |
+|---|---|---:|
+| 1 | POST Create Seller | 201 |
+| 2 | GET Seller | 200 |
+| 3 | POST Create Listing Submission | 201 |
+| 4 | GET List Seller Submissions | 200 |
+| 5 | POST Submit Listing | 200 |
+| 6 | GET List After Submit | 200 |
 
-Dashboard üzerinde görülen Eureka renewal/self-preservation uyarısı lokal geliştirme ortamındaki düşük instance/renewal sayısıyla ilişkilidir; ekrandaki `SELLER-SERVICE = UP` registration durumunu geçersiz kılmaz.
+Create/submit akışında `CREATED -> SUBMITTED` state transition runtime'da doğrulandı.
 
-## Runtime sırasında bulunan ve çözülen problemler
+## Postman error acceptance
 
-### 1. Boş Cassandra credential ayarları
+| # | Senaryo | Sonuç / code |
+|---|---|---|
+| 1 | Missing Seller | 404 / SELLER_NOT_FOUND |
+| 2 | Seller Validation | 400 / VALIDATION_ERROR |
+| 3 | Listing for Missing Seller | 404 / SELLER_NOT_FOUND |
+| 4 | Listing Validation | 400 / VALIDATION_ERROR |
+| 5 | Invalid pageSize | 400 / VALIDATION_ERROR |
+| 6 | Invalid yearMonth | 400 / VALIDATION_ERROR |
+| 7 | Submit path/body mismatch | 400 / BAD_REQUEST |
+| 8 | Missing submission | 404 / LISTING_SUBMISSION_NOT_FOUND |
+| 9 | Submit same listing again | 409 / INVALID_LISTING_SUBMISSION_STATE |
+| 10 | Malformed JSON | 400 / MALFORMED_REQUEST_BODY |
 
-İlk runtime denemesinde Config Server üzerinden aşağıdaki boş credential property'leri gönderiliyordu:
+## Cassandra persistence doğrulaması
 
-```yaml
-username: ${SELLER_CASSANDRA_USERNAME:}
-password: ${SELLER_CASSANDRA_PASSWORD:}
+`seller_by_id` tablosunda oluşturulan ACTIVE seller Cassandra Admin üzerinden görüldü.
+
+Listing kaydı ayrıca doğrudan partition-key CQL sorgusuyla doğrulandı:
+
+```sql
+SELECT *
+FROM seller_service.listing_submissions_by_seller_and_month
+WHERE seller_id = 1359ae82-5f8e-4e73-9b75-3d2cff518a51
+  AND year_month = '2026-10';
 ```
 
-Spring Boot / Cassandra driver boş username değerini geçerli credential konfigürasyonu olarak yorumladı ve startup şu hata ile durdu:
+Sonuç:
+
+- 1 row
+- submission: `1c0f567f-c36a-4309-ad1d-d535a42adbe0`
+- title: `Gebze Merkez Daire`
+- status create aşamasında: `CREATED`
+
+Daha sonra REST submit ve tekrar list çağrısı ile persisted durum `SUBMITTED` olarak doğrulandı.
+
+## Runtime sırasında bulunan defect'ler
+
+### Cassandra credentials
+
+Auth kullanmayan lokal Cassandra için boş username/password property'leri startup'ı bozuyordu. Property'ler kaldırıldı.
+
+### Eksik keyspace
+
+`Invalid keyspace seller_service` hatası version-controlled CQL schema'nın lokal Cassandra'ya bootstrap edilmesiyle çözüldü.
+
+### REST parameter binding
+
+`GET /sellers/{sellerId}` ilk lokal acceptance sırasında:
 
 ```text
-username cannot be empty
+Name for argument of type [java.util.UUID] not specified...
 ```
 
-Lokal Cassandra authentication kullanmadığı için username/password property'leri hem ConfigServerLocal hem ConfigServerRemote SellerService konfigürasyonundan tamamen kaldırıldı.
+hatası verdi.
 
-### 2. Eksik Cassandra keyspace
+Controller'lardaki path/query parametreleri explicit isimlendirildi:
 
-Credential problemi çözüldükten sonra SellerService Cassandra'ya erişebildi ancak:
+- `@PathVariable("sellerId")`
+- `@PathVariable("submissionId")`
+- `@RequestParam("yearMonth")`
+- explicit `pageSize` / `pageState`
 
-```text
-Invalid keyspace seller_service
-```
+Aynı GET çağrısı fix sonrası `200 OK` ve Postman `3/3` ile geçti.
 
-hatası alındı.
+## Cassandra Admin notu
 
-Sebep lokal Cassandra volume'ünde Day 10 CQL schema'nın henüz uygulanmamış olmasıydı. `V1__seller_tables.cql` manuel bootstrap edilerek keyspace ve tablolar oluşturuldu. Sonraki startup başarılı oldu.
+Cassandra Admin:
+- `seller_service` keyspace'i ve iki tabloyu gösterdi
+- `seller_by_id` gerçek satırını doğru gösterdi
 
-## Gözlemlenen warning
+Ancak `listing_submissions_by_seller_and_month` için UI stale/boş görünüm üretti. Veri yok varsayımı yapılmadı; aynı kayıt doğrudan `cqlsh` partition query ile kesin olarak doğrulandı.
 
-Cassandra driver, `localhost` adresinin hem IPv4 hem IPv6'ya resolve olması nedeniyle local datacenter ile ilgili bir warning üretti. Bu warning startup'ı engellemedi; uygulama Cassandra bağlantısını kurdu ve başarıyla ayağa kalktı.
+Bu davranış application persistence hatası değil, Cassandra Admin UI limitation/compatibility observation olarak kaydedildi.
 
-## Mevcut doğrulama durumu
+## Verification matrix
 
 | Kontrol | Durum |
 |---|---:|
 | GitHub CI | ✅ PASS |
-| ConfigServerLocal → SellerService config | ✅ PASS |
-| Cassandra container health | ✅ PASS |
-| Cassandra schema bootstrap | ✅ PASS |
-| `seller_service` keyspace | ✅ PASS |
-| Cassandra repository initialization | ✅ PASS |
-| SellerService port 9095 startup | ✅ PASS |
-| Eureka registry fetch | ✅ PASS |
-| Eureka `SELLER-SERVICE = UP` registration | ✅ PASS |
-| Postman success scenarios | ⏳ Pending |
-| Postman error scenarios | ⏳ Pending |
-| Eureka screenshot evidence | ✅ PASS |
-| Cassandra screenshot evidence | ⏳ Pending |
+| Config Server | ✅ PASS |
+| Cassandra health | ✅ PASS |
+| Schema bootstrap | ✅ PASS |
+| SellerService startup | ✅ PASS |
+| Eureka registration | ✅ PASS |
+| Seller persistence | ✅ PASS |
+| Listing persistence | ✅ PASS |
+| 6 success Postman scenario | ✅ PASS |
+| 10 error Postman scenario | ✅ PASS |
+| State transition | ✅ PASS |
+| cqlsh partition query | ✅ PASS |
+| Original evidence package | ✅ Prepared |
+| Original PNG GitHub binary sync | ⏳ Pending local commit |
 
-## Day 10 runtime durumu
+## Evidence packaging
 
-SellerService'in temel lokal runtime zinciri başarıyla doğrulanmıştır.
+Orijinal PNG'ler crop/resize/re-encode yapılmadan ayrı evidence paketinde korunmuştur.
 
-Day 10 henüz tamamen kapatılmamıştır. Postman kabul testleri, ekran görüntüsü evidence'ları ve final dokümantasyon senkronizasyonu tamamlandıktan sonra Day 10 `Completed / Verified` olarak işaretlenecektir.
+GitHub connector binary image aktarımında bozulma oluşturduğu için orijinal PNG'lerin son repository commit'i lokal Git üzerinden yapılacaktır.
+
+Day 10 implementation/runtime kabulü doğrulanmıştır; yalnızca orijinal binary evidence sync ve canonical planning-branch sync kapanış adımıdır.

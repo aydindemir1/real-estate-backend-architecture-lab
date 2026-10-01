@@ -8,7 +8,7 @@ Relational, document, wide-column, search ve in-memory data teknolojileri.
 - [MySQL](mysql.md) — Implemented
 - [MongoDB](mongodb.md) — Infrastructure Ready
 - [Couchbase](couchbase.md) — Implemented / Verified
-- [Apache Cassandra](cassandra.md) — Infrastructure Ready
+- [Apache Cassandra](cassandra.md) — Implemented / Verified
 - [Elasticsearch](elasticsearch.md) — Infrastructure Ready
 - [Redis](redis.md) — Infrastructure Ready
 

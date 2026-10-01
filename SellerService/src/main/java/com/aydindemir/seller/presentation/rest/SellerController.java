@@ -45,7 +45,7 @@ public class SellerController {
 
     @GetMapping("/{sellerId}")
     public ResponseEntity<SellerResponse> getSeller(
-            @PathVariable UUID sellerId) {
+            @PathVariable("sellerId") UUID sellerId) {
         SellerResponse response = sellerRestMapper.toResponse(
                 sellerApplicationService.getSeller(
                         new GetSellerQuery(SellerId.of(sellerId))));

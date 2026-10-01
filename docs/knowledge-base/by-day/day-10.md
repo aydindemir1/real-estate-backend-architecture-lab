@@ -4,7 +4,7 @@ Day 10, SellerService'i Apache Cassandra persistence ve Onion Architecture ile a
 
 ## Architecture
 
-- Onion Architecture — Implemented / Verified
+- [Onion Architecture](../architectures/onion-architecture.md) — Implemented / Verified
 
 ## Technology
 
@@ -42,4 +42,4 @@ Day 10 şu başlıkları derinleştirir:
 
 Implementation, automated tests, CI ve lokal runtime/Postman acceptance doğrulanmıştır.
 
-Original PNG evidence repository binary sync ve canonical planning branch final sync kapanış adımıdır.
+Implementation, automated tests, CI, lokal runtime/Postman acceptance ve original PNG evidence repository sync tamamlanmıştır.

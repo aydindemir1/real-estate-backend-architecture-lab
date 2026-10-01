@@ -1,53 +1,169 @@
-# SellerService — Package Design
+# SellerService — Package / Class-Level Design
 
-Base package:
+## Architecture
 
-`com.aydindemir.seller`
+**Onion Architecture**
 
-## Layers
+Day 10 implementation'ı Seller ve ListingSubmission capability'sini kapsar.
 
-### domain
+## Gerçekleşen package yapısı
 
-- `domain.model`
+```text
+com.aydindemir.seller
+├── SellerServiceApplication
+├── domain
+│   ├── model
+│   │   ├── Seller
+│   │   ├── SellerId
+│   │   ├── UserId
+│   │   ├── SellerStatus
+│   │   ├── ListingSubmission
+│   │   ├── ListingSubmissionId
+│   │   ├── ListingSubmissionStatus
+│   │   └── PropertyDraftData
+│   ├── repository
+│   │   ├── SellerRepository
+│   │   ├── ListingSubmissionRepository
+│   │   ├── ListingSubmissionPage
+│   │   └── ListingSubmissionPageRequest
+│   └── exception
+│       ├── SellerNotFoundException
+│       ├── SellerNotActiveException
+│       ├── ListingSubmissionNotFoundException
+│       └── InvalidListingSubmissionStateException
+├── application
+│   ├── command
+│   │   ├── CreateSellerCommand
+│   │   ├── CreateListingSubmissionCommand
+│   │   └── SubmitListingCommand
+│   ├── query
+│   │   ├── GetSellerQuery
+│   │   └── ListSellerSubmissionsQuery
+│   └── service
+│       ├── SellerApplicationService
+│       ├── ListingSubmissionApplicationService
+│       ├── SellerResult
+│       ├── ListingSubmissionResult
+│       └── ListingSubmissionPageResult
+├── infrastructure
+│   ├── cassandra
+│   │   ├── table
+│   │   │   ├── SellerByIdTable
+│   │   │   └── ListingSubmissionBySellerMonthTable
+│   │   ├── repository
+│   │   │   ├── SpringDataSellerByIdRepository
+│   │   │   └── SpringDataListingSubmissionRepository
+│   │   ├── mapper
+│   │   │   ├── SellerCassandraMapper
+│   │   │   └── ListingSubmissionCassandraMapper
+│   │   └── adapter
+│   │       ├── CassandraSellerRepositoryAdapter
+│   │       └── CassandraListingSubmissionRepositoryAdapter
+│   └── configuration
+│       └── SellerApplicationConfiguration
+└── presentation
+    └── rest
+        ├── SellerController
+        ├── ListingSubmissionController
+        ├── SellerApiExceptionHandler
+        ├── mapper
+        │   ├── SellerRestMapper
+        │   └── ListingSubmissionRestMapper
+        ├── request
+        │   ├── CreateSellerRequest
+        │   ├── CreateListingSubmissionRequest
+        │   └── SubmitListingRequest
+        └── response
+            ├── ApiErrorResponse
+            ├── SellerResponse
+            ├── ListingSubmissionResponse
+            └── ListingSubmissionPageResponse
+```
+
+Legacy baseline `controller/HelloController` ayrıca bulunur; Day 10 Onion business flow'unun parçası değildir.
+
+## Dependency kuralları
+
+### Domain
+- application bilmez
+- infrastructure bilmez
+- presentation bilmez
+- Spring/Jakarta/Cassandra/Kafka/RabbitMQ bilmez
+
+### Application
+- domain'i bilir
+- infrastructure/presentation bilmez
+- Spring/Cassandra/messaging framework'lerine bağımlı değildir
+
+### Infrastructure
+- domain repository contract'larını implement eder
+- presentation'a bağımlı değildir
+- Cassandra-specific detail'leri kendi sınırında tutar
+
+### Presentation
+- application/domain contract'larını kullanır
+- Cassandra infrastructure'a doğrudan bağımlı değildir
+
+Bu sınırlar `SellerOnionArchitectureTest` ile enforce edilir.
+
+## Domain / persistence ayrımı
+
+Domain:
+- `Seller`
+- `ListingSubmission`
+
+Persistence:
+- `SellerByIdTable`
+- `ListingSubmissionBySellerMonthTable`
+
+Mapping:
+- `SellerCassandraMapper`
+- `ListingSubmissionCassandraMapper`
+
+## Cassandra query shape
+
+Listing list query:
+```text
+seller_id + year_month
+```
+
+Exact submission lookup:
+```text
+seller_id + year_month + created_at + submission_id
+```
+
+## Test package'ları
+
+```text
+src/test/java/com/aydindemir/seller
+├── domain/model
+├── application/service
+├── infrastructure/cassandra
+├── presentation/rest
+└── architecture
+```
+
+Önemli testler:
+- `SellerTest`
+- `ListingSubmissionTest`
+- `PropertyDraftDataTest`
+- `SellerApplicationServiceTest`
+- `ListingSubmissionApplicationServiceTest`
+- `CassandraSellerRepositoryAdapterIntegrationTest`
+- `CassandraListingSubmissionRepositoryAdapterIntegrationTest`
+- `CassandraQueryDesignGuardTest`
+- `SellerControllerTest`
+- `ListingSubmissionControllerTest`
+- `SellerOnionArchitectureTest`
+
+## Day 10'da bulunmayan package/class'lar
+
+Aşağıdakiler actual implementation değildir:
 - `domain.event`
-- `domain.repository`
 - `domain.service`
-- `domain.exception`
-
-Outer-framework dependency yoktur.
-
-### application
-
-- `application.command`
-- `application.query`
-- `application.service`
 - `application.port`
+- RabbitMQ/Kafka adapter'ları
+- Saga classes
+- offer projection package'ları
 
-Domain use-case orchestration burada yapılır.
-
-### infrastructure
-
-- `infrastructure.cassandra.table`
-- `infrastructure.cassandra.repository`
-- `infrastructure.cassandra.mapper`
-- `infrastructure.cassandra.adapter`
-- `infrastructure.configuration`
-
-Cassandra-specific implementation burada kalır.
-
-### presentation
-
-- `presentation.rest.request`
-- `presentation.rest.response`
-- `presentation.rest.mapper`
-- REST controllers / advice
-
-## Enforced rules
-
-ArchUnit:
-- domain outer layer'a bağımlı olamaz
-- application infrastructure/presentation'a bağımlı olamaz
-- domain Spring/Cassandra/Kafka/RabbitMQ bağımlılığı taşıyamaz
-- package cycles yasaktır
-
-Runtime parameter binding explicit annotation names ile yapılır.
+Plan dokümanındaki boş/aday package hedefleri actual package yapısı olarak gösterilmez.

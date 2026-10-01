@@ -43,7 +43,7 @@ public class ListingSubmissionController {
 
     @PostMapping
     public ResponseEntity<ListingSubmissionResponse> createListingSubmission(
-            @PathVariable UUID sellerId,
+            @PathVariable("sellerId") UUID sellerId,
             @Valid @RequestBody CreateListingSubmissionRequest request) {
         ListingSubmissionResponse response = restMapper.toResponse(
                 applicationService.createListingSubmission(
@@ -59,8 +59,8 @@ public class ListingSubmissionController {
 
     @PostMapping("/{submissionId}/submit")
     public ResponseEntity<ListingSubmissionResponse> submitListing(
-            @PathVariable UUID sellerId,
-            @PathVariable UUID submissionId,
+            @PathVariable("sellerId") UUID sellerId,
+            @PathVariable("submissionId") UUID submissionId,
             @Valid @RequestBody SubmitListingRequest request) {
         if (!submissionId.equals(request.submissionId())) {
             throw new IllegalArgumentException("submissionId path and request body must match");
@@ -75,15 +75,15 @@ public class ListingSubmissionController {
 
     @GetMapping
     public ResponseEntity<ListingSubmissionPageResponse> listSellerSubmissions(
-            @PathVariable UUID sellerId,
-            @RequestParam
+            @PathVariable("sellerId") UUID sellerId,
+            @RequestParam("yearMonth")
             @Pattern(regexp = "\\d{4}-\\d{2}")
             String yearMonth,
-            @RequestParam(defaultValue = "20")
+            @RequestParam(name = "pageSize", defaultValue = "20")
             @Min(1)
             @Max(100)
             int pageSize,
-            @RequestParam(required = false)
+            @RequestParam(name = "pageState", required = false)
             String pageState) {
         ListingSubmissionPageResponse response = restMapper.toPageResponse(
                 applicationService.listSellerSubmissions(

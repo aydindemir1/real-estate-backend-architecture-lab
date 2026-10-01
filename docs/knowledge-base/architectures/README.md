@@ -8,10 +8,10 @@ Sistem veya uygulamanın yüksek seviyeli yapısal organizasyonunu tanımlayan a
 - [Microservices Architecture](microservices-architecture.md)
 - [Clean Architecture](clean-architecture.md) — Day 8 / AgentService
 - [Hexagonal Architecture](hexagonal-architecture.md) — Day 9 / BuyerService
+- [Onion Architecture](onion-architecture.md) — Day 10 / SellerService
 
 ## Planned later
 
-- Onion Architecture
 - Vertical Slice Architecture
 - CQRS
 - Event-Driven Architecture

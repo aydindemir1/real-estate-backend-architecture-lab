@@ -1,12 +1,12 @@
 # SellerService — Package / Class-Level Design
 
 ## Architecture
-Onion Architecture
 
-## Amaç
-Domain model'i merkeze koymak; application ve infrastructure katmanlarını dış halkalar olarak konumlandırmak.
+**Onion Architecture**
 
-## Package yapısı
+Day 10 implementation'ı Seller ve ListingSubmission capability'sini kapsar.
+
+## Gerçekleşen package yapısı
 
 ```text
 com.aydindemir.seller
@@ -14,79 +14,156 @@ com.aydindemir.seller
 ├── domain
 │   ├── model
 │   │   ├── Seller
-│   │   ├── ListingSubmission
 │   │   ├── SellerId
 │   │   ├── UserId
-│   │   ├── ListingSubmissionId
-│   │   ├── PropertyDraftData
 │   │   ├── SellerStatus
-│   │   └── ListingSubmissionStatus
-│   ├── event
-│   │   ├── ListingSubmittedDomainEvent
-│   │   ├── SellerAcceptedOfferDomainEvent
-│   │   └── SellerRejectedOfferDomainEvent
+│   │   ├── ListingSubmission
+│   │   ├── ListingSubmissionId
+│   │   ├── ListingSubmissionStatus
+│   │   └── PropertyDraftData
 │   ├── repository
 │   │   ├── SellerRepository
 │   │   ├── ListingSubmissionRepository
-│   │   ├── PendingOfferProjectionRepository
-│   │   └── SellerActivityRepository
-│   ├── service
-│   │   └── SellerDomainService
+│   │   ├── ListingSubmissionPage
+│   │   └── ListingSubmissionPageRequest
 │   └── exception
 │       ├── SellerNotFoundException
 │       ├── SellerNotActiveException
-│       └── ListingSubmissionNotFoundException
+│       ├── ListingSubmissionNotFoundException
+│       └── InvalidListingSubmissionStateException
 ├── application
 │   ├── command
 │   │   ├── CreateSellerCommand
-│   │   ├── SubmitListingCommand
-│   │   ├── AcceptOfferCommand
-│   │   └── RejectOfferCommand
+│   │   ├── CreateListingSubmissionCommand
+│   │   └── SubmitListingCommand
 │   ├── query
 │   │   ├── GetSellerQuery
-│   │   ├── ListSellerSubmissionsQuery
-│   │   ├── ListPendingOffersQuery
-│   │   └── GetSellerActivityQuery
-│   ├── service
-│   │   ├── SellerApplicationService
-│   │   ├── ListingSubmissionApplicationService
-│   │   └── SellerOfferApplicationService
-│   └── port
-│       ├── ListingCommandPublisher
-│       └── SellerEventPublisher
+│   │   └── ListSellerSubmissionsQuery
+│   └── service
+│       ├── SellerApplicationService
+│       ├── ListingSubmissionApplicationService
+│       ├── SellerResult
+│       ├── ListingSubmissionResult
+│       └── ListingSubmissionPageResult
 ├── infrastructure
 │   ├── cassandra
 │   │   ├── table
+│   │   │   ├── SellerByIdTable
+│   │   │   └── ListingSubmissionBySellerMonthTable
 │   │   ├── repository
+│   │   │   ├── SpringDataSellerByIdRepository
+│   │   │   └── SpringDataListingSubmissionRepository
 │   │   ├── mapper
+│   │   │   ├── SellerCassandraMapper
+│   │   │   └── ListingSubmissionCassandraMapper
 │   │   └── adapter
-│   ├── messaging
-│   │   ├── rabbitmq
-│   │   │   └── RabbitMqListingCommandPublisher
-│   │   └── kafka
-│   │       ├── KafkaSellerEventPublisher
-│   │       ├── PropertyCreatedEventConsumer
-│   │       └── PropertyHeldEventConsumer
+│   │       ├── CassandraSellerRepositoryAdapter
+│   │       └── CassandraListingSubmissionRepositoryAdapter
 │   └── configuration
-│       ├── CassandraConfiguration
-│       ├── RabbitMqConfiguration
-│       └── KafkaConfiguration
+│       └── SellerApplicationConfiguration
 └── presentation
     └── rest
         ├── SellerController
         ├── ListingSubmissionController
-        ├── SellerOfferController
+        ├── SellerApiExceptionHandler
+        ├── mapper
+        │   ├── SellerRestMapper
+        │   └── ListingSubmissionRestMapper
         ├── request
-        ├── response
-        └── mapper
+        │   ├── CreateSellerRequest
+        │   ├── CreateListingSubmissionRequest
+        │   └── SubmitListingRequest
+        └── response
+            ├── ApiErrorResponse
+            ├── SellerResponse
+            ├── ListingSubmissionResponse
+            └── ListingSubmissionPageResponse
 ```
 
-## Onion rule
+Legacy baseline `controller/HelloController` ayrıca bulunur; Day 10 Onion business flow'unun parçası değildir.
+
+## Dependency kuralları
+
+### Domain
+- application bilmez
+- infrastructure bilmez
+- presentation bilmez
+- Spring/Jakarta/Cassandra/Kafka/RabbitMQ bilmez
+
+### Application
+- domain'i bilir
+- infrastructure/presentation bilmez
+- Spring/Cassandra/messaging framework'lerine bağımlı değildir
+
+### Infrastructure
+- domain repository contract'larını implement eder
+- presentation'a bağımlı değildir
+- Cassandra-specific detail'leri kendi sınırında tutar
+
+### Presentation
+- application/domain contract'larını kullanır
+- Cassandra infrastructure'a doğrudan bağımlı değildir
+
+Bu sınırlar `SellerOnionArchitectureTest` ile enforce edilir.
+
+## Domain / persistence ayrımı
+
+Domain:
+- `Seller`
+- `ListingSubmission`
+
+Persistence:
+- `SellerByIdTable`
+- `ListingSubmissionBySellerMonthTable`
+
+Mapping:
+- `SellerCassandraMapper`
+- `ListingSubmissionCassandraMapper`
+
+## Cassandra query shape
+
+Listing list query:
+```text
+seller_id + year_month
+```
+
+Exact submission lookup:
+```text
+seller_id + year_month + created_at + submission_id
+```
+
+## Test package'ları
 
 ```text
-domain <- application <- infrastructure/presentation
+src/test/java/com/aydindemir/seller
+├── domain/model
+├── application/service
+├── infrastructure/cassandra
+├── presentation/rest
+└── architecture
 ```
 
-Domain hiçbir infrastructure technology'sine bağımlı değildir.
+Önemli testler:
+- `SellerTest`
+- `ListingSubmissionTest`
+- `PropertyDraftDataTest`
+- `SellerApplicationServiceTest`
+- `ListingSubmissionApplicationServiceTest`
+- `CassandraSellerRepositoryAdapterIntegrationTest`
+- `CassandraListingSubmissionRepositoryAdapterIntegrationTest`
+- `CassandraQueryDesignGuardTest`
+- `SellerControllerTest`
+- `ListingSubmissionControllerTest`
+- `SellerOnionArchitectureTest`
 
-Integration event isimleri `SellerAccepted` / `SellerRejected`; domain event class'ları business intent'i daha açık ifade etmek için `SellerAcceptedOfferDomainEvent` / `SellerRejectedOfferDomainEvent` olarak adlandırılır.
+## Day 10'da bulunmayan package/class'lar
+
+Aşağıdakiler actual implementation değildir:
+- `domain.event`
+- `domain.service`
+- `application.port`
+- RabbitMQ/Kafka adapter'ları
+- Saga classes
+- offer projection package'ları
+
+Plan dokümanındaki boş/aday package hedefleri actual package yapısı olarak gösterilmez.

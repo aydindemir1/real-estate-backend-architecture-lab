@@ -1,5 +1,15 @@
 # Day 10 — Exact File / Class / Commit Plan
 
+## Actual implementation notes
+
+Bu dosya Day 10 başlamadan önce kilitlenen exact plan'ı korur. Actual implementation ile plan arasındaki kontrollü farklar:
+
+- Lokal Cassandra authentication kullanılmadığı için `SELLER_CASSANDRA_USERNAME/PASSWORD` final config'te tutulmadı.
+- Plan skeleton'ındaki `domain/event`, `domain/service` ve `application/port` için gerçek ihtiyaç oluşmadığından boş package/class üretilmedi.
+- Actual package yapısı için `SellerService/docs/PACKAGE-DESIGN.md` source of truth'tur.
+- Runtime acceptance sırasında explicit REST parameter binding düzeltmesi yapıldı ve tekrar doğrulandı.
+- Cassandra Admin lokal inspection aracı Day 10 sırasında eklendi; persistence source of truth olarak kullanılmadı.
+
 ## 0. Scope
 
 Day 10 yalnızca SellerService içindir.

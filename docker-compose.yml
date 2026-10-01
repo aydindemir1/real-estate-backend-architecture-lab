@@ -146,7 +146,8 @@ services:
   cassandra-admin:
     profiles: ["seller"]
     build:
-      context: https://github.com/IBM/cassandra-admin.git#af53c2d2b7c9db7673affca7f5791fa3d7551491
+      context: .
+      dockerfile: infrastructure/cassandra-admin/Dockerfile
     container_name: real-estate-cassandra-admin
     restart: unless-stopped
 

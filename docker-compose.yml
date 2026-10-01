@@ -143,6 +143,24 @@ services:
       retries: 20
       start_period: 90s
 
+  cassandra-admin:
+    profiles: ["seller"]
+    build:
+      context: https://github.com/IBM/cassandra-admin.git#af53c2d2b7c9db7673affca7f5791fa3d7551491
+    container_name: real-estate-cassandra-admin
+    restart: unless-stopped
+
+    environment:
+      CA_CONNECTION_HOST: seller-cassandra
+      CA_CONNECTION_PORT: 9042
+
+    ports:
+      - "8002:80"
+
+    depends_on:
+      seller-cassandra:
+        condition: service_healthy
+
   elasticsearch:
     profiles: ["search"]
     image: docker.elastic.co/elasticsearch/elasticsearch:9.5.4

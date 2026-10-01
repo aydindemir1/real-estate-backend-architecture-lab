@@ -2,15 +2,13 @@ server:
   port: 9094
 
 spring:
-  datasource:
-    url: ${PROPERTY_DB_URL:jdbc:postgresql://localhost:5437/micro_property_service_db}
-    username: ${PROPERTY_DB_USERNAME}
-    password: ${PROPERTY_DB_PASSWORD}
-  jpa:
-    hibernate:
-      ddl-auto: update
-    open-in-view: false
-    show-sql: true
+  mongodb:
+    host: ${PROPERTY_MONGO_HOST:localhost}
+    port: ${PROPERTY_MONGO_PORT:27018}
+    database: ${PROPERTY_MONGO_DB_NAME:micro_property_service_db}
+    username: ${PROPERTY_MONGO_USERNAME:${PROPERTY_MONGO_ROOT_USERNAME}}
+    password: ${PROPERTY_MONGO_PASSWORD:${PROPERTY_MONGO_ROOT_PASSWORD}}
+    authentication-database: ${PROPERTY_MONGO_AUTH_DB:admin}
 
 springdoc:
   swagger-ui:

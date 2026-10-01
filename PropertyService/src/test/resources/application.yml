@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: property-service
+  config:
+    import: "optional:classpath:/property-test.properties"
+  cloud:
+    config:
+      enabled: false
+
+eureka:
+  client:
+    enabled: false

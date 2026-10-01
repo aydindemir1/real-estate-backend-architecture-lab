@@ -2,7 +2,7 @@
 
 Bu klasör, `day/10-seller-cassandra-onion` branch'inde Day 10 SellerService çalışmalarının lokal runtime doğrulama kanıtlarını kayıt altına alır.
 
-> Bu kayıt yalnızca şu ana kadar gerçekten doğrulanan runtime adımlarını içerir. Postman kabul testleri ve ekran görüntüsü kanıtları henüz eklenmemiştir.
+> Bu kayıt yalnızca şu ana kadar gerçekten doğrulanan runtime adımlarını içerir. Eureka ekran görüntüsü kanıtı eklenmiştir; Postman kabul testleri ve Cassandra ekran görüntüsü henüz tamamlanmamıştır.
 
 ## Doğrulanan çalışma zinciri
 
@@ -84,6 +84,19 @@ Ham başarı logu:
 
 - `seller-service-startup-success.log`
 
+## Eureka screenshot kanıtı
+
+Lokal Eureka Dashboard üzerinde aşağıdaki servisler `UP` olarak doğrulandı:
+
+- `API-GATEWAY-SERVICE` — port `8080`
+- `SELLER-SERVICE` — port `9095`
+
+Orijinal PNG kanıtı kırpılmadan, yeniden boyutlandırılmadan ve yeniden encode edilmeden saklanmıştır:
+
+- [01-eureka-seller-service-up.png](png/01-eureka-seller-service-up.png)
+
+Dashboard üzerinde görülen Eureka renewal/self-preservation uyarısı lokal geliştirme ortamındaki düşük instance/renewal sayısıyla ilişkilidir; ekrandaki `SELLER-SERVICE = UP` registration durumunu geçersiz kılmaz.
+
 ## Runtime sırasında bulunan ve çözülen problemler
 
 ### 1. Boş Cassandra credential ayarları
@@ -134,7 +147,7 @@ Cassandra driver, `localhost` adresinin hem IPv4 hem IPv6'ya resolve olması ned
 | Eureka `SELLER-SERVICE = UP` registration | ✅ PASS |
 | Postman success scenarios | ⏳ Pending |
 | Postman error scenarios | ⏳ Pending |
-| Eureka screenshot evidence | ⏳ Pending |
+| Eureka screenshot evidence | ✅ PASS |
 | Cassandra screenshot evidence | ⏳ Pending |
 
 ## Day 10 runtime durumu

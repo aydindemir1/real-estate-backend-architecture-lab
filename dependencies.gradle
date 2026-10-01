@@ -48,6 +48,7 @@ ext {
             testcontainersJunitJupiter : "org.testcontainers:testcontainers-junit-jupiter:$versions.testcontainers",
             testcontainersCouchbase    : "org.testcontainers:testcontainers-couchbase:$versions.testcontainers",
             testcontainersMySql        : "org.testcontainers:testcontainers-mysql:$versions.testcontainers",
+            testcontainersMongoDb      : "org.testcontainers:testcontainers-mongodb:$versions.testcontainers",
             archUnitJunit5             : "com.tngtech.archunit:archunit-junit5:$versions.archUnit",
 
             lombok                                      : "org.projectlombok:lombok:$versions.lombok",

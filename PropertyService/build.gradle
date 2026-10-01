@@ -1,11 +1,17 @@
 dependencies {
     implementation libs.springBootWeb
+    implementation libs.springBootValidation
     implementation libs.swaggerApi
     implementation libs.mapStruct
     implementation libs.springCloudEurekaClient
-    implementation libs.springBootDataJpa
+    implementation libs.springBootDataMongoDb
     implementation libs.springCloudStarterConfig
     implementation libs.springBootActuator
     implementation libs.springBootZipkin
-    runtimeOnly libs.postgreSql
+
+    testImplementation libs.springBootTest
+    testImplementation libs.springBootWebMvcTest
+    testImplementation libs.testcontainersJunitJupiter
+    testImplementation libs.testcontainersMongoDb
+    testImplementation libs.archUnitJunit5
 }

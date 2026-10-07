@@ -1,9 +1,9 @@
 # Spring Boot
 
-**Category:** Technology  
-**Introduced:** Day 1  
-**Project status:** Implemented / Verified  
-**Scope:** Application framework and runtime foundation
+**Kategori:** Technology  
+**İlk eklendiği gün:** Day 1  
+**Proje durumu:** Uygulandı / Doğrulandı  
+**Kapsam:** Application framework ve runtime foundation  
 
 ## 1. Nedir?
 

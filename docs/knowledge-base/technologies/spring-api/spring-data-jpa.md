@@ -1,9 +1,9 @@
 # Spring Data JPA
 
-**Category:** Technology  
-**Introduced:** Day 1  
-**Project status:** Implemented / Verified  
-**Scope:** Repository abstraction over JPA
+**Kategori:** Technology  
+**İlk eklendiği gün:** Day 1  
+**Proje durumu:** Uygulandı / Doğrulandı  
+**Kapsam:** JPA üzerinde repository abstraction  
 
 ## 1. Nedir?
 

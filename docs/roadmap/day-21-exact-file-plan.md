@@ -1,43 +1,43 @@
-# Day 21 — Exact CQRS + Elasticsearch Event Projection Plan
+# Day 21 — Kesin CQRS + Elasticsearch Event Projection Planı
 
-## Scope
-- Property lifecycle events through reliable publication
+## Kapsam
+- Reliable publication üzerinden Property lifecycle event'leri
 - Search Kafka consumer group
-- Elasticsearch projection handlers
+- Elasticsearch projection handler'ları
 - idempotency + stale-event protection
 - projection freshness
 - eventual consistency
 - E2E publish-to-search
 
-## Tasks
+## Task'ler
 
-1. Finalize Search-relevant events: PropertyPublished, PropertyUpdated, PropertyPriceChanged, PropertyWithdrawn, PropertySold as actually implemented.
-2. Keep event payload minimal and consumer-oriented; do not serialize Mongo documents blindly.
-3. Wire Property state changes to the Day 18 Outbox reliable publication path.
-4. Configure Search binding: `property.events`, group `search-projection-group`.
-5. Create `PropertyProjectionConsumer` that delegates to handlers.
-6. Create active handlers only:
+1. Gerçekte implemente edildiği şekliyle Search ile ilgili event'leri finalize et: PropertyPublished, PropertyUpdated, PropertyPriceChanged, PropertyWithdrawn, PropertySold.
+2. Event payload'ını minimal ve consumer-oriented tut; Mongo document'larını körlemesine serialize etme.
+3. Property state değişikliklerini Day 18 Outbox reliable publication path'e bağla.
+4. Search binding'i configure et: `property.events`, group `search-projection-group`.
+5. Handler'lara delegate eden `PropertyProjectionConsumer` oluştur.
+6. Yalnızca aktif handler'ları oluştur:
    - PropertyPublishedProjectionHandler
    - PropertyUpdatedProjectionHandler
    - PropertyPriceChangedProjectionHandler
    - PropertyWithdrawnProjectionHandler
    - PropertySoldProjectionHandler
-7. Add semantic projection repository operations: upsert, updatePrice, updateStatus/deactivate.
-8. Keep terminal documents with status; public search initially returns only PUBLISHED.
-9. Deduplicate by eventId using inbox/processed-message semantics.
-10. Add `sourceVersion`, `sourceUpdatedAt`, `projectionUpdatedAt`, `lastEventOccurredAt`.
-11. Reject/no-op stale lower-version/older events.
-12. Ensure replay determinism.
-13. Add Kafka+Elasticsearch integration test.
-14. Add Property publish → Outbox → Kafka → Elasticsearch → Search E2E.
-15. Add duplicate event test.
-16. Add stale/out-of-order event test.
-17. Add projection failure→DLT test.
-18. Expose low-cardinality freshness/failure metric hooks for Day 29.
-19. Document eventual consistency semantics.
-20. Add ArchUnit rule: Search projection does not synchronously call PropertyService to build projection.
+7. Semantic projection repository operation'ları ekle: upsert, updatePrice, updateStatus/deactivate.
+8. Terminal document'ları status ile tut; public search başlangıçta yalnızca PUBLISHED döndürür.
+9. Inbox/processed-message semantics kullanarak eventId ile deduplication yap.
+10. `sourceVersion`, `sourceUpdatedAt`, `projectionUpdatedAt`, `lastEventOccurredAt` ekle.
+11. Daha düşük version/eski event'leri reject/no-op yap.
+12. Replay determinism sağla.
+13. Kafka+Elasticsearch integration test ekle.
+14. Property publish → Outbox → Kafka → Elasticsearch → Search E2E ekle.
+15. Duplicate event testi ekle.
+16. Stale/out-of-order event testi ekle.
+17. Projection failure→DLT testi ekle.
+18. Day 29 için low-cardinality freshness/failure metric hook'ları expose et.
+19. Eventual consistency semantics'i dokümante et.
+20. ArchUnit rule ekle: Search projection, projection oluşturmak için PropertyService'i synchronous olarak çağırmaz.
 
-## Commit sequence
+## Commit sırası
 1. `docs(cqrs): finalize Search-relevant Property events`
 2. `feat(property): publish lifecycle events through outbox`
 3. `feat(search): add Property projection consumer`
@@ -52,10 +52,10 @@
 12. `docs(cqrs): document eventual consistency`
 
 ## Final gate
-- MongoDB remains source of truth
-- Elasticsearch remains derived read model
-- duplicate/stale events are safe
-- PUBLISHED projection searchable
-- terminal states excluded from normal search
-- E2E event projection works
-- failure routes to DLT after bounded retry
+- MongoDB source of truth olarak kalır
+- Elasticsearch derived read model olarak kalır
+- duplicate/stale event'ler güvenlidir
+- PUBLISHED projection aranabilir
+- terminal state'ler normal search'ten çıkarılır
+- E2E event projection çalışır
+- failure bounded retry sonrasında DLT'ye yönlenir

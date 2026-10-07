@@ -1,4 +1,4 @@
-# Day 08 — AgentService Validation Evidence
+# Day 08 — AgentService Doğrulama Kanıtları
 
 Bu klasör, `day/08-agent-mysql-clean` branch'inde Day 8 AgentService çalışmalarının lokal runtime ve CI doğrulama sonuçlarını kayıt altına alır.
 
@@ -57,7 +57,7 @@ MySQL :3307
 
 AgentService GitHub Actions doğrulaması başarıyla tamamlandı. Path variable binding düzeltmesini içeren Run #18 de başarılıdır.
 
-## Evidence dosyaları
+## Kanıt dosyaları
 
 Bu doğrulama oturumunda aşağıdaki ekran görüntüleri üretildi:
 
@@ -82,7 +82,7 @@ Bu doğrulama oturumunda aşağıdaki ekran görüntüleri üretildi:
 
 Ayrıca `agent-service-startup.log` uygulamanın Config Server → MySQL/Flyway/JPA → Eureka → Tomcat başlangıç zincirini kayıt altına alır.
 
-## Screenshot SHA-256 manifest
+## Ekran görüntüsü SHA-256 manifesti
 
 ```text
 65fba354543ebeeb59d8f4bd3ffeb5d6091c01fd0098afc0c28d92d3ce4190de  eureka-services-up.png

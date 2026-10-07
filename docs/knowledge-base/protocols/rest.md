@@ -1,9 +1,9 @@
 # REST
 
-**Category:** Architectural Style  
-**Introduced:** Day 1  
-**Project status:** Implemented / Verified  
-**Scope:** Resource-oriented HTTP API design
+**Kategori:** Architectural Style  
+**İlk eklendiği gün:** Day 1  
+**Proje durumu:** Uygulandı / Doğrulandı  
+**Kapsam:** Resource-oriented HTTP API design  
 
 ## 1. Nedir?
 

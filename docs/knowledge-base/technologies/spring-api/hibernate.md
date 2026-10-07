@@ -1,9 +1,9 @@
 # Hibernate
 
-**Category:** Technology  
-**Introduced:** Day 1  
-**Project status:** Implemented / Verified  
-**Scope:** JPA ORM provider
+**Kategori:** Technology  
+**İlk eklendiği gün:** Day 1  
+**Proje durumu:** Uygulandı / Doğrulandı  
+**Kapsam:** JPA ORM provider  
 
 ## 1. Nedir?
 

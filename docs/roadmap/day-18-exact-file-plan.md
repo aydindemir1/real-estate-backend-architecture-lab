@@ -1,59 +1,59 @@
-# Day 18 — Exact Outbox + Inbox + Idempotent Consumer Plan
+# Day 18 — Kesin Outbox + Inbox + Idempotent Consumer Planı
 
-## Scope
+## Kapsam
 
 - Property Mongo Outbox
 - Inbox/Processed Message
-- duplicate-safe consumers
-- atomic local side effects
-- crash-window tests
-- reliable-publication design for Couchbase and Cassandra
+- duplicate-safe consumer'lar
+- atomic local side effect'ler
+- crash-window testleri
+- Couchbase ve Cassandra için reliable-publication design
 
-## Mandatory correctness addendum
-- Property/MongoDB uses Outbox.
-- Seller/Cassandra uses durable pending outbound messages + dispatcher/reconciliation.
-- Buyer/Couchbase must have a durable outbound-publication strategy before Day 22.
-- Best-effort critical broker publication is prohibited.
+## Zorunlu correctness eki
+- Property/MongoDB Outbox kullanır.
+- Seller/Cassandra durable pending outbound messages + dispatcher/reconciliation kullanır.
+- Buyer/Couchbase, Day 22'den önce durable outbound-publication strategy'ye sahip olmalıdır.
+- Kritik broker publication için best-effort yaklaşımı yasaktır.
 
 ## Task 1 — Reliability failure matrix
 
-Create/update docs:
+Doküman oluştur/güncelle:
 - docs/architecture/messaging-reliability.md
 
-List failure modes:
-- DB commit succeeds, publish fails
-- publish succeeds, DB commit fails
+Failure mode'ları listele:
+- DB commit başarılı, publish başarısız
+- publish başarılı, DB commit başarısız
 - duplicate delivery
-- consumer crashes after side effect before ack
+- consumer side effect sonrası ack öncesi crash
 - malformed payload
 - transient broker outage
 - downstream timeout
 - poison message
 - replay duplicate
 
-Map each to strategy.
+Her birini strategy ile eşleştir.
 
 Commit: docs(messaging): define reliability failure matrix
 
-## Task 2 — Delivery semantics declaration
+## Task 2 — Delivery semantics bildirimi
 
-Declare project baseline:
+Project baseline olarak şunları ilan et:
 - at-least-once delivery
-- duplicate delivery is expected
-- exactly-once business effect achieved through idempotency + local transaction semantics
+- duplicate delivery beklenen durumdur
+- exactly-once business effect, idempotency + local transaction semantics ile sağlanır
 
-Do not claim Kafka exactly-once end-to-end business semantics.
+Kafka için end-to-end business semantics seviyesinde exactly-once iddiasında bulunma.
 
-## Task 3 — PropertyService Outbox model
+## Task 3 — PropertyService Outbox modeli
 
-Primary candidate because PropertyService uses MongoDB and publishes lifecycle events.
+PropertyService MongoDB kullandığı ve lifecycle event publish ettiği için primary candidate'dır.
 
-Create:
+Oluştur:
 - shared/outbox/OutboxMessage.java
 - shared/outbox/OutboxStatus.java
 - shared/outbox/OutboxRepository.java
 
-Fields:
+Alanlar:
 - outboxId
 - aggregateId
 - aggregateType
@@ -70,180 +70,180 @@ Fields:
 
 ## Task 4 — Mongo Outbox document
 
-Create:
+Oluştur:
 - shared/outbox/mongo/OutboxDocument.java
 - shared/outbox/mongo/SpringDataOutboxRepository.java
 - shared/outbox/mongo/MongoOutboxRepositoryAdapter.java
 
-Indexes:
+Index'ler:
 - status + nextAttemptAt
-- aggregateId candidate if operational query needs it
+- operational query gerekiyorsa aggregateId adayı
 
 Commit: feat(property): add Mongo outbox persistence
 
 ## Task 5 — Atomic Property + Outbox write
 
-Because MongoDB supports multi-document transactions only in replica set topology, choose carefully.
+MongoDB multi-document transaction'ı yalnızca replica set topology ile desteklediği için dikkatli seçim yap.
 
-Preferred learning options:
-- same Mongo transaction with replica-set Testcontainers/local topology
-or
-- single-document embedded outbox only if model remains maintainable
+Tercih edilen learning seçenekleri:
+- replica-set Testcontainers/local topology ile aynı Mongo transaction
+veya
+- model maintainable kalıyorsa single-document embedded outbox
 
-Do not pretend two separate Mongo saves are atomic.
+İki ayrı Mongo save işlemini atomic gibi göstermeye çalışma.
 
-Create transaction boundary around Property state + Outbox record if using multi-document transaction.
+Multi-document transaction kullanılıyorsa Property state + Outbox record etrafında transaction boundary oluştur.
 
 Commit: feat(property): persist domain state and outbox atomically
 
 ## Task 6 — Outbox event mapper
 
-Create:
+Oluştur:
 - shared/outbox/OutboxEventMapper.java
 
-Responsibilities:
+Sorumluluk:
 - integration event -> persisted payload/envelope
 
-No Kafka client usage.
+Kafka client kullanmaz.
 
 Commit: feat(property): add outbox event mapping
 
 ## Task 7 — Outbox publisher
 
-Create:
+Oluştur:
 - shared/outbox/OutboxPublisher.java
-- shared/outbox/OutboxPublishingJob.java or application service
+- shared/outbox/OutboxPublishingJob.java veya application service
 
 Flow:
-1. fetch pending due records
-2. publish through PublishPropertyEventPort
-3. mark published on success
-4. update retry metadata on transient failure
+1. pending due record'ları çek
+2. PublishPropertyEventPort üzerinden publish et
+3. success durumunda published olarak işaretle
+4. transient failure durumunda retry metadata güncelle
 
-Batch size bounded.
+Batch size bounded olmalıdır.
 
-Do not use unbounded polling.
+Unbounded polling kullanma.
 
 Commit: feat(messaging): add outbox publisher
 
 ## Task 8 — Outbox scheduling trigger
 
-Choose one lightweight trigger for Day 17:
+Day 17 için lightweight trigger seç:
 - @Scheduled polling
 
-Spring Cloud Task remains Day 25.
+Spring Cloud Task Day 25'te kalır.
 
 Config:
 - interval Duration
 - batch size
 
-Do not create multiple uncontrolled scheduler instances in scaled environment without coordination strategy.
+Scaled environment'da coordination strategy olmadan birden fazla uncontrolled scheduler instance oluşturma.
 
-Since local lab may be single instance, document distributed scaling caveat.
+Local lab single instance olabilir; distributed scaling caveat'ını dokümante et.
 
 Commit: config(messaging): add bounded outbox polling
 
 ## Task 9 — Outbox publish idempotency
 
-Outbox record may be published more than once if crash occurs after broker ack but before mark-published.
+Broker ack sonrası mark-published öncesi crash olursa Outbox record birden fazla kez publish edilebilir.
 
-Therefore consumers must deduplicate by eventId.
+Bu nedenle consumer'lar eventId ile deduplication yapmalıdır.
 
-Do not rely on producer-side exactly-once illusion.
+Producer-side exactly-once illüzyonuna güvenme.
 
-## Task 10 — Inbox model
+## Task 10 — Inbox modeli
 
-Create generic consumer-side concept:
+Generic consumer-side kavram oluştur:
 - ProcessedMessage.java
 - ProcessedMessageRepository.java
 
-Fields:
+Alanlar:
 - messageId/eventId
 - consumerName
 - processedAt
-- payloadHash optional
+- opsiyonel payloadHash
 
 Unique logical key:
 - consumerName + messageId
 
-## Task 11 — Inbox persistence per datastore
+## Task 11 — Datastore bazında Inbox persistence
 
-Do not force one DB technology across services.
+Her service'e tek DB teknolojisi zorlamaya çalışma.
 
-Examples:
-- SearchService Elasticsearch is not ideal as inbox source; use its canonical/local supporting store only if suitable or a dedicated lightweight persistence choice explicitly justified
-- SellerService Cassandra can use processed_message_by_consumer table
-- BuyerService Couchbase can store idempotency documents
+Örnekler:
+- SearchService Elasticsearch, inbox source için ideal değildir; uygunsa canonical/local supporting store kullan veya açıkça gerekçelendirilmiş dedicated lightweight persistence seç
+- SellerService Cassandra, processed_message_by_consumer table kullanabilir
+- BuyerService Couchbase idempotency document saklayabilir
 
-Day 17 should implement inbox where an actual side-effecting consumer exists now.
+Day 17, yalnızca şu anda gerçek side-effecting consumer bulunan yerde inbox implemente etmelidir.
 
-Do not create unused inbox tables in every service.
+Her service'e kullanılmayan inbox table ekleme.
 
 ## Task 12 — Idempotent consumer wrapper
 
-Create application/infrastructure helper pattern:
+Application/infrastructure helper pattern oluştur:
 - IdempotentMessageHandler.java
 
 Flow:
-1. check messageId
-2. if already processed -> no-op/ack
-3. execute handler
-4. persist processed marker in same local transaction where possible
+1. messageId kontrol et
+2. zaten processed ise -> no-op/ack
+3. handler çalıştır
+4. mümkünse processed marker'ı aynı local transaction içinde persist et
 
-Rule:
-processed marker + side effect should be atomic within local datastore capabilities.
+Kural:
+processed marker + side effect, local datastore capability'leri içinde atomic olmalıdır.
 
 Commit: feat(messaging): add idempotent consumer foundation
 
-## Task 13 — Outbox integration tests
+## Task 13 — Outbox integration testleri
 
-Create:
+Oluştur:
 - PropertyOutboxIntegrationTest.java
 
-Cases:
-- property change writes outbox record
-- publisher success marks published
-- transient failure keeps pending/retry metadata
-- crash-window duplicate publish tolerated by consumer
+Senaryolar:
+- property change outbox record yazar
+- publisher success published olarak işaretler
+- transient failure pending/retry metadata bırakır
+- crash-window duplicate publish consumer tarafından tolere edilir
 
 Commit: test(messaging): add outbox integration tests
 
-## Task 14 — Inbox/idempotency tests
+## Task 14 — Inbox/idempotency testleri
 
-Create:
+Oluştur:
 - IdempotentConsumerIntegrationTest.java
 
-Cases:
-- first message processes
+Senaryolar:
+- ilk message işlenir
 - duplicate message no-op
-- duplicate after restart still no-op
-- same id different payload conflict if hash policy enabled
+- restart sonrası duplicate hâlâ no-op
+- hash policy aktifse aynı id farklı payload conflict
 
 Commit: test(messaging): add inbox idempotency tests
 
-## Task 15 — Consumer crash-window test
+## Task 15 — Consumer crash-window testi
 
-Simulate:
-- business side effect succeeds
-- ack/processed marker update boundary fails
+Simüle et:
+- business side effect başarılı
+- ack/processed marker update boundary başarısız
 
-Verify re-delivery does not duplicate business effect.
+Re-delivery'nin duplicate business effect üretmediğini doğrula.
 
-This is a key at-least-once correctness test.
+Bu, at-least-once correctness için temel bir testtir.
 
 Commit: test(messaging): verify consumer crash-window idempotency
 
-## Task 16 — Architecture tests
+## Task 16 — Architecture testleri
 
-Rules:
-- domain does not depend on broker APIs
-- application ports define publish capability
-- listeners only call application handlers
-- outbox persistence does not leak Kafka classes
-- RabbitMQ publisher stays infrastructure
+Kurallar:
+- domain broker API'lerine bağımlı değil
+- application port'ları publish capability tanımlar
+- listener'lar yalnızca application handler çağırır
+- outbox persistence Kafka class'larını dışarı sızdırmaz
+- RabbitMQ publisher infrastructure içinde kalır
 
 Commit: test(messaging): enforce reliability adapter boundaries
 
-## Source-of-truth note
+## Source-of-truth notu
 
-This file follows the final Day 15–33 roadmap. Earlier combined Day numbering is superseded by `docs/roadmap/LEGACY-DAY-MAPPING.md`.
+Bu dosya final Day 15–33 roadmap'i izler. Önceki birleşik Day numaralandırması `docs/roadmap/LEGACY-DAY-MAPPING.md` ile superseded edilmiştir.

@@ -1,9 +1,9 @@
 # Docker
 
-**Category:** Technology  
-**Introduced:** Day 7 infrastructure phase  
-**Project status:** Implemented / Verified  
-**Scope:** Containerization runtime and image-based application packaging
+**Kategori:** Technology  
+**İlk eklendiği gün:** Day 7 infrastructure phase  
+**Proje durumu:** Uygulandı / Doğrulandı  
+**Kapsam:** Containerization runtime ve image-based application packaging  
 
 ## 1. Nedir?
 

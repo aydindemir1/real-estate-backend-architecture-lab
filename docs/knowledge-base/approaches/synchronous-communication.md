@@ -1,9 +1,9 @@
 # Synchronous Communication
 
 **Category:** Approach  
-**Introduced:** Day 3  
-**Project status:** Implemented / Integrated / Verified  
-**Scope:** Request/response service-to-service communication
+**İlk eklendiği gün:** Day 3  
+**Proje durumu:** Uygulandı / Entegre edildi / Doğrulandı  
+**Kapsam:** Request/response service-to-service communication
 
 ## 1. Nedir?
 

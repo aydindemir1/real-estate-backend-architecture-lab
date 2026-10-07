@@ -1,9 +1,9 @@
 # MongoDB
 
-**Category:** Technology  
-**Introduced:** Day 7  
-**Project status:** Infrastructure Ready  
-**Scope:** Target canonical document datastore for PropertyService
+**Kategori:** Technology  
+**İlk eklendiği gün:** Day 7  
+**Proje durumu:** Infrastructure hazır  
+**Kapsam:** PropertyService için hedef canonical document datastore  
 
 ## 1. Nedir?
 

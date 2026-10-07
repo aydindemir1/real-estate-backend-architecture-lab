@@ -1,9 +1,9 @@
 # Day 24 — OpenTelemetry + Prometheus + Grafana + Loki + Tempo
 
-## Goal
+## Amaç
 Logs, metrics ve traces'i tek operational model altında birleştirmek.
 
-## Tasks
+## Görevler
 1. telemetry architecture/config finalize et.
 2. OpenTelemetry integration ekle.
 3. OTLP export ekle.
@@ -21,7 +21,7 @@ Logs, metrics ve traces'i tek operational model altında birleştirmek.
 15. Zipkin comparison/migration note yaz.
 16. observability integration tests yaz.
 
-## Suggested commits
+## Önerilen commit'ler
 1. infra(observability): add Prometheus Grafana Loki Tempo
 2. feat(observability): add OpenTelemetry export
 3. feat(observability): standardize log correlation
@@ -31,9 +31,9 @@ Logs, metrics ve traces'i tek operational model altında birleştirmek.
 7. test(observability): verify trace and metric propagation
 8. docs(observability): document Zipkin comparison and runbooks
 
-## Done
+## Tamamlanma durumu
 Metric -> trace -> log correlation yapılabilir; critical flow'lar operational olarak görünürdür.
 
-## Exact observability/file plan
+## Kesin observability/file planı
 
-Implementation source of truth: `docs/roadmap/day-24-exact-file-plan.md`
+Implementation için source of truth: `docs/roadmap/day-24-exact-file-plan.md`

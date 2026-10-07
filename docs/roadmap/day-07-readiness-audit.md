@@ -1,31 +1,31 @@
-# Day 7 — Implementation Readiness Audit
+# Day 7 — Implementation Hazırlık Denetimi
 
-## Verdict
+## Karar
 
-**READY WITH MANDATORY PRE-IMPLEMENTATION CHECKS**
+**ZORUNLU IMPLEMENTATION ÖNCESİ KONTROLLERLE HAZIR**
 
-Day 7 can begin. No architecture blocker exists, but the implementation must apply the corrections below before the milestone can be closed.
+Day 7 başlayabilir. Herhangi bir architecture blocker yoktur; ancak milestone kapatılmadan önce implementation aşağıdaki düzeltmeleri uygulamalıdır.
 
-## Verified current main baseline
+## Doğrulanan mevcut main baseline
 
 ### Build / modules
 - Java 21 toolchain.
 - Spring Boot 4.1.1.
 - Spring Cloud 2025.1.3.
-- SearchService is not yet registered in `settings.gradle`.
-- Root `build.gradle` currently forces Web MVC, OpenAPI, MapStruct, Auth0 JWT and OpenFeign into every subproject.
+- SearchService henüz `settings.gradle` içine kayıtlı değildir.
+- Root `build.gradle` şu anda Web MVC, OpenAPI, MapStruct, Auth0 JWT ve OpenFeign dependency'lerini her subproject'e zorunlu olarak uygular.
 
 ### Service persistence
-Current service build files still use JPA + PostgreSQL for:
+Mevcut service build dosyaları hâlâ aşağıdakiler için JPA + PostgreSQL kullanmaktadır:
 - AgentService
 - BuyerService
 - SellerService
 - PropertyService
 
-This matches the Day 7 plan: Day 7 prepares infrastructure only; datastore code migration occurs one service per later Day.
+Bu durum Day 7 planıyla uyumludur: Day 7 yalnızca infrastructure hazırlığı yapar; datastore kod migration'ı sonraki Day'lerde her seferinde tek bir service için gerçekleştirilir.
 
-### Current Docker Compose
-Present:
+### Mevcut Docker Compose
+Mevcut:
 - Auth PostgreSQL
 - UserProfile PostgreSQL
 - Agent PostgreSQL
@@ -34,7 +34,7 @@ Present:
 - Seller PostgreSQL
 - RabbitMQ
 
-Missing and therefore correctly planned for Day 7:
+Eksik ve bu nedenle Day 7 için doğru şekilde planlanmış:
 - MySQL
 - Couchbase
 - Cassandra
@@ -43,50 +43,50 @@ Missing and therefore correctly planned for Day 7:
 - Redis
 
 ### Secret hygiene
-`.gitignore` already correctly ignores:
+`.gitignore` zaten aşağıdakileri doğru şekilde ignore eder:
 - `.env`
 - `.env.*`
-and allows:
+ve şuna izin verir:
 - `.env.example`
 
-However literal secret-like defaults currently exist in:
+Ancak şu anda aşağıdaki yerlerde literal secret benzeri default değerler bulunmaktadır:
 - `docker-compose.yml`
 - ConfigServerLocal service config files
 
-Examples include local database passwords, RabbitMQ credentials and Auth JWT secret fallback.
+Örnekler arasında local database password'leri, RabbitMQ credential'ları ve Auth JWT secret fallback değeri bulunur.
 
-Therefore Day 7 secret cleanup must cover both Compose and the local Config Server repository.
+Bu nedenle Day 7 secret cleanup hem Compose hem de local Config Server repository'sini kapsamalıdır.
 
-## Mandatory implementation checks
+## Zorunlu implementation kontrolleri
 
-### 1. Create implementation branch
-Branch does not currently exist.
+### 1. Implementation branch oluştur
+Branch şu anda mevcut değildir.
 
-Create from current `main`:
+Mevcut `main` üzerinden oluştur:
 `day/07-build-data-infra`
 
-Do not implement Day 7 on the planning branch.
+Day 7 implementation'ını planning branch üzerinde yapma.
 
-### 2. Preserve Day 1–6 behavior
-Dependency cleanup is allowed only if all affected modules still compile/test.
+### 2. Day 1–6 davranışını koru
+Dependency cleanup yalnızca etkilenen tüm module'ler hâlâ compile/test oluyorsa yapılabilir.
 
-Root dependency removal must be incremental:
-1. identify actual owner modules
-2. add dependency locally
-3. remove from root
-4. run verification
+Root dependency kaldırma işlemi kademeli olmalıdır:
+1. gerçek owner module'leri belirle
+2. dependency'yi ilgili module'e ekle
+3. root'tan kaldır
+4. verification çalıştır
 
-Never remove all global dependencies first and repair later.
+Tüm global dependency'leri önce kaldırıp daha sonra düzeltme yapma.
 
-### 3. Normalize environment variable names
-Current config uses names such as:
+### 3. Environment variable isimlerini normalize et
+Mevcut config şu tür isimler kullanır:
 - `RABBITMQ_USERNAME`
 - `RABBITMQ_PASSWORD`
 
-Day 7 `.env.example`, Compose and Config Server local config must use one canonical naming scheme. Do not introduce both `RABBITMQ_USER` and `RABBITMQ_USERNAME`.
+Day 7 `.env.example`, Compose ve Config Server local config tek bir canonical naming scheme kullanmalıdır. Hem `RABBITMQ_USER` hem de `RABBITMQ_USERNAME` oluşturma.
 
 ### 4. Config Server secret cleanup
-The following must lose secret literal fallbacks:
+Aşağıdakiler secret literal fallback değerlerini kaybetmelidir:
 - Auth DB password
 - UserProfile DB password
 - Agent temporary DB password
@@ -96,33 +96,33 @@ The following must lose secret literal fallbacks:
 - RabbitMQ password
 - Auth JWT secret
 
-Local developer values belong in uncommitted `.env` until Vault Day 24.
+Local developer değerleri Vault Day 24'e kadar commit edilmemiş `.env` içinde tutulur.
 
-### 5. SearchService remains foundation-only
-Day 7 creates:
+### 5. SearchService yalnızca foundation seviyesinde kalır
+Day 7 şunları oluşturur:
 - Gradle module
 - bootstrap class
 - application.yml
 - baseline Config/Eureka/Actuator/tracing dependencies
 
-No search domain, controller, document, repository, query handler or index mapping.
+Search domain, controller, document, repository, query handler veya index mapping oluşturulmaz.
 
-### 6. Temporary PostgreSQL removal timing
-Remove Agent/Buyer/Seller/Property PostgreSQL **Compose services** only after their replacement datastore containers are defined and Compose validates.
+### 6. Temporary PostgreSQL kaldırma zamanı
+Agent/Buyer/Seller/Property PostgreSQL **Compose service'lerini**, yalnızca replacement datastore container'ları tanımlandıktan ve Compose doğrulandıktan sonra kaldır.
 
-Do not remove JPA/PostgreSQL code dependencies on Day 7. Those switch on Days 8–11.
+Day 7'de JPA/PostgreSQL kod dependency'lerini kaldırma. Bunlar Day 8–11'de değiştirilir.
 
-### 7. Heavy local infrastructure
-Couchbase + Cassandra + Elasticsearch can be resource-heavy.
+### 7. Ağır local infrastructure
+Couchbase + Cassandra + Elasticsearch yüksek kaynak tüketebilir.
 
-Use Compose profiles or documented selective startup. Day 7 final gate does not require every heavy datastore to remain running simultaneously if each is individually verified healthy.
+Compose profiles veya dokümante edilmiş selective startup kullan. Day 7 final gate, her biri ayrı ayrı sağlıklı şekilde doğrulanmışsa bütün ağır datastore'ların aynı anda sürekli çalışmasını gerektirmez.
 
-### 8. Version selection
-Before implementation commit, verify each selected container image and any new Testcontainers dependency against the actual project stack.
+### 8. Version seçimi
+Implementation commit'inden önce seçilen her container image'ı ve yeni Testcontainers dependency'lerini gerçek proje stack'iyle doğrula.
 
-Pin explicit versions. No `latest`, wildcard or dynamic versions.
+Explicit version kullan. `latest`, wildcard veya dynamic version kullanma.
 
-## Recommended exact execution order
+## Önerilen kesin execution sırası
 
 1. create `day/07-build-data-infra` from `main`
 2. dependency ownership matrix
@@ -142,25 +142,25 @@ Pin explicit versions. No `latest`, wildcard or dynamic versions.
 16. Gradle regression
 17. documentation
 
-This order keeps cheaper/easier infrastructure checks before the heavier Couchbase/Cassandra startup work.
+Bu sıra, daha ağır Couchbase/Cassandra startup çalışmalarından önce daha ucuz/kolay infrastructure kontrollerini tamamlar.
 
 ## Day 7 readiness checklist
 
-- [x] Day 7 scope is isolated from business implementation
-- [x] exact file-level plan exists
-- [x] current main matches expected pre-Day-7 state
-- [x] SearchService absence confirmed
-- [x] temporary PostgreSQL services confirmed
-- [x] secret-literal issue identified
-- [x] root dependency overreach identified
-- [x] `.gitignore` env policy already correct
-- [ ] implementation branch created
-- [ ] exact container versions verified
-- [ ] dependency ownership matrix executed
-- [ ] secret env names normalized
+- [x] Day 7 scope business implementation'dan ayrıştırıldı
+- [x] exact file-level plan mevcut
+- [x] mevcut main beklenen Day 7 öncesi state ile eşleşiyor
+- [x] SearchService yokluğu doğrulandı
+- [x] temporary PostgreSQL service'leri doğrulandı
+- [x] secret-literal sorunu belirlendi
+- [x] root dependency kapsam fazlalığı belirlendi
+- [x] `.gitignore` env policy zaten doğru
+- [ ] implementation branch oluşturuldu
+- [ ] exact container version'ları doğrulandı
+- [ ] dependency ownership matrix uygulandı
+- [ ] secret env isimleri normalize edildi
 
-## Decision
+## Karar
 
-There is no need for another architecture-planning round before implementation.
+Implementation öncesinde yeni bir architecture-planning turuna ihtiyaç yoktur.
 
-The next action is to create `day/07-build-data-infra` from `main` and execute Day 7 task-by-task with small commits.
+Bir sonraki adım, `main` üzerinden `day/07-build-data-infra` oluşturmak ve Day 7'yi küçük commit'lerle task-by-task uygulamaktır.

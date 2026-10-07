@@ -1,9 +1,9 @@
 # Day 13 — Redis Infrastructure Foundation
 
-## Goal
+## Amaç
 Redis'i canonical datastore olmadan ortak ephemeral infrastructure capability olarak hazırlamak.
 
-## Tasks
+## Görevler
 1. Redis dependency alias/config ekle.
 2. Redis container health doğrula.
 3. typed Redis config oluştur.
@@ -18,22 +18,22 @@ Redis'i canonical datastore olmadan ortak ephemeral infrastructure capability ol
 12. Day 14+ kullanım noktalarını yalnız interface/roadmap seviyesinde belirt.
 13. docs güncelle.
 
-## Suggested commits
+## Önerilen commit'ler
 1. build(redis): add Redis dependency
 2. feat(redis): add typed Redis configuration
 3. feat(redis): add key and serialization foundation
 4. test(redis): add connectivity and TTL integration tests
 5. docs(redis): document Redis role and conventions
 
-## Verification
+## Doğrulama
 - connect/read/write
 - TTL expires
 - serializer deterministic
 - no business aggregate owned by Redis
 
-## Done
+## Tamamlanma durumu
 Redis foundation hazır; idempotency/rate-limit/cache henüz gereksiz yere implemente edilmemiş.
 
-## Exact file/config plan
+## Kesin file/config planı
 
-Implementation source of truth: `docs/roadmap/day-13-exact-file-plan.md`
+Implementation için source of truth: `docs/roadmap/day-13-exact-file-plan.md`

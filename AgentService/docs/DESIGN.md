@@ -99,14 +99,14 @@ Public response `version` expose etmez.
 
 ## Test coverage
 
-- Domain Unit Tests
-- Application Unit Tests
-- MySQL Testcontainers integration tests
+- Domain Unit Testleri
+- Application Unit Testleri
+- MySQL Testcontainers integration testleri
 - Flyway schema checks
-- unique constraint tests
-- optimistic locking integration test
-- Controller slice tests
+- unique constraint testleri
+- optimistic locking integration testi
+- Controller slice testleri
 - ArchUnit rules
-- service smoke tests
+- service smoke testleri
 
 Test sınıflarının varlığı implementation durumunu gösterir. Full suite green sonucu ayrıca çalıştırılarak doğrulanmadan `Verified` kabul edilmez.

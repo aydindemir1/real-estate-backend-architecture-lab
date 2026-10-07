@@ -1,4 +1,4 @@
-# SellerService — Package / Class-Level Design
+# SellerService — Package / Class-Level Tasarım
 
 ## Architecture
 

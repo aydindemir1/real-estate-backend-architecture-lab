@@ -1,6 +1,6 @@
-# Day 7 — Exact File / Task / Commit Plan
+# Day 7 — Kesin File / Task / Commit Planı
 
-## 0. Scope
+## 0. Kapsam
 
 Day 7 yalnızca build ve local data infrastructure foundation'dır.
 
@@ -10,14 +10,14 @@ Bu dosya Day 7 implementation sırasında primary source of truth'tur.
 
 ---
 
-# Task 1 — Datastore dependency catalog
+# Görev 1 — Datastore dependency catalog
 
-## Files
+## Dosyalar
 
-### Modify
+### Değiştir
 `/dependencies.gradle`
 
-## Exact changes
+## Kesin değişiklikler
 
 Yeni alias'lar:
 
@@ -31,14 +31,14 @@ Yeni alias'lar:
 
 Gerekirse daha sonra service Day'lerinde datastore-specific test dependency eklenir.
 
-## Rules
+## Kurallar
 
 - Spring-managed starter version'larını mümkün olduğunca Boot dependency management'a bırak.
 - MySQL JDBC version'ını mümkünse Boot BOM yönetsin.
 - Testcontainers version governance ayrı central source üzerinden yapılmalı; Day 7 implementation sırasında mevcut Spring Boot compatibility doğrulanmalı.
 - Dynamic version yok.
 
-## Verification
+## Doğrulama
 
 ```bash
 ./gradlew dependencies
@@ -55,14 +55,14 @@ veya daha dar:
 
 ---
 
-# Task 2 — Root common dependency cleanup
+# Görev 2 — Root common dependency cleanup
 
-## Files
+## Dosyalar
 
-### Modify
+### Değiştir
 `/build.gradle`
 
-## Current issue
+## Mevcut sorun
 
 Şu dependency'ler bütün subproject'lere zorunlu ekleniyor:
 
@@ -74,39 +74,39 @@ veya daha dar:
 
 Bunların tamamı her module için gerçekten common değildir.
 
-## Day 7 target
+## Day 7 hedefi
 
 Root'ta gerçekten common olanlar tutulur.
 
-Strong candidates to remain common:
+Common kalması güçlü adaylar:
 - test starter
 - JUnit launcher
 - Lombok annotation processing
 - MapStruct processor yalnız gerçekten genel strategy buysa yeniden değerlendirilir
 
-Strong candidates to move to service modules:
+Service module'lerine taşınması güçlü adaylar:
 - Auth0 JWT
 - OpenFeign
 - Swagger
 - Web starter gerektiğinde
 
-## Important constraint
+## Önemli kısıt
 
 Bu cleanup tek adımda bütün module'leri kırmamalıdır.
 
 Önce dependency ownership matrix çıkarılır:
 
-| Dependency | Modules that really need it |
+| Dependency | Gerçekten ihtiyaç duyan module'ler |
 |---|---|
-| Web MVC | REST-facing application modules |
-| OpenAPI | REST-facing modules |
-| OpenFeign | only Feign clients |
-| java-jwt | legacy Auth/security-related modules |
-| MapStruct | modules with generated mapping |
+| Web MVC | REST-facing application module'leri |
+| OpenAPI | REST-facing module'ler |
+| OpenFeign | yalnız Feign client'lar |
+| java-jwt | legacy Auth/security-related module'ler |
+| MapStruct | generated mapping kullanan module'ler |
 
 Sonra root'tan yalnız güvenli olanlar çıkarılır ve ilgili service `build.gradle` dosyalarına taşınır.
 
-## Files potentially modified
+## Dosyalar potentially modified
 
 - `/build.gradle`
 - `/AuthService/build.gradle`
@@ -118,7 +118,7 @@ Sonra root'tan yalnız güvenli olanlar çıkarılır ve ilgili service `build.g
 - `/ApiGatewayService/build.gradle`
 - gerekirse diğer application module build files
 
-## Verification
+## Doğrulama
 
 ```bash
 ./gradlew check
@@ -134,11 +134,11 @@ Eğer cleanup scope beklenenden büyürse Day 7 içinde tek ayrı commit olarak 
 
 ---
 
-# Task 3 — SearchService module foundation
+# Görev 3 — SearchService module foundation
 
-## Files
+## Dosyalar
 
-### Modify
+### Değiştir
 `/settings.gradle`
 
 Add:
@@ -184,7 +184,7 @@ Day 7'de oluşturulmayacak:
 
 Bunlar Day 12.
 
-## Verification
+## Doğrulama
 
 ```bash
 ./gradlew projects
@@ -197,9 +197,9 @@ Bunlar Day 12.
 
 ---
 
-# Task 4 — Secret/config hygiene
+# Görev 4 — Secret/config hygiene
 
-## Files
+## Dosyalar
 
 ### Already correct, verify only
 `/.gitignore`
@@ -240,7 +240,7 @@ Example-only values:
 
 Exact variable set implementation sırasında selected local auth modes'a göre finalize edilir.
 
-### Modify
+### Değiştir
 `/docker-compose.yml`
 
 ### Also modify local Config Server files
@@ -263,7 +263,7 @@ Security-sensitive password için repository literal default bırakmamak tercih 
 
 Vault Day 21'e kadar local secret injection environment/.env üzerinden yapılabilir.
 
-## Verification
+## Doğrulama
 
 ```bash
 docker compose config
@@ -289,11 +289,11 @@ Bunlar iki ayrı küçük commit olabilir.
 
 ---
 
-# Task 5 — Add Agent MySQL container
+# Görev 5 — Add Agent MySQL container
 
 ## File
 
-### Modify
+### Değiştir
 `/docker-compose.yml`
 
 ## Remove later
@@ -323,7 +323,7 @@ Configuration:
 
 `agent_mysql_data`
 
-## Verification
+## Doğrulama
 
 ```bash
 docker compose up -d agent-mysql
@@ -338,7 +338,7 @@ Health check green.
 
 ---
 
-# Task 6 — Add Property MongoDB container
+# Görev 6 — Add Property MongoDB container
 
 ## File
 
@@ -362,7 +362,7 @@ Required:
 
 `property_mongodb_data`
 
-## Verification
+## Doğrulama
 
 Container starts and ping/health works.
 
@@ -372,7 +372,7 @@ Container starts and ping/health works.
 
 ---
 
-# Task 7 — Add Buyer Couchbase container
+# Görev 7 — Add Buyer Couchbase container
 
 ## File
 
@@ -417,7 +417,7 @@ Only create if needed; no premature script.
 
 ---
 
-# Task 8 — Add Seller Cassandra container
+# Görev 8 — Add Seller Cassandra container
 
 ## File
 
@@ -456,7 +456,7 @@ Day 10 owns:
 
 ---
 
-# Task 9 — Add Elasticsearch container
+# Görev 9 — Add Elasticsearch container
 
 ## File
 
@@ -496,7 +496,7 @@ Day 12 owns:
 
 ---
 
-# Task 10 — Add Redis container
+# Görev 10 — Add Redis container
 
 ## File
 
@@ -527,7 +527,7 @@ Day 13 owns Redis application foundation.
 
 ---
 
-# Task 11 — Remove temporary service PostgreSQL containers
+# Görev 11 — Remove temporary service PostgreSQL containers
 
 ## File
 
@@ -559,7 +559,7 @@ This removes local infrastructure definition, not service code dependency yet.
 
 Service code datastore switch occurs Day 8–11 one service at a time.
 
-## Verification
+## Doğrulama
 
 ```bash
 docker compose config
@@ -572,7 +572,7 @@ docker compose ps
 
 ---
 
-# Task 12 — Compose grouping/resource strategy
+# Görev 12 — Compose grouping/resource strategy
 
 ## File
 
@@ -630,7 +630,7 @@ If profiles are used:
 
 ---
 
-# Task 13 — Compose/config validation
+# Görev 13 — Compose/config validation
 
 ## No production code
 
@@ -671,7 +671,7 @@ If healthcheck fixes are required:
 
 ---
 
-# Task 14 — Baseline regression verification
+# Görev 14 — Baseline regression verification
 
 ## Commands
 
@@ -701,7 +701,7 @@ Only if regression fix needed:
 
 ---
 
-# Task 15 — Documentation
+# Görev 15 — Documentation
 
 ## Modify
 

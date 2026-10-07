@@ -1,4 +1,4 @@
-# SellerService Cassandra Schema Bootstrap
+# SellerService Cassandra Schema Bootstrap Rehberi
 
 Day 10 için Cassandra şeması uygulama tarafından otomatik oluşturulmaz.
 

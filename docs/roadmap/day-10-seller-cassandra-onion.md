@@ -2,7 +2,7 @@
 
 ## Durum
 
-**Completed / Verified**
+**Tamamlandı / Doğrulandı**
 
 Implementation, automated tests, CI, lokal runtime/Postman acceptance ve original PNG evidence repository sync tamamlanmıştır.
 
@@ -56,9 +56,9 @@ Ana query:
 - newest-first
 - no `ALLOW FILTERING`
 
-## REST acceptance
+## REST kabulü
 
-### Success
+### Başarılı senaryolar
 
 - POST `/sellers` → 201
 - GET `/sellers/{sellerId}` → 200
@@ -67,7 +67,7 @@ Ana query:
 - POST submit → 200
 - GET after submit → 200 / SUBMITTED
 
-### Error
+### Hata senaryoları
 
 Doğrulanan stable responses:
 - 404 `SELLER_NOT_FOUND`
@@ -77,14 +77,14 @@ Doğrulanan stable responses:
 - 400 `MALFORMED_REQUEST_BODY`
 - 409 `INVALID_LISTING_SUBMISSION_STATE`
 
-## Runtime evidence
+## Runtime kanıtları
 
 - `docs/evidence/day-10/README.md`
 - `docs/collections/day-10/Day-10-SellerService.postman_collection.json`
 
 Orijinal PNG evidence paketi hazırlanmıştır; binary repository sync lokal Git üzerinden yapılacaktır.
 
-## Deferred
+## Ertelenenler
 
 Day 10'a dahil edilmemiştir:
 - RabbitMQ SubmitPropertyListingCommand
@@ -96,7 +96,7 @@ Day 10'a dahil edilmemiştir:
 - seller activity timeline
 - offer history tables
 
-## Completion gate
+## Tamamlanma kriterleri
 
 - [x] Cassandra persistence
 - [x] framework-independent domain

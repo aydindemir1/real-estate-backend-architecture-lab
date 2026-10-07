@@ -1,9 +1,9 @@
 # Day 25 — Spring Cloud Task + Reindex / Reconciliation
 
-## Goal
+## Amaç
 Finite maintenance/recovery job'larını kontrollü ve rerunnable hale getirmek.
 
-## Tasks
+## Görevler
 1. Task dependency/setup ekle.
 2. task execution metadata modelini ekle.
 3. single-property reindex use-case oluştur.
@@ -17,7 +17,7 @@ Finite maintenance/recovery job'larını kontrollü ve rerunnable hale getirmek.
 11. integration tests yaz.
 12. runbook oluştur.
 
-## Suggested commits
+## Önerilen commit'ler
 1. build(task): add Spring Cloud Task
 2. feat(search): add single-property reindex task
 3. feat(search): add full index rebuild
@@ -26,9 +26,9 @@ Finite maintenance/recovery job'larını kontrollü ve rerunnable hale getirmek.
 6. test(task): add rerun and failure tests
 7. docs(task): add reindex and reconciliation runbook
 
-## Done
+## Tamamlanma durumu
 Search recovery task'ları idempotent, observable ve controlled şekilde çalışır.
 
-## Exact task/recovery plan
+## Kesin task/recovery planı
 
-Implementation source of truth: `docs/roadmap/day-25-exact-file-plan.md`
+Implementation için source of truth: `docs/roadmap/day-25-exact-file-plan.md`

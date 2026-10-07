@@ -1,10 +1,10 @@
 # Apache Cassandra
 
-**Category:** Technology  
-**Introduced:** Day 7 infrastructure  
-**Application implementation:** Day 10  
-**Project status:** Implemented / Verified  
-**Scope:** SellerService
+**Kategori:** Technology  
+**İlk eklendiği gün:** Day 7 infrastructure  
+**Application implementation günü:** Day 10  
+**Proje durumu:** Uygulandı / Doğrulandı  
+**Kapsam:** SellerService
 
 ## 1. Nedir?
 
@@ -219,7 +219,7 @@ Probleme göre:
 
 değerlendirilebilir.
 
-## 19. Production considerations
+## 19. Production değerlendirmeleri
 
 - partition cardinality/size
 - replication factor

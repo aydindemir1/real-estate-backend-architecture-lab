@@ -1,9 +1,9 @@
 # Spring Cloud Circuit Breaker
 
-**Category:** Technology  
-**Introduced:** Day 5A  
-**Project status:** Implemented / Verified  
-**Scope:** Abstraction for circuit breaker implementations
+**Kategori:** Technology  
+**İlk eklendiği gün:** Day 5A  
+**Proje durumu:** Uygulandı / Doğrulandı  
+**Kapsam:** Circuit Breaker implementation'ları için abstraction  
 
 ## 1. Nedir?
 

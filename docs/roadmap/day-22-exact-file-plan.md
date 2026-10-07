@@ -1,60 +1,60 @@
-# Day 22 — Exact Saga + Offer / Reservation Workflow Plan
+# Day 22 — Kesin Saga + Offer / Reservation Workflow Planı
 
-## Scope
+## Kapsam
 - Offer Aggregate/state machine
 - durable HTTP idempotency
 - OfferRequested
 - Property hold/reserve/release
 - Seller pending-offer projection
 - Saga Choreography + compensation
-- concurrency and E2E tests
+- concurrency ve E2E testleri
 
-## Correctness rule — durable idempotency
-Redis is not the source of truth. BuyerService/Couchbase durably stores:
+## Correctness kuralı — durable idempotency
+Redis source of truth değildir. BuyerService/Couchbase aşağıdakileri durable olarak saklar:
 - Idempotency-Key
 - canonical request hash
 - OfferId
 - result/status
 
-Same key + same payload returns the prior result. Same key + different payload returns 409. Redis may accelerate lookup only.
+Aynı key + aynı payload önceki sonucu döndürür. Aynı key + farklı payload 409 döndürür. Redis yalnızca lookup'ı hızlandırabilir.
 
-## Tasks
+## Task'ler
 
-1. Implement Offer states CREATED, REQUESTED, PROPERTY_HELD, ACCEPTED, REJECTED, EXPIRED, CANCELLED, FAILED.
-2. Create Offer Aggregate and invariants; terminal states immutable.
-3. Add Couchbase Offer persistence with key `offer::{offerId}`.
-4. Add durable Couchbase idempotency document/record with unique deterministic key.
-5. Optionally add Redis accelerator adapter; correctness must survive Redis loss.
-6. Implement `CreateOfferUseCase` with Idempotency-Key.
-7. Ensure Offer save + required outbound event use the Day 18 durable Buyer/Couchbase publication strategy.
-8. Expose `POST /buyers/{buyerId}/offers`.
-9. Publish `OfferRequested` using reliable outbound mechanism.
-10. Property consumes OfferRequested and atomically/optimistically transitions PUBLISHED→ON_HOLD with activeOfferId.
-11. Publish `PropertyHeld` or explicit `PropertyHoldRejected`.
-12. Buyer consumes hold outcomes and transitions Offer.
-13. Add Cassandra `pending_offers_by_seller` projection.
-14. Seller consumes PropertyHeld and writes pending offer.
-15. Expose pending-offer query.
-16. Implement Seller accept/reject use cases.
-17. Persist SellerAccepted/SellerRejected through Day 20 durable Cassandra outbound messaging before publishing to Kafka.
-18. Expose async 202 accept/reject endpoints.
-19. Property consumes SellerAccepted -> RESERVED -> PropertyReserved.
-20. Property consumes SellerRejected -> release to PUBLISHED -> PropertyHoldReleased.
-21. Buyer consumes final outcome -> ACCEPTED/REJECTED.
-22. Clean/update Seller pending projection.
-23. Define compensation rules; no distributed rollback.
-24. Preserve one correlationId through workflow and causation chain per event.
-25. Add stuck-state timestamps for later recovery.
-26. Add duplicate-event tests.
-27. Add out-of-order/stale-event tests.
-28. Add two-offer race test: exactly one hold.
-29. Add happy-path acceptance E2E.
-30. Add rejection E2E.
-31. Add unavailable Property E2E.
-32. Add Idempotency-Key retry tests, including Redis loss/restart scenario.
-33. Add choreography ArchUnit rules.
+1. Offer state'lerini implemente et: CREATED, REQUESTED, PROPERTY_HELD, ACCEPTED, REJECTED, EXPIRED, CANCELLED, FAILED.
+2. Offer Aggregate ve invariant'ları oluştur; terminal state'ler immutable olsun.
+3. `offer::{offerId}` key'i ile Couchbase Offer persistence ekle.
+4. Unique deterministic key ile durable Couchbase idempotency document/record ekle.
+5. Opsiyonel Redis accelerator adapter ekle; correctness Redis kaybından etkilenmemelidir.
+6. Idempotency-Key ile `CreateOfferUseCase` implemente et.
+7. Offer save + required outbound event'in Day 18 durable Buyer/Couchbase publication strategy kullandığından emin ol.
+8. `POST /buyers/{buyerId}/offers` expose et.
+9. Reliable outbound mechanism ile `OfferRequested` publish et.
+10. Property, OfferRequested tüketip PUBLISHED→ON_HOLD geçişini activeOfferId ile atomic/optimistic olarak uygular.
+11. `PropertyHeld` veya explicit `PropertyHoldRejected` publish et.
+12. Buyer hold outcome'larını tüketip Offer state'ini geçirir.
+13. Cassandra `pending_offers_by_seller` projection ekle.
+14. Seller PropertyHeld tüketip pending offer yazar.
+15. Pending-offer query expose et.
+16. Seller accept/reject use-case'lerini implemente et.
+17. SellerAccepted/SellerRejected'i Kafka'ya publish etmeden önce Day 20 durable Cassandra outbound messaging üzerinden persist et.
+18. Async 202 accept/reject endpoint'lerini expose et.
+19. Property SellerAccepted tüketir -> RESERVED -> PropertyReserved.
+20. Property SellerRejected tüketir -> PUBLISHED'a release -> PropertyHoldReleased.
+21. Buyer final outcome tüketir -> ACCEPTED/REJECTED.
+22. Seller pending projection'ı temizle/güncelle.
+23. Compensation rule'larını tanımla; distributed rollback yok.
+24. Workflow boyunca tek correlationId ve event başına causation chain koru.
+25. Sonraki recovery için stuck-state timestamp'leri ekle.
+26. Duplicate-event testleri ekle.
+27. Out-of-order/stale-event testleri ekle.
+28. İki-offer race testi ekle: tam olarak bir hold.
+29. Happy-path acceptance E2E ekle.
+30. Rejection E2E ekle.
+31. Unavailable Property E2E ekle.
+32. Redis loss/restart senaryosu dahil Idempotency-Key retry testleri ekle.
+33. Choreography ArchUnit rule'ları ekle.
 
-## Commit sequence
+## Commit sırası
 1. `feat(buyer): add Offer aggregate and persistence`
 2. `feat(buyer): add durable Offer idempotency`
 3. `feat(buyer): add idempotent CreateOffer`
@@ -72,11 +72,11 @@ Same key + same payload returns the prior result. Same key + different payload r
 15. `docs(saga): finalize choreography and compensation`
 
 ## Final gate
-- Redis loss cannot create duplicate Offer
-- OfferRequested cannot be silently lost after durable Offer commit
-- Seller decision event cannot be silently lost after durable decision
-- exactly one active Property hold
-- accept reserves, reject releases
-- duplicates/stale events safe
-- no cross-service DB access
-- choreography, not central orchestrator
+- Redis kaybı duplicate Offer oluşturamaz
+- durable Offer commit sonrasında OfferRequested sessizce kaybolamaz
+- durable decision sonrasında Seller decision event sessizce kaybolamaz
+- tam olarak bir active Property hold vardır
+- accept reserve eder, reject release eder
+- duplicate/stale event'ler güvenlidir
+- cross-service DB access yok
+- central orchestrator değil, choreography kullanılır

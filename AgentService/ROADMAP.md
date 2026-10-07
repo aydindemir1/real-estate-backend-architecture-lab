@@ -22,9 +22,9 @@ Uygulanan kapsam:
 - Stable REST error contract
 - Optimistic locking
 - MySQL Testcontainers
-- Controller slice tests
+- Controller slice testleri
 - ArchUnit
-- Smoke tests
+- Smoke testleri
 
 ## Sonraki AgentService milestone'ları
 

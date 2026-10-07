@@ -1,9 +1,9 @@
 # Data Ownership
 
-**Category:** Principle  
-**Introduced:** Day 3  
-**Project status:** Implemented as architecture rule / Strengthened in Day 7  
-**Scope:** Canonical data ownership by service
+**Kategori:** Principle  
+**İlk eklendiği gün:** Day 3  
+**Proje durumu:** Architecture kuralı olarak uygulandı / Day 7'de güçlendirildi  
+**Kapsam:** Service bazında canonical data ownership  
 
 ## 1. Nedir?
 

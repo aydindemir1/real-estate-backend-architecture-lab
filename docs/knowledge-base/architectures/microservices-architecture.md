@@ -1,9 +1,9 @@
 # Microservices Architecture
 
 **Category:** Architecture  
-**Introduced:** Day 3  
-**Project status:** Implemented / Integrated / Verified  
-**Scope:** Service decomposition, independently owned service boundaries, distributed communication
+**İlk eklendiği gün:** Day 3  
+**Proje durumu:** Uygulandı / Entegre edildi / Doğrulandı  
+**Kapsam:** Service decomposition, independently owned service boundaries, distributed communication
 
 ## 1. Nedir?
 

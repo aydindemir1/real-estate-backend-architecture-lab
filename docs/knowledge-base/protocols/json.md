@@ -1,9 +1,9 @@
 # JSON
 
-**Category:** Data Format  
-**Introduced:** Day 1  
-**Project status:** Implemented / Verified  
-**Scope:** Primary HTTP and early messaging serialization format
+**Kategori:** Data Format  
+**İlk eklendiği gün:** Day 1  
+**Proje durumu:** Uygulandı / Doğrulandı  
+**Kapsam:** Primary HTTP ve başlangıç messaging serialization formatı  
 
 ## 1. Nedir?
 

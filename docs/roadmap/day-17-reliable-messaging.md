@@ -1,9 +1,9 @@
 # Day 17 — Outbox + Inbox + Idempotency + Retry + DLQ/DLT
 
-## Goal
+## Amaç
 At-least-once messaging altında correctness ve recoverability sağlamak.
 
-## Tasks
+## Görevler
 1. reliable messaging failure modes'larını kesinleştir.
 2. PropertyService Outbox model/storage ekle.
 3. outbox publisher ekle.
@@ -20,7 +20,7 @@ At-least-once messaging altında correctness ve recoverability sağlamak.
 14. outbox backlog observability foundation ekle.
 15. docs/runbook güncelle.
 
-## Suggested commits
+## Önerilen commit'ler
 1. docs(messaging): finalize reliable-delivery decisions
 2. feat(property): add outbox persistence
 3. feat(messaging): add outbox publisher
@@ -31,9 +31,9 @@ At-least-once messaging altında correctness ve recoverability sağlamak.
 8. test(messaging): add duplicate and failure-path tests
 9. docs(messaging): add replay and DLQ runbooks
 
-## Done
+## Tamamlanma durumu
 Duplicate delivery business side-effect üretmez; failure/retry/DLQ recovery paths test edilmiştir.
 
-## Exact reliability/file plan
+## Kesin reliability/file planı
 
-Implementation source of truth: `docs/roadmap/day-17-exact-file-plan.md`
+Implementation için source of truth: `docs/roadmap/day-17-exact-file-plan.md`

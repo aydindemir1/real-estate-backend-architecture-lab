@@ -1,9 +1,9 @@
 # Spring MVC
 
-**Category:** Technology  
-**Introduced:** Day 1  
-**Project status:** Implemented / Verified  
-**Scope:** Servlet-based HTTP request/response web framework
+**Kategori:** Technology  
+**İlk eklendiği gün:** Day 1  
+**Proje durumu:** Uygulandı / Doğrulandı  
+**Kapsam:** Servlet-based HTTP request/response web framework  
 
 ## 1. Nedir?
 

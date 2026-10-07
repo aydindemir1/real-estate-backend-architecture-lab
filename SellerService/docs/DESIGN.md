@@ -4,7 +4,7 @@
 
 SellerService; seller state'i ile listing submission lifecycle'ının sahibidir.
 
-Day 10 capability scope:
+Day 10 capability kapsamı:
 - Seller oluşturma
 - Seller okuma
 - ListingSubmission oluşturma
@@ -42,7 +42,7 @@ Alanlar:
 - `createdAt`
 - `updatedAt`
 
-Status:
+Durum:
 - ACTIVE
 - SUSPENDED
 - INACTIVE
@@ -99,7 +99,7 @@ Commands:
 - `CreateListingSubmissionCommand`
 - `SubmitListingCommand`
 
-Queries:
+Query'ler:
 - `GetSellerQuery`
 - `ListSellerSubmissionsQuery`
 
@@ -147,7 +147,7 @@ Runtime:
 
 Lokal schema explicit `cqlsh` bootstrap ile uygulanır.
 
-## 7. Configuration
+## 7. Konfigürasyon
 
 Bootstrap:
 - application name: `seller-service`
@@ -171,7 +171,7 @@ Lokal Cassandra authentication kullanmadığı için boş username/password prop
 
 ## 8. REST API
 
-| Method | Path | Success |
+| Method | Path | Başarılı sonuç |
 |---|---|---:|
 | POST | `/sellers` | 201 |
 | GET | `/sellers/{sellerId}` | 200 |
@@ -206,16 +206,16 @@ Day 10 fiziksel modelinde global `user_id` uniqueness'i enforce eden ayrı owner
 
 ## 11. Test stratejisi
 
-- domain unit tests
-- application tests
+- domain unit testleri
+- application testleri
 - Cassandra Testcontainers integration
 - seller + month partition isolation
 - newest-first clustering
 - paging
 - exact row lookup
 - no-ALLOW-FILTERING query guard
-- REST tests
-- ArchUnit Onion Architecture tests
+- REST testleri
+- ArchUnit Onion Architecture testleri
 
 ## 12. Lokal runtime doğrulaması
 

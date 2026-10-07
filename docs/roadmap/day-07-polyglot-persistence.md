@@ -1,7 +1,7 @@
 # Day 7 — Build & Local Data Infrastructure Foundation
 
-**Status:** Planned  
-**Implementation branch:** `day/07-build-data-infra`
+**Durum:** Planlandı  
+**Implementation branch'i:** `day/07-build-data-infra`
 
 ## Amaç
 
@@ -9,7 +9,7 @@ Day 8–13 service/datastore milestone'ları için ortak build ve local infrastr
 
 Bu Day içinde business service implementation yapılmaz.
 
-## Scope
+## Kapsam
 
 - Gradle datastore dependency alias'ları
 - SearchService module registration foundation

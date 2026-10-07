@@ -1,9 +1,9 @@
 # Centralized Configuration
 
 **Category:** Approach  
-**Introduced:** Day 4  
-**Project status:** Implemented / Integrated / Verified  
-**Scope:** Shared external service configuration management
+**İlk eklendiği gün:** Day 4  
+**Proje durumu:** Uygulandı / Entegre edildi / Doğrulandı  
+**Kapsam:** Shared external service configuration management
 
 ## 1. Nedir?
 

@@ -1,47 +1,47 @@
-# Day 31 — Exact Spring Cloud Task + Reindex / Reconciliation Plan
+# Day 31 — Kesin Spring Cloud Task + Reindex / Reconciliation Planı
 
-## Scope
+## Kapsam
 - Spring Cloud Task metadata
 - single/full reindex
 - versioned physical index + stable alias
 - bounded batch/checkpoint
 - reconciliation report/repair
-- rollback/runbooks
+- rollback/runbook'lar
 
-## Tasks
-1. Inventory finite maintenance tasks.
-2. Add Spring Cloud Task to Search-owned maintenance capability; no generic TaskService microservice.
-3. Configure Task metadata repository; never Elasticsearch.
-4. Standard names: search-single-property-reindex, search-full-reindex, search-reconciliation.
-5. Finalize canonical reindex source without direct cross-service Mongo access.
-6. If needed, expose secured PropertyService internal/export read contract returning search source DTO, not persistence document.
-7. Implement single-property reindex upsert.
-8. Implement full rebuild into new physical index; never delete active index first.
-9. Use physical name like `properties-v{sequence}` and stable alias `properties-read`.
-10. Add `SearchIndexManager`: create, inspect alias, atomic switch, controlled rollback.
-11. Use stable bounded cursor/keyset pagination from source.
-12. Use bounded Elasticsearch bulk requests and detect partial failures.
-13. Make reruns idempotent.
-14. Store checkpoint/last successful cursor for resume.
-15. On source/Elastic/mapping/bulk failure, mark task failed and do not switch alias.
-16. Verify candidate index before cutover: counts + zero fatal bulk failures + sample validation + mapping/health.
-17. Retain previous index temporarily for rollback.
-18. Implement reconciliation: missing, stale version, wrong searchable state, optional orphan.
-19. Default reconciliation mode report-only; repair requires explicit flag.
-20. Repair missing/stale; delete orphan only with explicit repair policy.
-21. Validate task parameters and secure source access with service identity.
-22. Add structured task logs and low-cardinality task metrics.
-23. Add tests for single reindex, full rebuild, failure-before-switch, checkpoint resume, report, repair, rerun idempotency and Task metadata.
-24. Prevent concurrent full rebuilds from racing alias switch.
-25. Add reindex and reconciliation runbooks.
-26. Perform destructive local index-loss recovery exercise.
+## Task'ler
+1. Finite maintenance task'lerini inventory et.
+2. Spring Cloud Task'i Search-owned maintenance capability'ye ekle; generic TaskService microservice oluşturma.
+3. Task metadata repository configure et; Elasticsearch kullanma.
+4. Standard isimler: search-single-property-reindex, search-full-reindex, search-reconciliation.
+5. Direct cross-service Mongo access olmadan canonical reindex source'u finalize et.
+6. Gerekirse persistence document değil search source DTO döndüren secured PropertyService internal/export read contract expose et.
+7. Single-property reindex upsert implemente et.
+8. Full rebuild'i yeni physical index'e yap; aktif index'i önce silme.
+9. `properties-v{sequence}` gibi physical name ve stable alias `properties-read` kullan.
+10. `SearchIndexManager` ekle: create, inspect alias, atomic switch, controlled rollback.
+11. Source'tan stable bounded cursor/keyset pagination kullan.
+12. Bounded Elasticsearch bulk request kullan ve partial failure'ları tespit et.
+13. Rerun'ları idempotent yap.
+14. Resume için checkpoint/last successful cursor sakla.
+15. Source/Elastic/mapping/bulk failure durumunda task'i failed işaretle ve alias switch yapma.
+16. Cutover öncesi candidate index'i doğrula: counts + zero fatal bulk failures + sample validation + mapping/health.
+17. Rollback için previous index'i geçici olarak tut.
+18. Reconciliation implemente et: missing, stale version, wrong searchable state, opsiyonel orphan.
+19. Default reconciliation mode report-only; repair explicit flag gerektirir.
+20. Missing/stale kayıtları repair et; orphan yalnızca explicit repair policy ile delete edilir.
+21. Task parameter'larını validate et ve source access'i service identity ile secure et.
+22. Structured task log ve low-cardinality task metric'leri ekle.
+23. Single reindex, full rebuild, failure-before-switch, checkpoint resume, report, repair, rerun idempotency ve Task metadata testleri ekle.
+24. Concurrent full rebuild'lerin alias switch için race etmesini engelle.
+25. Reindex ve reconciliation runbook'ları ekle.
+26. Destructive local index-loss recovery exercise yap.
 
 ## Final gate
-- no direct Property Mongo access
-- active search never deleted before valid replacement
+- direct Property Mongo access yok
+- valid replacement oluşmadan active search silinmiyor
 - alias switch atomic
-- failed rebuild leaves old alias intact
-- checkpoint/resume works
+- failed rebuild eski alias'ı koruyor
+- checkpoint/resume çalışıyor
 - report/repair explicit
 - rerun idempotent
-- rollback/runbooks tested
+- rollback/runbook'lar test edilmiş

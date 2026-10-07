@@ -1,9 +1,9 @@
 # Couchbase
 
-**Category:** Technology  
-**Introduced:** Day 7  
-**Project status:** Implemented / Verified  
-**Scope:** BuyerService
+**Kategori:** Technology  
+**İlk eklendiği gün:** Day 7  
+**Proje durumu:** Uygulandı / Doğrulandı  
+**Kapsam:** BuyerService
 
 ## 1. Nedir?
 
@@ -123,7 +123,7 @@ Neden:
 Detay:
 - `docs/day-09/cas-concurrency-decision.md`
 
-## 10. Production considerations
+## 10. Production değerlendirmeleri
 
 - bucket sizing
 - replicas

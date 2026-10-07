@@ -1,9 +1,9 @@
 # Onion Architecture
 
-**Category:** Architecture  
-**Introduced:** Day 10  
-**Project status:** Implemented / Verified  
-**Scope:** SellerService
+**Kategori:** Architecture  
+**İlk eklendiği gün:** Day 10  
+**Proje durumu:** Uygulandı / Doğrulandı  
+**Kapsam:** SellerService
 
 ## Nedir?
 

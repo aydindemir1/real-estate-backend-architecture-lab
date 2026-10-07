@@ -1,9 +1,9 @@
 # Day 16 — Kafka + Spring Cloud Stream + Spring Cloud Function
 
-## Goal
+## Amaç
 Domain Event Streaming foundation'ını Kafka ile kurmak.
 
-## Tasks
+## Görevler
 1. Kafka local infra ekle.
 2. Stream/Function dependencies ekle.
 3. property.events / offer.events topic strategy config ekle.
@@ -20,7 +20,7 @@ Domain Event Streaming foundation'ını Kafka ile kurmak.
 14. partition/order/consumer group tests yaz.
 15. docs güncelle.
 
-## Suggested commits
+## Önerilen commit'ler
 1. infra(kafka): add local Kafka
 2. build(kafka): add Stream and Function dependencies
 3. feat(messaging): add event envelope contracts
@@ -30,9 +30,9 @@ Domain Event Streaming foundation'ını Kafka ile kurmak.
 7. test(kafka): add partition and consumer integration tests
 8. docs(kafka): document event-streaming topology
 
-## Done
+## Tamamlanma durumu
 Kafka event-streaming foundation çalışır; RabbitMQ command role korunur.
 
-## Exact messaging/file plan
+## Kesin messaging/file planı
 
-Implementation source of truth: `docs/roadmap/day-16-exact-file-plan.md`
+Implementation için source of truth: `docs/roadmap/day-16-exact-file-plan.md`

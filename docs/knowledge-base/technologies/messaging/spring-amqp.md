@@ -1,9 +1,9 @@
 # Spring AMQP
 
-**Category:** Technology  
-**Introduced:** Day 6A  
-**Project status:** Implemented / Integrated / Verified  
-**Scope:** Spring abstraction and integration layer for AMQP messaging
+**Kategori:** Technology  
+**İlk eklendiği gün:** Day 6A  
+**Proje durumu:** Uygulandı / Entegre edildi / Doğrulandı  
+**Kapsam:** AMQP messaging için Spring abstraction ve integration layer  
 
 ## 1. Nedir?
 

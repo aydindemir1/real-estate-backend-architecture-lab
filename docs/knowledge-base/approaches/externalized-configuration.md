@@ -1,9 +1,9 @@
 # Externalized Configuration
 
 **Category:** Approach  
-**Introduced:** Day 1  
-**Project status:** Implemented / Strengthened in Day 7  
-**Scope:** Separating runtime configuration from application source code
+**İlk eklendiği gün:** Day 1  
+**Proje durumu:** Uygulandı / Day 7'de güçlendirildi  
+**Kapsam:** Separating runtime configuration from application source code
 
 ## 1. Nedir?
 

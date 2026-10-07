@@ -4,7 +4,7 @@
 
 Clean Architecture
 
-## Actual Day 8 package structure
+## Gerçek Day 8 package yapısı
 
 ```text
 com.aydindemir.agent
@@ -61,7 +61,7 @@ domain ------------> hiçbir outer layer'a bağımlı değil
 
 ArchUnit bu yönü enforce eder.
 
-## Day 8 scope
+## Day 8 kapsamı
 
 Yalnız:
 - CreateAgent

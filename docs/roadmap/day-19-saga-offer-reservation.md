@@ -1,9 +1,9 @@
 # Day 19 — Saga + Offer / Reservation Workflow
 
-## Goal
+## Amaç
 Offer/Reservation workflow'unu Saga Choreography ile kurmak.
 
-## Tasks
+## Görevler
 1. Offer Aggregate'i finalize et.
 2. CreateOffer + Idempotency-Key uygula.
 3. OfferRequested publish et.
@@ -22,7 +22,7 @@ Offer/Reservation workflow'unu Saga Choreography ile kurmak.
 16. E2E saga test yaz.
 17. docs/state diagrams güncelle.
 
-## Suggested commits
+## Önerilen commit'ler
 1. feat(buyer): add Offer aggregate
 2. feat(buyer): add idempotent create-offer
 3. feat(property): add property hold flow
@@ -34,9 +34,9 @@ Offer/Reservation workflow'unu Saga Choreography ile kurmak.
 9. test(saga): add end-to-end saga test
 10. docs(saga): finalize workflow and recovery notes
 
-## Done
+## Tamamlanma durumu
 At most one active Property hold invariant korunur; accept/reject compensation flow'u uçtan uca çalışır.
 
-## Exact Saga/file plan
+## Kesin Saga/file planı
 
-Implementation source of truth: `docs/roadmap/day-19-exact-file-plan.md`
+Implementation için source of truth: `docs/roadmap/day-19-exact-file-plan.md`

@@ -1,7 +1,7 @@
 # Day 17 — Contract + Failure-Path Testing
 
-**Status:** Planned  
-**Implementation branch:** `day/17-contract-testing`
+**Durum:** Planlandı  
+**Implementation branch'i:** `day/17-contract-testing`
 
 ## Amaç
 

@@ -1,41 +1,41 @@
-# Day 33 — Exact E2E + Recovery + Backend Completion Plan
+# Day 33 — Kesin E2E + Recovery + Backend Completion Planı
 
-## Scope
+## Kapsam
 - critical business E2E
 - security/service identity E2E
-- outage/recovery exercises
+- outage/recovery exercise'ları
 - controlled replay
 - final Gradle/Compose verification
 - backend completion report
 - README/ROADMAP closeout
 
-## Tasks
-1. Add reproducible backend E2E Compose profile with only required infrastructure.
+## Task'ler
+1. Yalnızca gerekli infrastructure'ı içeren reproducible backend E2E Compose profile ekle.
 2. Registration/Profile E2E: identity/account → UserProfile → role-specific profile mapping.
 3. Seller Listing E2E: listing submission → durable pending command → RabbitMQ → Property DRAFT; duplicate safe.
-4. Property→Search E2E: publish → Outbox → Kafka → Elasticsearch → REST search; optional GraphQL parity.
+4. Property→Search E2E: publish → Outbox → Kafka → Elasticsearch → REST search; opsiyonel GraphQL parity.
 5. Offer Acceptance E2E end-to-end.
 6. Offer Rejection E2E end-to-end.
-7. Concurrent Offer E2E: exactly one hold, no double reservation.
-8. Security ownership E2E for Buyer/Seller/Agent plus explicit Admin override where allowed.
-9. Service Client Credentials E2E with wrong scope → 403.
-10. Representative dependency-failure E2E: Agent unavailable, bounded timeout/circuit and truthful error.
+7. Concurrent Offer E2E: tam olarak bir hold, double reservation yok.
+8. Buyer/Seller/Agent için Security ownership E2E ve izin verilen yerde explicit Admin override.
+9. Wrong scope → 403 olacak şekilde Service Client Credentials E2E.
+10. Representative dependency-failure E2E: Agent unavailable, bounded timeout/circuit ve truthful error.
 11. Kafka outage recovery: Outbox pending → broker restored → Search catches up.
-12. RabbitMQ outage recovery: pending Seller outbound survives → broker restored → one Property.
-13. Elasticsearch loss recovery using Day 31 full rebuild/alias switch.
-14. Vault outage runbook/tabletop check against real behavior.
-15. One Kafka DLT and one RabbitMQ DLQ controlled replay exercise.
-16. Create `docs/runbooks/README.md` completeness index if not already done.
-17. Create `docs/testing/final-verification.md` with exact Gradle commands for test, architecture, integration, contract, failure and E2E.
-18. Run final `clean test`, architecture, integration, contract, failure, E2E and `check`; no hidden skipped failures.
-19. Run `docker compose config` and required profile health validation.
-20. Create `docs/BACKEND-COMPLETION-REPORT.md`.
-21. Update root README to only completed capabilities; explicitly separate Kubernetes/CI/CD future phase.
-22. Mark backend roadmap phase complete.
-23. Optional learning outcomes document.
-24. Optional milestone tag only after main merge + green verification.
+12. RabbitMQ outage recovery: pending Seller outbound survives → broker restored → bir Property.
+13. Day 31 full rebuild/alias switch kullanarak Elasticsearch loss recovery.
+14. Vault outage runbook/tabletop check'i gerçek behavior'a karşı doğrula.
+15. Bir Kafka DLT ve bir RabbitMQ DLQ controlled replay exercise yap.
+16. Zaten yoksa `docs/runbooks/README.md` completeness index oluştur.
+17. Test, architecture, integration, contract, failure ve E2E için exact Gradle command'larını içeren `docs/testing/final-verification.md` oluştur.
+18. Final `clean test`, architecture, integration, contract, failure, E2E ve `check` çalıştır; hidden skipped failure olmasın.
+19. `docker compose config` ve gerekli profile health validation çalıştır.
+20. `docs/BACKEND-COMPLETION-REPORT.md` oluştur.
+21. Root README'yi yalnızca completed capability'leri içerecek şekilde güncelle; Kubernetes/CI/CD future phase'i açıkça ayır.
+22. Backend roadmap phase'i complete olarak işaretle.
+23. Opsiyonel learning outcomes dokümanı.
+24. Opsiyonel milestone tag yalnızca main merge + green verification sonrasında.
 
-## Completion report sections
+## Completion report bölümleri
 - service/architecture matrix
 - persistence technologies
 - protocols
@@ -49,11 +49,11 @@
 - known limitations
 
 ## Final gate
-- all critical E2Es green
-- recovery exercises green
-- replay verified
+- bütün critical E2E'ler green
+- recovery exercise'ları green
+- replay doğrulanmış
 - final Gradle verification green
 - Compose valid/healthy
-- completion report exists
-- README contains no unimplemented claims
-- next Docker/Kubernetes/Spring Cloud Kubernetes/Jenkins/SonarQube/Nexus/Harbor/Argo CD phase clearly separated
+- completion report mevcut
+- README unimplemented claim içermiyor
+- sonraki Docker/Kubernetes/Spring Cloud Kubernetes/Jenkins/SonarQube/Nexus/Harbor/Argo CD phase açıkça ayrılmış

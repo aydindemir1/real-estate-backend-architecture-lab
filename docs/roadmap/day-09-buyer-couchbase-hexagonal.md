@@ -2,7 +2,7 @@
 
 ## Durum
 
-**Completed / Verified**
+**Tamamlandı / Doğrulandı**
 
 BuyerPreferences ve SavedSearch capability'si Couchbase üzerinde Hexagonal Architecture ile implemente edilmiş, automated tests/CI ve lokal runtime kabul testleriyle doğrulanmıştır.
 
@@ -51,7 +51,7 @@ Credentials:
 
 Secret değerler repository'de tutulmaz.
 
-## REST acceptance
+## REST kabulü
 
 | Endpoint | Sonuç |
 |---|---:|
@@ -66,7 +66,7 @@ Hata kabul senaryoları:
 - 400 invalid UUID
 - 400 malformed JSON
 
-## Evidence
+## Kanıtlar
 
 - `docs/evidence/day-09/README.md`
 - `docs/evidence/day-09/png/`
@@ -80,7 +80,7 @@ Day 9'da optimistic concurrency fake biçimde eklenmemiştir.
 Detay:
 - `docs/day-09/cas-concurrency-decision.md`
 
-## Scope dışı
+## Kapsam dışı
 
 Day 9'a dahil değildir:
 - Offer
@@ -90,7 +90,7 @@ Day 9'a dahil değildir:
 - Redis idempotency
 - Keycloak authorization
 
-## Completion gate
+## Tamamlanma kriterleri
 
 - [x] Couchbase persistence
 - [x] framework-independent domain
@@ -104,5 +104,5 @@ Day 9'a dahil değildir:
 - [x] Eureka
 - [x] lokal Couchbase write/read
 - [x] Postman success/error acceptance
-- [x] evidence arşivi
-- [x] documentation update
+- [x] kanıt arşivi
+- [x] dokümantasyon güncellemesi

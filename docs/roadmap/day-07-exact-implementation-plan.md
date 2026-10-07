@@ -1,4 +1,4 @@
-# Superseded Day 7 Exact Plan
+# Geçerliliğini Yitirmiş Day 7 Kesin Planı
 
 Bu dosya önceki roadmap'te Day 7 içine Agent, Buyer, Seller, Property, Search ve Redis çalışmalarını birlikte koyan planı temsil ediyordu.
 

@@ -1,40 +1,40 @@
-# Day 20 — Exact Cassandra Reliable Outbound Messaging Plan
+# Day 20 — Kesin Cassandra Reliable Outbound Messaging Planı
 
-## Scope
+## Kapsam
 - Cassandra-friendly durable pending outbound messages
-- Seller listing command reliable dispatch to RabbitMQ
-- reusable outbound foundation for later Seller Kafka decisions
+- Seller listing command'ın RabbitMQ'ya reliable dispatch edilmesi
+- sonraki Seller Kafka kararları için reusable outbound foundation
 - publisher confirms
 - Property command inbox/deduplication
 - CreatePropertyFromListingCommand
-- reliability tests
+- reliability testleri
 
-## Tasks
+## Task'ler
 
-1. Write ADR `ADR-007-cassandra-reliable-outbound-messaging.md` comparing naive save+send, pending-message table/dispatcher, CDC and distributed transaction.
-2. Select broker-neutral durable pending outbound message pattern.
-3. Create Cassandra table model such as `pending_outbound_messages_by_bucket`.
-4. Partition by bounded dispatch bucket/shard; cluster by `created_at`, `message_id`.
-5. Persist fields: messageId, aggregateId, messageType, destinationKind, payload, status, retryCount, nextAttemptAt, createdAt, correlationId.
-6. Do not use unbounded partition or `ALLOW FILTERING`.
-7. When ListingSubmission moves to SUBMITTED, persist durable pending `SubmitPropertyListingCommand`.
-8. State exact Cassandra consistency guarantee; do not pretend relational atomic outbox exists.
-9. Implement `ListingCommandDispatchService`.
-10. Implement RabbitMQ publisher adapter with confirms/returns.
-11. Mark pending message dispatched only after broker confirmation.
-12. Keep transient failures pending for retry.
-13. Make durable pending model broker-neutral so Day 22 SellerAccepted/SellerRejected Kafka messages can reuse it.
-14. In PropertyService create `SubmitPropertyListingCommandConsumer`.
-15. Add Mongo processed-command/inbox storage keyed by commandId.
-16. Implement `CreatePropertyFromListingCommand` application use case.
-17. ACK RabbitMQ only after durable Property creation + inbox success.
-18. Duplicate command must not create a duplicate Property.
-19. Add broker-down/recovery tests.
-20. Add duplicate-dispatch tests.
-21. Add Cassandra partition/query tests.
-22. Update Seller/Property design docs and messaging topology.
+1. Naive save+send, pending-message table/dispatcher, CDC ve distributed transaction seçeneklerini karşılaştıran `ADR-007-cassandra-reliable-outbound-messaging.md` yaz.
+2. Broker-neutral durable pending outbound message pattern seç.
+3. `pending_outbound_messages_by_bucket` gibi Cassandra table modeli oluştur.
+4. Bounded dispatch bucket/shard ile partition yap; `created_at`, `message_id` ile cluster et.
+5. Şu alanları persist et: messageId, aggregateId, messageType, destinationKind, payload, status, retryCount, nextAttemptAt, createdAt, correlationId.
+6. Unbounded partition veya `ALLOW FILTERING` kullanma.
+7. ListingSubmission SUBMITTED durumuna geçtiğinde durable pending `SubmitPropertyListingCommand` persist et.
+8. Exact Cassandra consistency guarantee'yi açıkça belirt; relational atomic outbox varmış gibi davranma.
+9. `ListingCommandDispatchService` implemente et.
+10. Confirms/returns kullanan RabbitMQ publisher adapter implemente et.
+11. Pending message'ı yalnızca broker confirmation sonrasında dispatched olarak işaretle.
+12. Transient failure'ları retry için pending bırak.
+13. Durable pending modeli broker-neutral tut; böylece Day 22'de SellerAccepted/SellerRejected Kafka message'ları aynı temeli kullanabilir.
+14. PropertyService içinde `SubmitPropertyListingCommandConsumer` oluştur.
+15. commandId ile key'lenen Mongo processed-command/inbox storage ekle.
+16. `CreatePropertyFromListingCommand` application use-case implemente et.
+17. RabbitMQ ACK yalnızca durable Property creation + inbox başarıyla tamamlandıktan sonra verilsin.
+18. Duplicate command duplicate Property oluşturmamalı.
+19. Broker-down/recovery testleri ekle.
+20. Duplicate-dispatch testleri ekle.
+21. Cassandra partition/query testleri ekle.
+22. Seller/Property design docs ve messaging topology'yi güncelle.
 
-## Commit sequence
+## Commit sırası
 1. `docs(adr): decide Cassandra reliable outbound messaging`
 2. `db(seller): add pending outbound message table`
 3. `feat(seller): persist pending listing command on submit`
@@ -48,10 +48,10 @@
 11. `docs(messaging): document Cassandra outbound guarantees`
 
 ## Final gate
-- no best-effort Cassandra save→broker send
+- best-effort Cassandra save→broker send yok
 - pending message partition bounded
-- dispatcher retryable and idempotent
-- broker outage does not lose listing command
-- Property command consumer deduplicates commandId
-- duplicate dispatch creates one Property
-- durable model can support later Kafka Seller decision events
+- dispatcher retryable ve idempotent
+- broker outage listing command kaybına yol açmıyor
+- Property command consumer commandId ile deduplication yapıyor
+- duplicate dispatch yalnızca bir Property oluşturuyor
+- durable model sonraki Kafka Seller decision event'lerini destekleyebiliyor

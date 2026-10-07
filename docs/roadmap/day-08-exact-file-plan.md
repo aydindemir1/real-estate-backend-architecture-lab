@@ -1,6 +1,6 @@
-# Day 8 — Exact File / Class / Commit Plan
+# Day 8 — Kesin File / Class / Commit Planı
 
-## 0. Scope
+## 0. Kapsam
 
 Day 8 yalnızca AgentService içindir.
 
@@ -18,22 +18,22 @@ Day 8 içinde Buyer/Seller/Property/Search implementation yapılmaz.
 
 ---
 
-# Task 1 — Existing AgentService source audit
+# Görev 1 — Mevcut AgentService source audit
 
-## Verify
+## Doğrulama
 
 Mevcut dosyalar:
 - `AgentService/build.gradle`
 - `AgentService/src/main/resources/application.yml`
 
-Target bootstrap path:
+Hedef bootstrap path:
 - `AgentService/src/main/java/com/aydindemir/agent/AgentServiceApplication.java`
 
 Main branch'te bu exact path bulunmadığı için implementation başında mevcut bootstrap class/package tespit edilir.
 
-## Decision
+## Karar
 
-Target base package:
+Hedef base package:
 `com.aydindemir.agent`
 
 Mevcut bootstrap class farklı package'taysa:
@@ -46,30 +46,30 @@ Mevcut bootstrap class farklı package'taysa:
 
 ---
 
-# Task 2 — Build dependencies
+# Görev 2 — Build dependency'leri
 
-## Modify
+## Değiştir
 `AgentService/build.gradle`
 
-## Remove
+## Kaldır
 - PostgreSQL runtime driver
 
-## Keep
+## Koru
 - Spring Cloud Eureka Client
 - Spring Cloud Config Client
 - Spring Boot Actuator
 - existing tracing baseline
 - Spring Data JPA
 
-## Add
+## Ekle
 - MySQL JDBC driver
 - migration tool selected for relational schema
 - Testcontainers JUnit Jupiter
 - MySQL Testcontainers integration dependency where needed
 - ArchUnit test dependency if not already globally available
 
-## Important
-Migration tool must be one project-wide choice.
+## Önemli
+Migration tool project genelinde tek bir seçim olmalıdır.
 
 If Flyway is selected:
 - do not mix Liquibase in AgentService.
@@ -77,7 +77,7 @@ If Flyway is selected:
 If Liquibase is already established as project-wide baseline:
 - use Liquibase.
 
-The final tool choice is confirmed before implementation commit.
+Nihai tool seçimi implementation commit'inden önce kesinleştirilir.
 
 ## Commit
 
@@ -85,9 +85,9 @@ The final tool choice is confirmed before implementation commit.
 
 ---
 
-# Task 3 — Configuration
+# Görev 3 — Konfigürasyon
 
-## Modify
+## Değiştir
 `AgentService/src/main/resources/application.yml`
 
 Keep only bootstrap-level config:
@@ -95,7 +95,7 @@ Keep only bootstrap-level config:
 - configserver import
 - CONFIG_SERVER_URL fallback
 
-Do not put real DB secret here.
+Buraya gerçek DB secret koyma.
 
 ## Config Server target
 
@@ -110,7 +110,7 @@ Required non-secret config:
 - datasource pool/timeouts
 - actuator exposure baseline
 
-Secrets via environment variables until Vault Day 21:
+Vault Day 21'e kadar secret'lar environment variable üzerinden sağlanır:
 - AGENT_DB_USER
 - AGENT_DB_PASSWORD
 
@@ -120,9 +120,9 @@ Secrets via environment variables until Vault Day 21:
 
 ---
 
-# Task 4 — Clean Architecture package skeleton
+# Görev 4 — Clean Architecture package iskeleti
 
-## Create target packages
+## Hedef package'ları oluştur
 
 ```text
 AgentService/src/main/java/com/aydindemir/agent/
@@ -151,8 +151,8 @@ AgentService/src/main/java/com/aydindemir/agent/
         └── mapper/
 ```
 
-## Rule
-No empty placeholder class unless needed by upcoming tasks.
+## Kural
+Yaklaşan görevler için gerekli olmadıkça boş placeholder class oluşturma.
 
 ## Commit
 
@@ -160,9 +160,9 @@ No empty placeholder class unless needed by upcoming tasks.
 
 ---
 
-# Task 5 — Domain Value Objects
+# Görev 5 — Domain Value Object'lar
 
-## Create
+## Oluştur
 
 `domain/model/AgentId.java`
 - record/value object
@@ -191,7 +191,7 @@ No empty placeholder class unless needed by upcoming tasks.
 - BUSY
 - OFFLINE
 
-## Tests
+## Testler
 
 `src/test/java/com/aydindemir/agent/domain/model/LicenseNumberTest.java`
 
@@ -203,9 +203,9 @@ No empty placeholder class unless needed by upcoming tasks.
 
 ---
 
-# Task 6 — Agent Aggregate
+# Görev 6 — Agent Aggregate
 
-## Create
+## Oluştur
 
 `domain/model/Agent.java`
 
@@ -220,34 +220,34 @@ Fields:
 - Instant updatedAt
 - long/int version representation only if domain needs it
 
-## Construction
+## Oluşturma
 
 Prefer static factory:
 `Agent.create(..., Clock clock)`
 
 or constructor/factory equivalent.
 
-## Behavior
+## Davranış
 
 - changeAvailability(...)
 - changeStatus(...)
 - updateProfile(...) only if Day 8 endpoint needs it; otherwise defer
 
-## Invariants
+## Invariant'lar
 
 - SUSPENDED agent cannot be AVAILABLE
 - INACTIVE agent cannot be AVAILABLE
 - required identity/license data cannot be null
 - state changed through behavior, not public setter
 
-## Exceptions
+## Exception'lar
 
 Create:
 - `domain/exception/InvalidAgentStateException.java`
 - `domain/exception/DuplicateLicenseNumberException.java`
 - `domain/exception/AgentNotFoundException.java`
 
-## Tests
+## Testler
 
 `AgentTest.java`
 
@@ -264,9 +264,9 @@ Scenarios:
 
 ---
 
-# Task 7 — Domain repository abstraction
+# Görev 7 — Domain repository abstraction
 
-## Create
+## Oluştur
 
 `domain/repository/AgentRepository.java`
 
@@ -288,9 +288,9 @@ Do not expose:
 
 ---
 
-# Task 8 — Application contracts
+# Görev 8 — Application contract'ları
 
-## Create commands
+## Oluştur commands
 
 `application/command/CreateAgentCommand.java`
 Fields:
@@ -305,11 +305,11 @@ Fields:
 
 Use record where appropriate.
 
-## Create query
+## Oluştur query
 
 `application/query/GetAgentQuery.java`
 
-## Create result
+## Oluştur result
 
 `application/result/AgentResult.java`
 
@@ -321,9 +321,9 @@ Do not return domain Agent directly from presentation.
 
 ---
 
-# Task 9 — Use-case interfaces
+# Görev 9 — Use-case interface'leri
 
-## Create
+## Oluştur
 
 `application/usecase/CreateAgentUseCase.java`
 
@@ -331,7 +331,7 @@ Do not return domain Agent directly from presentation.
 
 `application/usecase/ChangeAvailabilityUseCase.java`
 
-Each interface should express business capability, not generic CRUD.
+Her interface generic CRUD yerine business capability ifade etmelidir.
 
 ## Commit
 
@@ -339,9 +339,9 @@ Each interface should express business capability, not generic CRUD.
 
 ---
 
-# Task 10 — AgentApplicationService
+# Görev 10 — AgentApplicationService
 
-## Create
+## Oluştur
 
 `application/service/AgentApplicationService.java`
 
@@ -350,9 +350,9 @@ Implements:
 - GetAgentUseCase
 - ChangeAvailabilityUseCase
 
-## Create flow
+## Oluştur flow
 
-### CreateAgent
+### OluşturAgent
 1. validate duplicate license
 2. validate duplicate user
 3. create Aggregate
@@ -371,14 +371,14 @@ Implements:
 4. return result
 
 ## Transaction boundary
-Write use-cases transactional at application boundary.
+Write use-case'leri application boundary'de transactional olmalıdır.
 
-## Important
-Logical transaction belongs here.
+## Önemli
+Logical transaction burada tanımlanır.
 
 Physical Spring `@Transactional` placement follows agreed pragmatic Spring approach while domain remains framework-free.
 
-## Tests
+## Testler
 
 `AgentApplicationServiceTest.java`
 
@@ -390,9 +390,9 @@ Mocks/fakes only repository boundary.
 
 ---
 
-# Task 11 — JPA persistence entity
+# Görev 11 — JPA persistence entity
 
-## Create
+## Oluştur
 
 `infrastructure/persistence/entity/AgentJpaEntity.java`
 
@@ -420,10 +420,10 @@ Annotations:
 
 Constraints mirrored in migration.
 
-## Rule
-This class is not domain Agent.
+## Kural
+Bu class domain Agent değildir.
 
-No API serialization.
+API serialization yapılmaz.
 
 ## Commit
 
@@ -431,9 +431,9 @@ No API serialization.
 
 ---
 
-# Task 12 — Spring Data repository
+# Görev 12 — Spring Data repository
 
-## Create
+## Oluştur
 
 `infrastructure/persistence/repository/SpringDataAgentRepository.java`
 
@@ -444,7 +444,7 @@ Methods:
 - existsByLicenseNumber(...)
 - existsByUserId(...)
 
-No business method naming noise.
+Business method naming noise oluşturma.
 
 ## Commit
 
@@ -452,9 +452,9 @@ No business method naming noise.
 
 ---
 
-# Task 13 — Persistence mapper
+# Görev 13 — Persistence mapper
 
-## Create
+## Oluştur
 
 `infrastructure/persistence/mapper/AgentPersistenceMapper.java`
 
@@ -462,12 +462,12 @@ Mappings:
 - domain -> JPA entity
 - JPA entity -> domain
 
-## Decision
-MapStruct can be used if project dependency policy supports it.
+## Karar
+Project dependency policy destekliyorsa MapStruct kullanılabilir.
 
 However domain reconstruction must preserve invariants without accidentally calling create-new behavior that resets timestamps.
 
-If mapping semantics are non-trivial, explicit Java mapper is preferred over magical generated mapping.
+Mapping semantics basit değilse magical generated mapping yerine explicit Java mapper tercih edilir.
 
 ## Commit
 
@@ -475,9 +475,9 @@ If mapping semantics are non-trivial, explicit Java mapper is preferred over mag
 
 ---
 
-# Task 14 — Repository adapter
+# Görev 14 — Repository adapter
 
-## Create
+## Oluştur
 
 `infrastructure/persistence/adapter/AgentRepositoryAdapter.java`
 
@@ -497,9 +497,9 @@ Add `@Repository` only infrastructure class.
 
 ---
 
-# Task 15 — MySQL migration
+# Görev 15 — MySQL migration
 
-## Create based on chosen tool
+## Oluştur based on chosen tool
 
 Flyway candidate:
 `AgentService/src/main/resources/db/migration/V1__create_agents_table.sql`
@@ -533,7 +533,7 @@ Constraints:
 Indexes:
 Only query-backed indexes.
 
-No speculative indexes beyond uniqueness/basic query requirements.
+Uniqueness/basic query gereksinimleri dışında speculative index ekleme.
 
 ## Commit
 
@@ -541,17 +541,17 @@ No speculative indexes beyond uniqueness/basic query requirements.
 
 ---
 
-# Task 16 — Infrastructure configuration
+# Görev 16 — Infrastructure konfigürasyonu
 
-## Create if necessary
+## Oluştur if necessary
 
-`infrastructure/configuration/PersistenceConfiguration.java`
+`infrastructure/configuration/PersistenceKonfigürasyon.java`
 
-Only if explicit bean wiring is needed.
+Yalnızca explicit bean wiring gerekiyorsa.
 
-Do not create configuration class just for ceremony.
+Sırf ceremony için configuration class oluşturma.
 
-## JPA settings
+## JPA ayarları
 - ddl-auto validate/none
 - open-in-view false
 
@@ -562,9 +562,9 @@ Only if file/change exists:
 
 ---
 
-# Task 17 — REST request DTOs
+# Görev 17 — REST request DTO'ları
 
-## Create
+## Oluştur
 
 `presentation/rest/request/CreateAgentRequest.java`
 
@@ -584,8 +584,8 @@ Jakarta validation:
 Field:
 - availability
 
-## Rule
-No entity/domain binding.
+## Kural
+Entity/domain binding yapma.
 
 ## Commit
 
@@ -593,9 +593,9 @@ No entity/domain binding.
 
 ---
 
-# Task 18 — REST response DTO
+# Görev 18 — REST response DTO
 
-## Create
+## Oluştur
 
 `presentation/rest/response/AgentResponse.java`
 
@@ -618,9 +618,9 @@ Can be grouped with request contract commit if small:
 
 ---
 
-# Task 19 — REST mapper
+# Görev 19 — REST mapper
 
-## Create
+## Oluştur
 
 `presentation/rest/mapper/AgentRestMapper.java`
 
@@ -629,7 +629,7 @@ Mappings:
 - AgentResult -> AgentResponse
 - ChangeAvailabilityRequest + path id -> command
 
-No business rule.
+Business rule ekleme.
 
 ## Commit
 
@@ -637,9 +637,9 @@ No business rule.
 
 ---
 
-# Task 20 — AgentController
+# Görev 20 — AgentController
 
-## Create
+## Oluştur
 
 `presentation/rest/AgentController.java`
 
@@ -661,7 +661,7 @@ Endpoints:
 - recommended 200 if returning updated AgentResponse
 
 ## Version
-Service-local path remains prefixless; Gateway external prefix handled separately.
+Service-local path prefixsiz kalır; Gateway external prefix ayrı ele alınır.
 
 ## Commit
 
@@ -669,9 +669,9 @@ Service-local path remains prefixless; Gateway external prefix handled separatel
 
 ---
 
-# Task 21 — Error mapping
+# Görev 21 — Error mapping
 
-## Modify/create project-consistent global error handling
+## Değiştir/create project-consistent global error handling
 
 Agent-specific mappings:
 - AgentNotFoundException -> 404 AGENT_NOT_FOUND
@@ -679,12 +679,12 @@ Agent-specific mappings:
 - duplicate user -> stable conflict code, add if needed
 - InvalidAgentStateException -> 409 INVALID_AGENT_STATE or 422 depending semantic classification
 
-Use stable error code contract.
+Stable error code contract kullan.
 
 ## Exact class location
 Prefer service presentation/error package only if common existing exception handler is not shared.
 
-Do not create a cross-service shared error library on Day 8.
+Day 8'de cross-service shared error library oluşturma.
 
 ## Commit
 
@@ -692,9 +692,9 @@ Do not create a cross-service shared error library on Day 8.
 
 ---
 
-# Task 22 — Domain tests
+# Görev 22 — Domain testleri
 
-## Create
+## Oluştur
 
 `src/test/java/com/aydindemir/agent/domain/model/AgentTest.java`
 
@@ -713,9 +713,9 @@ Candidate cases:
 
 ---
 
-# Task 23 — Application tests
+# Görev 23 — Application testleri
 
-## Create
+## Oluştur
 
 `src/test/java/com/aydindemir/agent/application/service/AgentApplicationServiceTest.java`
 
@@ -728,7 +728,7 @@ Cases:
 - change availability success
 - invalid domain transition propagated
 
-No Spring context required.
+Spring context gerekmez.
 
 ## Commit
 
@@ -736,9 +736,9 @@ No Spring context required.
 
 ---
 
-# Task 24 — MySQL Testcontainers base
+# Görev 24 — MySQL Testcontainers temeli
 
-## Create candidate
+## Oluştur candidate
 
 `src/test/java/com/aydindemir/agent/infrastructure/persistence/AgentMySqlContainerTestBase.java`
 
@@ -749,8 +749,8 @@ Use:
 - dynamic datasource properties
 - migration runs against container
 
-## Rule
-No hard-coded shared local MySQL for tests.
+## Kural
+Testler için hard-coded shared local MySQL kullanma.
 
 ## Commit
 
@@ -758,9 +758,9 @@ No hard-coded shared local MySQL for tests.
 
 ---
 
-# Task 25 — Persistence integration tests
+# Görev 25 — Persistence integration testleri
 
-## Create
+## Oluştur
 
 `AgentRepositoryAdapterIntegrationTest.java`
 
@@ -778,7 +778,7 @@ Cases:
 
 ---
 
-# Task 26 — Optimistic locking test
+# Görev 26 — Optimistic locking testi
 
 If version/concurrent write is in Day 8 scope:
 
@@ -793,7 +793,7 @@ Scenario:
 
 If Agent concurrency is not critical yet, this test may be deferred and version field simply established.
 
-Decision should be explicit, not accidental.
+Karar explicit olmalı, accidental olmamalıdır.
 
 ## Commit
 If implemented:
@@ -801,9 +801,9 @@ If implemented:
 
 ---
 
-# Task 27 — Controller slice test
+# Görev 27 — Controller slice testi
 
-## Create
+## Oluştur
 
 `presentation/rest/AgentControllerTest.java`
 
@@ -824,9 +824,9 @@ Cases:
 
 ---
 
-# Task 28 — Architecture fitness tests
+# Görev 28 — Architecture fitness testleri
 
-## Create
+## Oluştur
 
 `src/test/java/com/aydindemir/agent/architecture/AgentCleanArchitectureTest.java`
 
@@ -844,7 +844,7 @@ Rules:
 
 ---
 
-# Task 29 — Integration smoke
+# Görev 29 — Integration smoke
 
 Run:
 - MySQL container/local MySQL
@@ -860,23 +860,23 @@ Verify:
 - GET /agents/{id}
 - PATCH availability
 
-No Postman-only acceptance; automated tests remain primary.
+Yalnız Postman'a dayalı acceptance yeterli değildir; automated test'ler primary olmaya devam eder.
 
 ## Commit
-No commit unless fix needed.
+Fix gerekmedikçe commit gerekmez.
 
 ---
 
-# Task 30 — Documentation
+# Görev 30 — Dokümantasyon
 
-## Modify
+## Değiştir
 
 - `AgentService/docs/DESIGN.md`
 - `AgentService/docs/PACKAGE-DESIGN.md`
 - `AgentService/ROADMAP.md`
 - `docs/roadmap/day-08-agent-mysql-clean.md`
 
-## Update with actual implementation
+## Gerçek implementation ile güncelle
 - actual package names
 - actual migration tool
 - actual config keys
@@ -884,7 +884,7 @@ No commit unless fix needed.
 - deviations from plan
 - completed status
 
-## Optional README
+## Opsiyonel README
 If AgentService has a module README, update setup/run instructions.
 
 ## Commit
@@ -893,7 +893,7 @@ If AgentService has a module README, update setup/run instructions.
 
 ---
 
-# Recommended Commit Sequence
+# Önerilen Commit Sırası
 
 1. `refactor(agent): align application base package`
 2. `build(agent): switch persistence dependencies to MySQL`
@@ -922,30 +922,30 @@ If AgentService has a module README, update setup/run instructions.
 25. `test(agent): enforce Clean Architecture boundaries`
 26. `docs(agent): finalize MySQL Clean Architecture implementation`
 
-Commits that are too tiny may be safely combined if they represent one coherent change. Do not combine unrelated layers merely to reduce commit count.
+Çok küçük commit'ler tek bir coherent change temsil ediyorsa güvenle birleştirilebilir. Yalnız commit sayısını azaltmak için ilgisiz layer'ları birleştirme.
 
 ---
 
 # Day 8 Final Gate
 
-Day 8 closes only if:
+Day 8 yalnızca aşağıdakiler sağlanırsa kapanır:
 
-- AgentService uses MySQL
-- PostgreSQL driver removed from AgentService
-- schema migration works
-- domain package has no Spring/JPA dependency
-- Agent Aggregate enforces invariants
-- CreateAgent works
-- GetAgent works
-- ChangeAvailability works
-- duplicate license is rejected
-- duplicate user is rejected
-- invalid availability state is rejected
-- REST request/response DTOs are separate from domain/JPA entity
-- OSIV is disabled
-- ddl-auto update is not used
-- Testcontainers verifies MySQL semantics
-- Clean Architecture rules are automated
-- Config/Eureka/Actuator baseline still works
-- docs reflect actual code
-- no Buyer/Seller/Property/Search implementation leaks into Day 8
+- AgentService MySQL kullanıyor
+- PostgreSQL driver AgentService'ten kaldırılmış
+- schema migration çalışıyor
+- domain package Spring/JPA dependency taşımıyor
+- Agent Aggregate invariant'ları enforce ediyor
+- CreateAgent çalışıyor
+- GetAgent çalışıyor
+- ChangeAvailability çalışıyor
+- duplicate license reddediliyor
+- duplicate user reddediliyor
+- invalid availability state reddediliyor
+- REST request/response DTO'ları domain/JPA entity'den ayrı
+- OSIV disabled
+- ddl-auto update kullanılmıyor
+- Testcontainers MySQL semantics'i doğruluyor
+- Clean Architecture rule'ları automated
+- Config/Eureka/Actuator baseline hâlâ çalışıyor
+- docs gerçek kodu yansıtıyor
+- Buyer/Seller/Property/Search implementation Day 8'e sızmıyor

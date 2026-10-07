@@ -1,4 +1,4 @@
-# Day 9 — Exact File / Class / Commit Planı
+# Day 9 — Kesin File / Class / Commit Planı
 
 ## 0. Kapsam
 
@@ -16,17 +16,17 @@ Hedef:
 
 Day 9 içinde Offer, Saga, Kafka, gRPC ve Redis idempotency yoktur.
 
-## Task 1 — Mevcut BuyerService kaynak denetimi
+## Görev 1 — Mevcut BuyerService kaynak denetimi
 
 Kontrol:
 - `BuyerService/build.gradle`
 - `BuyerService/src/main/resources/application.yml`
 - mevcut bootstrap class/package
 
-Target base package:
+Hedef base package:
 - `com.aydindemir.buyer`
 
-## Task 2 — Build dependencies
+## Görev 2 — Build dependencies
 
 `BuyerService/build.gradle`:
 
@@ -48,7 +48,7 @@ Ekle:
 - Couchbase Testcontainers
 - ArchUnit
 
-## Task 3 — Configuration
+## Görev 3 — Configuration
 
 `BuyerService/src/main/resources/application.yml`:
 - application name
@@ -71,7 +71,7 @@ Kullanılan anahtarlar:
 
 Literal secret repository'ye yazılmaz.
 
-## Task 4 — Hexagonal package skeleton
+## Görev 4 — Hexagonal package skeleton
 
 Target:
 
@@ -87,7 +87,7 @@ com.aydindemir.buyer
 
 Day 9'da boş future gRPC/Kafka/Redis package/class oluşturulmaz.
 
-## Task 5 — Domain Value Object'leri
+## Görev 5 — Domain Value Object'leri
 
 - `BuyerId`
 - `PriceRange`
@@ -104,7 +104,7 @@ Kurallar:
 - max >= min
 - gereksiz geo/search engine detail'i yok
 
-## Task 6 — BuyerPreferences Aggregate
+## Görev 6 — BuyerPreferences Aggregate
 
 `BuyerPreferences` alanları:
 - buyerId
@@ -128,7 +128,7 @@ Kurallar:
 - collections defensively copied
 - public setter yok
 
-## Task 7 — Inbound ports
+## Görev 7 — Inbound ports
 
 - `UpdateBuyerPreferencesUseCase`
 - `GetBuyerPreferencesUseCase`
@@ -139,14 +139,14 @@ Application input:
 - `GetBuyerPreferencesQuery`
 - `AddSavedSearchCommand`
 
-## Task 8 — Outbound persistence ports
+## Görev 8 — Outbound persistence ports
 
 - `SaveBuyerPreferencesPort`
 - `LoadBuyerPreferencesPort`
 
 Port contract'larında Couchbase/Spring Data type'ı bulunmaz.
 
-## Task 9 — Application service
+## Görev 9 — Application service
 
 - `BuyerPreferencesResult`
 - `BuyerPreferencesApplicationService`
@@ -157,7 +157,7 @@ Application service:
 - persistence için outbound port kullanır
 - Couchbase API'sini bilmez
 
-## Task 10 — Couchbase document modeli
+## Görev 10 — Couchbase document modeli
 
 - `BuyerPreferencesDocument`
 - nested document record'ları
@@ -170,7 +170,7 @@ buyer-preferences::{buyerId}
 
 Persistence document domain model değildir.
 
-## Task 11 — Spring Data Couchbase repository
+## Görev 11 — Spring Data Couchbase repository
 
 - `SpringDataBuyerPreferencesRepository`
 
@@ -179,7 +179,7 @@ Primary access:
 
 Direct key access yeterli olduğu için speculative secondary query/index eklenmez.
 
-## Task 12 — Persistence mapper
+## Görev 12 — Persistence mapper
 
 - `BuyerPreferencesDocumentMapper`
 
@@ -187,7 +187,7 @@ Mapping:
 - domain -> document
 - document -> domain
 
-## Task 13 — Persistence adapter
+## Görev 13 — Persistence adapter
 
 - `CouchbaseBuyerPreferencesAdapter`
 
@@ -197,7 +197,7 @@ Sorumluluk:
 - mapping
 - outbound port implementation
 
-## Task 14 — Bucket / scope / collection bootstrap
+## Görev 14 — Bucket / scope / collection bootstrap
 
 Gerçekleşen isimler:
 - bucket: `buyer`
@@ -216,7 +216,7 @@ Application role:
 Secondary index:
 - yok
 
-## Task 15 — REST request contract'ları
+## Görev 15 — REST request contract'ları
 
 - `UpdateBuyerPreferencesRequest`
 - `AddSavedSearchRequest`
@@ -228,26 +228,26 @@ Boundary validation:
 
 Cross-field semantic rule'lar domain tarafından korunur.
 
-## Task 16 — REST response ve mapper
+## Görev 16 — REST response ve mapper
 
 - `BuyerPreferencesResponse`
 - `BuyerPreferencesRestMapper`
 
 Mapper business logic içermez.
 
-## Task 17 — REST controller
+## Görev 17 — REST controller
 
 - `PUT /buyers/{buyerId}/preferences`
 - `GET /buyers/{buyerId}/preferences`
 - `POST /buyers/{buyerId}/saved-searches`
 
-Expected:
+Beklenen:
 - PUT -> 200
 - GET -> 200
 - POST -> 201
 - absent GET -> 404
 
-## Task 18 — Error mapping
+## Görev 18 — Error mapping
 
 Stable mapping:
 - `BUYER_PREFERENCES_NOT_FOUND` -> 404
@@ -259,7 +259,7 @@ Stable mapping:
 
 Raw Couchbase exception dış API'ye sızmaz.
 
-## Task 19 — Domain tests
+## Görev 19 — Domain tests
 
 - `PriceRangeTest`
 - `RoomRangeTest`
@@ -271,13 +271,13 @@ Kapsam:
 - defensive copies
 - saved search behavior
 
-## Task 20 — Test fake
+## Görev 20 — Test fake
 
 - `InMemoryBuyerPreferencesStore`
 
 Outbound persistence port'larını test amacıyla implement eder.
 
-## Task 21 — Application tests
+## Görev 21 — Application tests
 
 - `BuyerPreferencesApplicationServiceTest`
 
@@ -288,7 +288,7 @@ Kapsam:
 - add saved search
 - invalid domain input
 
-## Task 22 — Couchbase Testcontainers foundation
+## Görev 22 — Couchbase Testcontainers foundation
 
 - `BuyerCouchbaseContainerTestBase`
 
@@ -299,7 +299,7 @@ Sorumluluk:
 
 Shared lokal Couchbase integration test baseline değildir.
 
-## Task 23 — Persistence integration tests
+## Görev 23 — Persistence integration tests
 
 - `CouchbaseBuyerPreferencesAdapterIntegrationTest`
 
@@ -311,7 +311,7 @@ Kapsam:
 - saved-search round-trip
 - missing document
 
-## Task 24 — CAS / concurrency kararı
+## Görev 24 — CAS / concurrency kararı
 
 Day 9'da CAS **bilinçli olarak ertelenmiştir**.
 
@@ -320,7 +320,7 @@ Detay:
 
 Fake optimistic locking eklenmez.
 
-## Task 25 — REST controller tests
+## Görev 25 — REST controller tests
 
 - `BuyerPreferencesControllerTest`
 
@@ -333,7 +333,7 @@ Kapsam:
 
 Couchbase yerine inbound port mocks kullanılır.
 
-## Task 26 — Hexagonal Architecture tests
+## Görev 26 — Hexagonal Architecture tests
 
 - `BuyerHexagonalArchitectureTest`
 
@@ -346,7 +346,7 @@ ArchUnit kuralları:
 - Couchbase adapter outbound ports implement eder
 - top-level package cycle yok
 
-## Task 27 — Runtime smoke / acceptance
+## Görev 27 — Runtime smoke / acceptance
 
 Çalıştır:
 - Config Server
@@ -363,23 +363,23 @@ Doğrula:
 - Couchbase write/read
 - error scenarios
 
-Evidence:
+Kanıt:
 - `docs/evidence/day-09/`
 - `docs/collections/day-09/Day-09-BuyerService.postman_collection.json`
 
-## Task 28 — Documentation
+## Görev 28 — Documentation
 
 Güncelle:
 - `BuyerService/docs/DESIGN.md`
 - `BuyerService/docs/PACKAGE-DESIGN.md`
 - `BuyerService/ROADMAP.md`
 - `docs/roadmap/day-09-buyer-couchbase-hexagonal.md`
-- Knowledge Base impact
+- Knowledge Base etkisi
 
 Kaydet:
-- actual bucket/scope/collection
+- gerçek bucket/scope/collection
 - document key
-- config keys
+- config key'leri
 - test coverage
 - CAS defer kararı
 - scope dışındaki Offer/gRPC/Kafka/Redis işleri
@@ -404,9 +404,9 @@ Kaydet:
 - [x] Offer/Kafka/gRPC/Redis business implementation Day 9'a sızmıyor
 - [x] docs actual implementation ile hizalı
 
-## Completion
+## Tamamlanma durumu
 
-Day 9 **Completed / Verified**.
+Day 9 **Tamamlandı / Doğrulandı**.
 
 Kanıt:
 - `docs/evidence/day-09/README.md`

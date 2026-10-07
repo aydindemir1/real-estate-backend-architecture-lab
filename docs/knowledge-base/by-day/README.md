@@ -1,10 +1,10 @@
-# Knowledge Base — By Day
+# Knowledge Base — Day Bazında
 
 Bu klasör her Day'de ilk kez kullanılan, anlamlı biçimde uygulanan veya kapsamı genişleyen Knowledge Base başlıklarını indeksler.
 
 Day dosyaları canonical açıklamaları tekrar etmez.
 
-## Day index
+## Day indexi
 
 - [Day 1](day-01.md)
 - [Day 2](day-02.md)
@@ -17,6 +17,6 @@ Day dosyaları canonical açıklamaları tekrar etmez.
 - [Day 9](day-09.md)
 - [Day 10](day-10.md)
 
-## Maintenance rule
+## Bakım kuralı
 
 Her milestone kapanışında yeni Architecture, Approach, Principle, Pattern, Technology, Protocol/Format ve mevcut canonical doküman scope genişlemeleri kontrol edilir.

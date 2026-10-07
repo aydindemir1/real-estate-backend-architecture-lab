@@ -1,9 +1,9 @@
 # Day 18 — CQRS + Elasticsearch Event Projection
 
-## Goal
+## Amaç
 Property write model ile Search query modelini event-driven CQRS ile bağlamak.
 
-## Tasks
+## Görevler
 1. PropertyPublished/Updated/PriceChanged/Withdrawn/Sold contracts finalize et.
 2. PropertyService event publication noktalarını ekle.
 3. SearchService consumer group ekle.
@@ -17,7 +17,7 @@ Property write model ile Search query modelini event-driven CQRS ile bağlamak.
 11. failure/DLT projection test yaz.
 12. docs güncelle.
 
-## Suggested commits
+## Önerilen commit'ler
 1. docs(cqrs): finalize property event contracts
 2. feat(property): publish property lifecycle events
 3. feat(search): add projection consumers
@@ -26,9 +26,9 @@ Property write model ile Search query modelini event-driven CQRS ile bağlamak.
 6. test(cqrs): add end-to-end projection tests
 7. docs(cqrs): document eventual consistency
 
-## Done
+## Tamamlanma durumu
 Mongo canonical source olarak kalır; Elasticsearch projection Kafka event'leriyle güncellenir.
 
-## Exact projection/file plan
+## Kesin projection/file planı
 
-Implementation source of truth: `docs/roadmap/day-18-exact-file-plan.md`
+Implementation için source of truth: `docs/roadmap/day-18-exact-file-plan.md`

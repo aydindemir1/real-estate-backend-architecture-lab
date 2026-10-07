@@ -1,9 +1,9 @@
 # Loose Coupling
 
-**Category:** Principle  
-**Introduced:** Day 3  
-**Project status:** Implemented / Strengthened over time  
-**Scope:** Reducing unnecessary dependency between components and services
+**Kategori:** Principle  
+**İlk eklendiği gün:** Day 3  
+**Proje durumu:** Uygulandı / Zaman içinde güçlendirildi  
+**Kapsam:** Component ve service'ler arasındaki gereksiz dependency'leri azaltmak  
 
 ## 1. Nedir?
 

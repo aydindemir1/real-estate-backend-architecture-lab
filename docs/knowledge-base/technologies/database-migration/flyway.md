@@ -3,7 +3,7 @@
 **Kategori:** Technology  
 **İlk eklendiği gün:** Day 8  
 **Proje durumu:** Uygulandı  
-**Kapsam:** Relational schema migration standard; AgentService first application
+**Kapsam:** Relational schema migration standardı; ilk application AgentService
 
 ## Nedir?
 

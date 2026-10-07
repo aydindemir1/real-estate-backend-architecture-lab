@@ -1,9 +1,9 @@
 # Elasticsearch
 
-**Category:** Technology  
-**Introduced:** Day 7  
-**Project status:** Infrastructure Ready  
-**Scope:** Target SearchService query datastore and derived projection
+**Kategori:** Technology  
+**İlk eklendiği gün:** Day 7  
+**Proje durumu:** Infrastructure hazır  
+**Kapsam:** SearchService için hedef query datastore ve derived projection  
 
 ## 1. Nedir?
 

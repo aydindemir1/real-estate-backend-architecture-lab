@@ -1,4 +1,4 @@
-# Local Data Services
+# Local Data Services — Yerel Veri Servisleri
 
 Bu doküman local development sırasında kullanılan veri ve messaging container'larının kısa operasyonel referansıdır.
 
@@ -37,7 +37,7 @@ docker compose --profile seller stop
 
 Durdurulmuş container'lar CPU/RAM tüketmez; image ve volume'lar disk üzerinde kalır.
 
-## Configuration
+## Konfigürasyon
 
 Credential ve local secret değerleri repository'ye commit edilmez. `.env.example` template olarak kullanılır:
 
@@ -61,7 +61,7 @@ Tüm Compose modelini parse etmek için:
 docker compose --profile core --profile agent --profile buyer --profile seller --profile property --profile search --profile redis config
 ```
 
-Runtime health:
+Runtime health kontrolü:
 
 ```powershell
 docker compose --profile core ps
@@ -73,7 +73,7 @@ docker compose ps property-mongodb
 
 Redis canonical datastore değildir. Elasticsearch de Property aggregate'ın source of truth'u değildir; SearchService için derived query projection'dır.
 
-Canonical target ownership:
+Canonical target ownership dağılımı:
 
 - Auth -> PostgreSQL
 - UserProfile -> PostgreSQL

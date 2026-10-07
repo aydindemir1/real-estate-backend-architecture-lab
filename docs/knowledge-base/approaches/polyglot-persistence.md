@@ -1,9 +1,9 @@
 # Polyglot Persistence
 
 **Category:** Approach  
-**Introduced:** Day 7  
-**Project status:** Infrastructure Ready / Partially Implemented  
-**Scope:** Choosing datastore technology by service workload and data model
+**İlk eklendiği gün:** Day 7  
+**Proje durumu:** Infrastructure hazır / Kısmen uygulandı  
+**Kapsam:** Choosing datastore technology by service workload and data model
 
 ## 1. Nedir?
 

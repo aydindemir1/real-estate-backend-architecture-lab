@@ -1,16 +1,16 @@
-# Day 10 — Exact File / Class / Commit Plan
+# Day 10 — Kesin File / Class / Commit Planı
 
-## Actual implementation notes
+## Gerçek implementation notları
 
 Bu dosya Day 10 başlamadan önce kilitlenen exact plan'ı korur. Actual implementation ile plan arasındaki kontrollü farklar:
 
 - Lokal Cassandra authentication kullanılmadığı için `SELLER_CASSANDRA_USERNAME/PASSWORD` final config'te tutulmadı.
 - Plan skeleton'ındaki `domain/event`, `domain/service` ve `application/port` için gerçek ihtiyaç oluşmadığından boş package/class üretilmedi.
-- Actual package yapısı için `SellerService/docs/PACKAGE-DESIGN.md` source of truth'tur.
+- Gerçek package yapısı için `SellerService/docs/PACKAGE-DESIGN.md` source of truth'tur.
 - Runtime acceptance sırasında explicit REST parameter binding düzeltmesi yapıldı ve tekrar doğrulandı.
 - Cassandra Admin lokal inspection aracı Day 10 sırasında eklendi; persistence source of truth olarak kullanılmadı.
 
-## 0. Scope
+## 0. Kapsam
 
 Day 10 yalnızca SellerService içindir.
 
@@ -30,28 +30,28 @@ Day 10 içinde:
 - Saga yok
 - seller activity timeline yok
 
-## Task 1 — Existing SellerService source audit
+## Görev 1 — Mevcut SellerService source audit
 
-Verify:
+Doğrula:
 - SellerService/build.gradle
 - SellerService/src/main/resources/application.yml
 - mevcut bootstrap class/package
 
-Target base package: com.aydindemir.seller
+Hedef base package: com.aydindemir.seller
 
 Mevcut package farklıysa controlled refactor yapılır.
 
 Commit: refactor(seller): align application base package
 
-## Task 2 — Build dependencies
+## Görev 2 — Build dependency'leri
 
-Modify: SellerService/build.gradle
+Değiştir: SellerService/build.gradle
 
-Remove:
+Kaldır:
 - Spring Data JPA
 - PostgreSQL driver
 
-Keep:
+Koru:
 - Eureka Client
 - Config Client
 - Actuator
@@ -59,7 +59,7 @@ Keep:
 - Web MVC
 - OpenAPI if retained
 
-Add:
+Ekle:
 - Spring Data Cassandra
 - Testcontainers JUnit Jupiter
 - Cassandra Testcontainers support/module as appropriate
@@ -67,16 +67,16 @@ Add:
 
 Commit: build(seller): switch persistence dependencies to Cassandra
 
-## Task 3 — Configuration
+## Görev 3 — Konfigürasyon
 
-Modify: SellerService/src/main/resources/application.yml
+Değiştir: SellerService/src/main/resources/application.yml
 
-Keep bootstrap:
+Bootstrap'ta koru:
 - application name
 - Config Server import
 - Config Server URL
 
-External non-secret config:
+Harici non-secret config:
 - contact points / host
 - port
 - keyspace name
@@ -86,13 +86,13 @@ External non-secret config:
 - consistency level only if explicitly chosen
 - actuator baseline
 
-Secrets:
+Secret'lar:
 - SELLER_CASSANDRA_USERNAME
 - SELLER_CASSANDRA_PASSWORD
 
 Commit: config(seller): add Cassandra connection configuration
 
-## Task 4 — Onion package skeleton
+## Görev 4 — Onion package iskeleti
 
 Target tree:
 
@@ -120,7 +120,7 @@ No empty RabbitMQ/Kafka implementation classes on Day 10.
 
 Commit: refactor(seller): establish Onion Architecture package boundaries
 
-## Task 5 — SellerId and UserId
+## Görev 5 — SellerId and UserId
 
 Create:
 - domain/model/SellerId.java
@@ -128,7 +128,7 @@ Create:
 
 Immutable UUID wrappers.
 
-## Task 6 — SellerStatus
+## Görev 6 — SellerStatus
 
 Create: domain/model/SellerStatus.java
 
@@ -137,7 +137,7 @@ Values:
 - SUSPENDED
 - INACTIVE
 
-## Task 7 — Seller Aggregate
+## Görev 7 — Seller Aggregate
 
 Create: domain/model/Seller.java
 
@@ -162,11 +162,11 @@ Tests:
 
 Commit: feat(seller): add Seller domain model
 
-## Task 8 — ListingSubmissionId
+## Görev 8 — ListingSubmissionId
 
 Create: domain/model/ListingSubmissionId.java
 
-## Task 9 — PropertyDraftData
+## Görev 9 — PropertyDraftData
 
 Create: domain/model/PropertyDraftData.java
 
@@ -186,7 +186,7 @@ Candidate:
 
 Do not embed Property domain Aggregate.
 
-## Task 10 — ListingSubmissionStatus
+## Görev 10 — ListingSubmissionStatus
 
 Create: domain/model/ListingSubmissionStatus.java
 
@@ -197,7 +197,7 @@ Values:
 - REJECTED
 - FAILED
 
-## Task 11 — ListingSubmission Aggregate/Entity
+## Görev 11 — ListingSubmission Aggregate/Entity
 
 Create: domain/model/ListingSubmission.java
 
@@ -223,7 +223,7 @@ Tests:
 
 Commit: feat(seller): add ListingSubmission state model
 
-## Task 12 — Domain exceptions
+## Görev 12 — Domain exceptions
 
 Create only used exceptions:
 - SellerNotFoundException
@@ -233,7 +233,7 @@ Create only used exceptions:
 
 Commit can be grouped with aggregates.
 
-## Task 13 — Domain repository contracts
+## Görev 13 — Domain repository contracts
 
 Create:
 - domain/repository/SellerRepository.java
@@ -254,7 +254,7 @@ Do not expose Cassandra Page, Slice, PagingState or table classes in domain.
 
 Commit: feat(seller): add domain repository contracts
 
-## Task 14 — Application commands
+## Görev 14 — Application commands
 
 Create:
 - application/command/CreateSellerCommand.java
@@ -263,7 +263,7 @@ Create:
 
 Do not create AcceptOffer/RejectOffer commands yet.
 
-## Task 15 — Application queries
+## Görev 15 — Application queries
 
 Create:
 - application/query/GetSellerQuery.java
@@ -271,7 +271,7 @@ Create:
 
 List query should include sellerId + YearMonth + bounded page size.
 
-## Task 16 — Application results
+## Görev 16 — Application results
 
 Create:
 - SellerResult.java
@@ -280,7 +280,7 @@ Create:
 
 Commit: feat(seller): add application commands queries and results
 
-## Task 17 — Application services
+## Görev 17 — Application service'leri
 
 Create:
 - application/service/SellerApplicationService.java
@@ -316,7 +316,7 @@ ListSellerSubmissions:
 
 Commit: feat(seller): implement Seller application services
 
-## Task 18 — Cassandra physical model: seller_by_id
+## Görev 18 — Cassandra physical model: seller_by_id
 
 Create:
 - infrastructure/cassandra/table/SellerByIdTable.java
@@ -337,7 +337,7 @@ Get seller by seller_id.
 
 Do not model relational joins.
 
-## Task 19 — Cassandra physical model: listing submissions
+## Görev 19 — Cassandra physical model: listing submissions
 
 Create:
 - infrastructure/cassandra/table/ListingSubmissionBySellerMonthTable.java
@@ -357,7 +357,7 @@ List seller submissions for one seller and one month, newest first.
 
 Commit: db(seller): add Cassandra query-first table models
 
-## Task 20 — Cassandra Spring Data repositories
+## Görev 20 — Cassandra Spring Data repository'leri
 
 Create:
 - infrastructure/cassandra/repository/SpringDataSellerByIdRepository.java
@@ -369,7 +369,7 @@ No ALLOW FILTERING.
 
 Commit: feat(seller): add Cassandra repositories
 
-## Task 21 — Cassandra mappers
+## Görev 21 — Cassandra mappers
 
 Create:
 - infrastructure/cassandra/mapper/SellerCassandraMapper.java
@@ -383,7 +383,7 @@ Explicit mapping preferred due denormalized physical model.
 
 Commit: feat(seller): add Cassandra persistence mapping
 
-## Task 22 — Cassandra adapters
+## Görev 22 — Cassandra adapters
 
 Create:
 - infrastructure/cassandra/adapter/CassandraSellerRepositoryAdapter.java
@@ -395,7 +395,7 @@ Do not leak Cassandra types.
 
 Commit: feat(seller): add Cassandra repository adapters
 
-## Task 23 — CQL schema
+## Görev 23 — CQL schema
 
 Create:
 - SellerService/src/main/resources/cassandra/schema/V1__seller_tables.cql
@@ -414,7 +414,7 @@ Do not create future tables yet:
 
 Commit: db(seller): add Cassandra query-first schema
 
-## Task 24 — Schema bootstrap strategy
+## Görev 24 — Schema bootstrap strategy
 
 Decide one approach:
 - explicit cqlsh bootstrap script
@@ -427,7 +427,7 @@ Document exact command.
 
 Commit: infra(seller): document Cassandra schema bootstrap
 
-## Task 25 — REST requests
+## Görev 25 — REST requests
 
 Create:
 - presentation/rest/request/CreateSellerRequest.java
@@ -441,14 +441,14 @@ Validation:
 
 Commit: feat(seller): add REST request contracts
 
-## Task 26 — REST responses
+## Görev 26 — REST responses
 
 Create:
 - presentation/rest/response/SellerResponse.java
 - presentation/rest/response/ListingSubmissionResponse.java
 - presentation/rest/response/ListingSubmissionPageResponse.java
 
-## Task 27 — REST mappers
+## Görev 27 — REST mappers
 
 Create:
 - presentation/rest/mapper/SellerRestMapper.java
@@ -458,7 +458,7 @@ No business rule in mapper.
 
 Commit: feat(seller): add REST response and mapping
 
-## Task 28 — SellerController
+## Görev 28 — SellerController
 
 Create: presentation/rest/SellerController.java
 
@@ -469,7 +469,7 @@ Endpoints:
 POST -> 201
 GET -> 200 / 404
 
-## Task 29 — ListingSubmissionController
+## Görev 29 — ListingSubmissionController
 
 Create: presentation/rest/ListingSubmissionController.java
 
@@ -484,7 +484,7 @@ It does NOT guarantee Property creation.
 
 Commit: feat(seller): expose seller and listing submission APIs
 
-## Task 30 — Error mapping
+## Görev 30 — Error mapping
 
 Stable mappings:
 - SellerNotFoundException -> 404 SELLER_NOT_FOUND
@@ -497,7 +497,7 @@ No raw Cassandra exception exposed.
 
 Commit: feat(seller): map Seller domain failures to API errors
 
-## Task 31 — Domain tests
+## Görev 31 — Domain testleri
 
 Create:
 - SellerTest.java
@@ -513,7 +513,7 @@ Cases:
 
 Commit: test(seller): add domain and state-machine tests
 
-## Task 32 — Application tests
+## Görev 32 — Application testleri
 
 Create:
 - SellerApplicationServiceTest.java
@@ -532,7 +532,7 @@ Cases:
 
 Commit: test(seller): add application service tests
 
-## Task 33 — Cassandra Testcontainers foundation
+## Görev 33 — Cassandra Testcontainers temeli
 
 Create test support:
 - SellerCassandraContainerTestBase.java or equivalent
@@ -545,9 +545,9 @@ Responsibilities:
 
 Remember Cassandra startup is slow; bounded wait strategy required.
 
-Commit: test(seller): add Cassandra Testcontainers foundation
+Commit: test(seller): add Cassandra Testcontainers temeli
 
-## Task 34 — Seller persistence integration tests
+## Görev 34 — Seller persistence integration tests
 
 Create:
 - CassandraSellerRepositoryAdapterIntegrationTest.java
@@ -566,7 +566,7 @@ Any such rule must be explicitly designed or deferred.
 
 Commit: test(seller): add seller Cassandra integration tests
 
-## Task 35 — Listing submission integration tests
+## Görev 35 — Listing submission integration tests
 
 Create:
 - CassandraListingSubmissionRepositoryAdapterIntegrationTest.java
@@ -580,9 +580,9 @@ Cases:
 
 Commit: test(seller): add listing submission Cassandra tests
 
-## Task 36 — Query design guard
+## Görev 36 — Query design guard
 
-Verify:
+Doğrula:
 - no ALLOW FILTERING
 - no cross-partition scan
 - no relational join expectation
@@ -590,7 +590,7 @@ Verify:
 
 Document with test/code review.
 
-## Task 37 — REST slice tests
+## Görev 37 — REST slice tests
 
 Create:
 - SellerControllerTest.java
@@ -606,7 +606,7 @@ Cases:
 
 Commit: test(seller): add REST adapter tests
 
-## Task 38 — Onion Architecture tests
+## Görev 38 — Onion Architecture tests
 
 Create:
 - architecture/SellerOnionArchitectureTest.java
@@ -621,7 +621,7 @@ Rules:
 
 Commit: test(seller): enforce Onion Architecture boundaries
 
-## Task 39 — Runtime smoke
+## Görev 39 — Runtime smoke
 
 Start:
 - Config Server
@@ -629,7 +629,7 @@ Start:
 - Cassandra
 - SellerService
 
-Verify:
+Doğrula:
 - service starts/registers
 - seller create/get
 - listing create
@@ -638,9 +638,9 @@ Verify:
 
 No RabbitMQ publish expected.
 
-## Task 40 — Documentation
+## Görev 40 — Dokümantasyon
 
-Modify:
+Değiştir:
 - SellerService/docs/DESIGN.md
 - SellerService/docs/PACKAGE-DESIGN.md
 - SellerService/ROADMAP.md
@@ -657,7 +657,7 @@ Record actual:
 
 Commit: docs(seller): finalize Cassandra Onion implementation
 
-## Recommended Commit Sequence
+## Önerilen Commit Sırası
 
 1. refactor(seller): align application base package
 2. build(seller): switch persistence dependencies to Cassandra
@@ -680,7 +680,7 @@ Commit: docs(seller): finalize Cassandra Onion implementation
 19. feat(seller): map Seller domain failures to API errors
 20. test(seller): add domain and state-machine tests
 21. test(seller): add application service tests
-22. test(seller): add Cassandra Testcontainers foundation
+22. test(seller): add Cassandra Testcontainers temeli
 23. test(seller): add seller Cassandra integration tests
 24. test(seller): add listing submission Cassandra tests
 25. test(seller): add REST adapter tests
@@ -729,7 +729,7 @@ Day 10 closes only if:
 - newest-first clustering works
 - no ALLOW FILTERING
 - no cross-partition scan in Day 10 flow
-- Cassandra table models are separate from domain
+- Cassandra table modelleri are separate from domain
 - REST seller/listing endpoints work
 - raw Cassandra exception does not leak
 - Testcontainers verifies real Cassandra semantics

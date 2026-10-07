@@ -1,9 +1,9 @@
 # Docker Compose Profiles
 
-**Category:** Technology Feature  
-**Introduced:** Day 7  
-**Project status:** Implemented / Verified  
-**Scope:** Selective local infrastructure activation
+**Kategori:** Technology Feature  
+**İlk eklendiği gün:** Day 7  
+**Proje durumu:** Uygulandı / Doğrulandı  
+**Kapsam:** Local infrastructure'ın seçmeli olarak aktive edilmesi  
 
 ## 1. Nedir?
 

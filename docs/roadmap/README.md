@@ -1,6 +1,6 @@
-# Backend mimari planı — ayrıntılı gün dizini
+# Backend mimari ve DevOps planı — ayrıntılı gün dizini
 
-Bu dizin [ana ROADMAP.md](../../ROADMAP.md) dosyasındaki 45 milestone sırasına erişim sağlar. Day 1–6 stabil `main` baseline’dır; mevcut durum ve kanıtı ilgili implementation branch’inden okunur. Bu belge future planları tamamlanmış çalışma gibi göstermez.
+Bu dizin [ana ROADMAP.md](../../ROADMAP.md) dosyasındaki 85 milestone sırasına erişim sağlar. Day 1–6 stabil `main` baseline’dır; mevcut durum ve kanıtı ilgili implementation branch’inden okunur. Bu belge future planları tamamlanmış çalışma gibi göstermez.
 
 ## Canonical belgeler
 
@@ -78,4 +78,52 @@ Bu dizin [ana ROADMAP.md](../../ROADMAP.md) dosyasındaki 45 milestone sırasın
 - Day 33 temel backend kapanışı; Day 45 genişletilmiş mimari kapanışıdır.
 - Snapshot ve Strangler Fig koşullu; Sharding/Partitioning Design Only kalır.
 - Mevcut ihtiyacı karşılayan alternatif araç tekrar eklenmez; gerçek requirement ve gerekçe esas alınır.
-- Docker/Kubernetes/CI/CD ayrıntılı programı daha sonra ele alınır; bu güncelleme DevOps kapsamını genişletmez.
+- Day 46–85 DevOps programı, mevcut Day 1–45 kapsamından sonra uygulanır; ortak kararlar [DevOps Engineering Plan](../DEVOPS-ENGINEERING-PLAN.md) belgesindedir.
+
+
+## Day 46–85 — DevOps eğitim programı
+
+Bu günler Planlandı durumundadır. Ücretsiz yerel lab, seçilmiş tek alternatif ve ölçülebilir doğrulama ilkeleri [DevOps Engineering Plan](../DEVOPS-ENGINEERING-PLAN.md) belgesinde tanımlıdır.
+
+| Gün | Konu | Ayrıntılı plan | Özet |
+|---|---|---|---|
+| Day 46 | Linux, process ve network temeli | [Kesin plan](day-46-exact-file-plan.md) | [Özet](day-46-linux-runtime-foundation.md) |
+| Day 47 | Dockerfile ve multi-stage Java build | [Kesin plan](day-47-exact-file-plan.md) | [Özet](day-47-docker-multistage-build.md) |
+| Day 48 | BuildKit, cache ve build secrets | [Kesin plan](day-48-exact-file-plan.md) | [Özet](day-48-buildkit-cache.md) |
+| Day 49 | Container güvenliği ve kaynak sınırları | [Kesin plan](day-49-exact-file-plan.md) | [Özet](day-49-container-hardening.md) |
+| Day 50 | Compose ortamı ve troubleshooting | [Kesin plan](day-50-exact-file-plan.md) | [Özet](day-50-compose-prodlike.md) |
+| Day 51 | Minikube ve cluster mimarisi | [Kesin plan](day-51-exact-file-plan.md) | [Özet](day-51-minikube-foundation.md) |
+| Day 52 | Deployment, ReplicaSet ve rollout temeli | [Kesin plan](day-52-exact-file-plan.md) | [Özet](day-52-kubernetes-workloads.md) |
+| Day 53 | Service, DNS ve internal communication | [Kesin plan](day-53-exact-file-plan.md) | [Özet](day-53-kubernetes-networking.md) |
+| Day 54 | ConfigMap, Secrets ve Vault entegrasyonu | [Kesin plan](day-54-exact-file-plan.md) | [Özet](day-54-kubernetes-config-secrets.md) |
+| Day 55 | Probes, rollout ve graceful shutdown | [Kesin plan](day-55-exact-file-plan.md) | [Özet](day-55-probes-graceful-shutdown.md) |
+| Day 56 | Kaynak yönetimi, JVM ve scheduling | [Kesin plan](day-56-exact-file-plan.md) | [Özet](day-56-resources-jvm-scheduling.md) |
+| Day 57 | StatefulSet, storage ve veri yaşam döngüsü | [Kesin plan](day-57-exact-file-plan.md) | [Özet](day-57-stateful-storage.md) |
+| Day 58 | RBAC, ServiceAccount ve Pod Security | [Kesin plan](day-58-exact-file-plan.md) | [Özet](day-58-rbac-pod-security.md) |
+| Day 59 | Calico ve NetworkPolicy | [Kesin plan](day-59-exact-file-plan.md) | [Özet](day-59-calico-network-policy.md) |
+| Day 60 | Gateway API, Traefik ve TLS lifecycle | [Kesin plan](day-60-exact-file-plan.md) | [Özet](day-60-gateway-api-tls.md) |
+| Day 61 | Helm ve Kustomize ile deployment sahipliği | [Kesin plan](day-61-exact-file-plan.md) | [Özet](day-61-helm-kustomize.md) |
+| Day 62 | Spring Cloud Kubernetes ve discovery/config sınırları | [Kesin plan](day-62-exact-file-plan.md) | [Özet](day-62-spring-cloud-kubernetes.md) |
+| Day 63 | Ansible ile yerel host konfigürasyonu | [Kesin plan](day-63-exact-file-plan.md) | [Özet](day-63-ansible-host-configuration.md) |
+| Day 64 | Terraform ile somut yerel kaynak provisioning | [Kesin plan](day-64-exact-file-plan.md) | [Özet](day-64-terraform-local-provisioning.md) |
+| Day 65 | IaC drift, state ve lab yeniden oluşturma | [Kesin plan](day-65-exact-file-plan.md) | [Özet](day-65-iac-drift-rebuild.md) |
+| Day 66 | Jenkins Pipeline-as-Code temeli | [Kesin plan](day-66-exact-file-plan.md) | [Özet](day-66-jenkins-foundation.md) |
+| Day 67 | Jenkins agent ve credential isolation | [Kesin plan](day-67-exact-file-plan.md) | [Özet](day-67-jenkins-agent-isolation.md) |
+| Day 68 | Test pipeline ve raporlama | [Kesin plan](day-68-exact-file-plan.md) | [Özet](day-68-ci-test-pipeline.md) |
+| Day 69 | SonarQube Community Build ve JaCoCo | [Kesin plan](day-69-exact-file-plan.md) | [Özet](day-69-sonarqube-quality-gate.md) |
+| Day 70 | Nexus ile Java artifact ve dependency yönetimi | [Kesin plan](day-70-exact-file-plan.md) | [Özet](day-70-nexus-artifact-management.md) |
+| Day 71 | Harbor ve OCI image lifecycle | [Kesin plan](day-71-exact-file-plan.md) | [Özet](day-71-harbor-image-registry.md) |
+| Day 72 | Trivy, SBOM, Cosign ve provenance | [Kesin plan](day-72-exact-file-plan.md) | [Özet](day-72-supply-chain-security.md) |
+| Day 73 | Build once ve release contract | [Kesin plan](day-73-exact-file-plan.md) | [Özet](day-73-build-once-artifact-promotion.md) |
+| Day 74 | Argo CD ve GitOps temeli | [Kesin plan](day-74-exact-file-plan.md) | [Özet](day-74-argocd-gitops-foundation.md) |
+| Day 75 | Ortam izolasyonu, drift ve reconciliation | [Kesin plan](day-75-exact-file-plan.md) | [Özet](day-75-gitops-environments-drift.md) |
+| Day 76 | Staging doğrulaması ve release promotion | [Kesin plan](day-76-exact-file-plan.md) | [Özet](day-76-staging-release-promotion.md) |
+| Day 77 | Canary, blue-green ve Argo Rollouts | [Kesin plan](day-77-exact-file-plan.md) | [Özet](day-77-argo-rollouts-progressive-delivery.md) |
+| Day 78 | Migration uyumluluğu ve rollback/forward-fix | [Kesin plan](day-78-exact-file-plan.md) | [Özet](day-78-migration-compatible-release.md) |
+| Day 79 | Istio, service identity ve mTLS | [Kesin plan](day-79-exact-file-plan.md) | [Özet](day-79-istio-service-mesh.md) |
+| Day 80 | HPA ve capacity doğrulaması | [Kesin plan](day-80-exact-file-plan.md) | [Özet](day-80-hpa-capacity.md) |
+| Day 81 | Kubernetes observability, SLI/SLO ve alerting | [Kesin plan](day-81-exact-file-plan.md) | [Özet](day-81-kubernetes-observability-slo.md) |
+| Day 82 | k6 ile performans ve release doğrulaması | [Kesin plan](day-82-exact-file-plan.md) | [Özet](day-82-k6-performance-validation.md) |
+| Day 83 | Backup/restore ve veri recovery tatbikatı | [Kesin plan](day-83-exact-file-plan.md) | [Özet](day-83-kubernetes-backup-restore.md) |
+| Day 84 | Platform upgrade ve yeniden kurulum | [Kesin plan](day-84-exact-file-plan.md) | [Özet](day-84-platform-upgrade-recovery.md) |
+| Day 85 | Failure tatbikatı ve DevOps final audit | [Kesin plan](day-85-exact-file-plan.md) | [Özet](day-85-devops-final-audit.md) |

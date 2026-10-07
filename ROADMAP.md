@@ -514,13 +514,51 @@ Backend sonrası:
 Comparison:
 - Eureka vs Consul vs ZooKeeper
 
-## Backend sonrası
+## Backend sonrası — DevOps Day 46–85
 
-Docker hardening
-→ Kubernetes native fundamentals
-→ Spring Cloud Kubernetes
-→ Jenkins
-→ SonarQube
-→ Nexus
-→ Harbor
-→ Argo CD / GitOps
+Day 1–45 backend/architecture sırası korunur. Aşağıdaki 40 milestone ücretli cloud/SaaS gerektirmeyen yerel uygulama ve öğrenme planıdır; tek takvim günü zorunluluğu yoktur. Durum **Planlandı**; runtime kanıtı olmadan Verified işaretlenmez.
+
+Ortak araç kararları ve sahiplik: [DevOps Engineering Plan](docs/DEVOPS-ENGINEERING-PLAN.md). Ayrıntılı görev/commit/kanıt planları: [gün dizini](docs/roadmap/README.md).
+
+| Gün | Konu | Ayrıntılı plan |
+|---|---|---|
+| Day 46 | Linux, process ve network temeli | [Plan](docs/roadmap/day-46-exact-file-plan.md) |
+| Day 47 | Dockerfile ve multi-stage Java build | [Plan](docs/roadmap/day-47-exact-file-plan.md) |
+| Day 48 | BuildKit, cache ve build secrets | [Plan](docs/roadmap/day-48-exact-file-plan.md) |
+| Day 49 | Container güvenliği ve kaynak sınırları | [Plan](docs/roadmap/day-49-exact-file-plan.md) |
+| Day 50 | Compose ortamı ve troubleshooting | [Plan](docs/roadmap/day-50-exact-file-plan.md) |
+| Day 51 | Minikube ve cluster mimarisi | [Plan](docs/roadmap/day-51-exact-file-plan.md) |
+| Day 52 | Deployment, ReplicaSet ve rollout temeli | [Plan](docs/roadmap/day-52-exact-file-plan.md) |
+| Day 53 | Service, DNS ve internal communication | [Plan](docs/roadmap/day-53-exact-file-plan.md) |
+| Day 54 | ConfigMap, Secrets ve Vault entegrasyonu | [Plan](docs/roadmap/day-54-exact-file-plan.md) |
+| Day 55 | Probes, rollout ve graceful shutdown | [Plan](docs/roadmap/day-55-exact-file-plan.md) |
+| Day 56 | Kaynak yönetimi, JVM ve scheduling | [Plan](docs/roadmap/day-56-exact-file-plan.md) |
+| Day 57 | StatefulSet, storage ve veri yaşam döngüsü | [Plan](docs/roadmap/day-57-exact-file-plan.md) |
+| Day 58 | RBAC, ServiceAccount ve Pod Security | [Plan](docs/roadmap/day-58-exact-file-plan.md) |
+| Day 59 | Calico ve NetworkPolicy | [Plan](docs/roadmap/day-59-exact-file-plan.md) |
+| Day 60 | Gateway API, Traefik ve TLS lifecycle | [Plan](docs/roadmap/day-60-exact-file-plan.md) |
+| Day 61 | Helm ve Kustomize ile deployment sahipliği | [Plan](docs/roadmap/day-61-exact-file-plan.md) |
+| Day 62 | Spring Cloud Kubernetes ve discovery/config sınırları | [Plan](docs/roadmap/day-62-exact-file-plan.md) |
+| Day 63 | Ansible ile yerel host konfigürasyonu | [Plan](docs/roadmap/day-63-exact-file-plan.md) |
+| Day 64 | Terraform ile somut yerel kaynak provisioning | [Plan](docs/roadmap/day-64-exact-file-plan.md) |
+| Day 65 | IaC drift, state ve lab yeniden oluşturma | [Plan](docs/roadmap/day-65-exact-file-plan.md) |
+| Day 66 | Jenkins Pipeline-as-Code temeli | [Plan](docs/roadmap/day-66-exact-file-plan.md) |
+| Day 67 | Jenkins agent ve credential isolation | [Plan](docs/roadmap/day-67-exact-file-plan.md) |
+| Day 68 | Test pipeline ve raporlama | [Plan](docs/roadmap/day-68-exact-file-plan.md) |
+| Day 69 | SonarQube Community Build ve JaCoCo | [Plan](docs/roadmap/day-69-exact-file-plan.md) |
+| Day 70 | Nexus ile Java artifact ve dependency yönetimi | [Plan](docs/roadmap/day-70-exact-file-plan.md) |
+| Day 71 | Harbor ve OCI image lifecycle | [Plan](docs/roadmap/day-71-exact-file-plan.md) |
+| Day 72 | Trivy, SBOM, Cosign ve provenance | [Plan](docs/roadmap/day-72-exact-file-plan.md) |
+| Day 73 | Build once ve release contract | [Plan](docs/roadmap/day-73-exact-file-plan.md) |
+| Day 74 | Argo CD ve GitOps temeli | [Plan](docs/roadmap/day-74-exact-file-plan.md) |
+| Day 75 | Ortam izolasyonu, drift ve reconciliation | [Plan](docs/roadmap/day-75-exact-file-plan.md) |
+| Day 76 | Staging doğrulaması ve release promotion | [Plan](docs/roadmap/day-76-exact-file-plan.md) |
+| Day 77 | Canary, blue-green ve Argo Rollouts | [Plan](docs/roadmap/day-77-exact-file-plan.md) |
+| Day 78 | Migration uyumluluğu ve rollback/forward-fix | [Plan](docs/roadmap/day-78-exact-file-plan.md) |
+| Day 79 | Istio, service identity ve mTLS | [Plan](docs/roadmap/day-79-exact-file-plan.md) |
+| Day 80 | HPA ve capacity doğrulaması | [Plan](docs/roadmap/day-80-exact-file-plan.md) |
+| Day 81 | Kubernetes observability, SLI/SLO ve alerting | [Plan](docs/roadmap/day-81-exact-file-plan.md) |
+| Day 82 | k6 ile performans ve release doğrulaması | [Plan](docs/roadmap/day-82-exact-file-plan.md) |
+| Day 83 | Backup/restore ve veri recovery tatbikatı | [Plan](docs/roadmap/day-83-exact-file-plan.md) |
+| Day 84 | Platform upgrade ve yeniden kurulum | [Plan](docs/roadmap/day-84-exact-file-plan.md) |
+| Day 85 | Failure tatbikatı ve DevOps final audit | [Plan](docs/roadmap/day-85-exact-file-plan.md) |

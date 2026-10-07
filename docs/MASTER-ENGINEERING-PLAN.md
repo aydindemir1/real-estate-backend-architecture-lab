@@ -484,4 +484,13 @@ Ana 45 milestone sırası ve Day 34–45 konu kararları korunur. Eklemeler yaln
 
 Day 13 artık seçilmiş mevcut read use-case üzerinde cache-aside uygulamasını kapsar. Redis canonical veri veya Offer idempotency correctness sahibi değildir. At-rest encryption ve scaling karşılaştırmalarında tasarım ile uygulanmış capability ayrı işaretlenir. Day 33’te bir canonical datastore için gerçek izole restore tatbikatı vardır; bütün datastore’lar doğrulandı iddiası yapılmaz.
 
-Day 34–45’in ayrıntılı planları ve canonical belge sırası [plan dizininde](roadmap/README.md) yer alır. Her yeni capability yalnız gerçek iş senaryosu tanımlandığında etkinleşir. DevOps programı bu eklemenin kapsamında değildir.
+Day 34–45’in ayrıntılı planları ve canonical belge sırası [plan dizininde](roadmap/README.md) yer alır. Her yeni capability yalnız gerçek iş senaryosu tanımlandığında etkinleşir. Day 34–45 backend genişletmesinden ayrı olarak onaylanan DevOps programı aşağıdaki bölümde tanımlıdır.
+
+
+## Day 46–85 — DevOps programı
+
+Mevcut backend/architecture kararları korunarak 40 yeni milestone eklenmiştir. Canonical araç, ownership ve ücretsiz yerel lab kararları [DevOps Engineering Plan](DEVOPS-ENGINEERING-PLAN.md) belgesindedir. Günlük görevler, aday dosyalar, commit sıraları, hata senaryoları ve kapanış ölçütleri [gün dizininden](roadmap/README.md) okunur.
+
+Terraform Community CLI seçilmiştir; OpenTofu karşılaştırma konusudur. Önceden kararlaştırılan Docker, Kubernetes, Spring Cloud Kubernetes, Jenkins, SonarQube, Nexus, Harbor ve Argo CD/GitOps kapsamı korunur. Yeni araçlar aynı sorumluluğu ikinci kez uygulamak için eklenmez.
+
+Bu değişiklik yalnız eğitim planını ekler. Day 46–85 yetenekleri Planlandı durumundadır; mevcut repo kodu veya önceki capability'ler bu belgeyle Implemented/Verified olmaz. Uygulama Day 45'in tamamlanmış birikimli branch'inden başlar; bu docs branch'indeki baseline kodu deploy kaynağı sayılmaz.

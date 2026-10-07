@@ -1,9 +1,9 @@
 # SpringDoc OpenAPI
 
-**Category:** Technology  
-**Introduced:** Day 1  
-**Project status:** Implemented  
-**Scope:** OpenAPI documentation generation for Spring HTTP APIs
+**Kategori:** Technology  
+**İlk eklendiği gün:** Day 1  
+**Proje durumu:** Uygulandı  
+**Kapsam:** Spring HTTP API'leri için OpenAPI documentation generation  
 
 ## 1. Nedir?
 

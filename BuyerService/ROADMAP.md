@@ -50,11 +50,11 @@ Day 9 itibarıyla servis **Couchbase + Hexagonal Architecture** ile implemente e
 - `POST /buyers/{buyerId}/saved-searches`
 
 ### Test ve doğrulama
-- domain unit tests
-- application tests + in-memory fake outbound port
-- Couchbase Testcontainers integration tests
-- REST controller tests
-- ArchUnit Hexagonal Architecture tests
+- domain unit testleri
+- application testleri + in-memory fake outbound port
+- Couchbase Testcontainers integration testleri
+- REST controller testleri
+- ArchUnit Hexagonal Architecture testleri
 - GitHub Actions CI
 - STS üzerinden lokal runtime
 - Config Server

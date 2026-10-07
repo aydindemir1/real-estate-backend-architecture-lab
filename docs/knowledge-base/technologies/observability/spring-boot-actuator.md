@@ -1,9 +1,9 @@
 # Spring Boot Actuator
 
-**Category:** Technology  
-**Introduced:** Day 5A  
-**Project status:** Implemented / Verified  
-**Scope:** Runtime management, health and operational endpoints
+**Kategori:** Technology  
+**İlk eklendiği gün:** Day 5A  
+**Proje durumu:** Uygulandı / Doğrulandı  
+**Kapsam:** Runtime management, health ve operational endpoint'ler  
 
 ## 1. Nedir?
 

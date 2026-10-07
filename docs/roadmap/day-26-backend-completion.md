@@ -1,9 +1,9 @@
 # Day 26 — Architecture Fitness + E2E + Backend Completion
 
-## Goal
+## Amaç
 Backend'in mimari, functional ve operational bütünlüğünü final olarak doğrulamak.
 
-## Tasks
+## Görevler
 1. bütün ArchUnit rule'larını çalıştır/gap kapat.
 2. dependency cycle kontrol et.
 3. shared library/dependency drift audit yap.
@@ -21,7 +21,7 @@ Backend'in mimari, functional ve operational bütünlüğünü final olarak doğ
 15. final build/check çalıştır.
 16. backend completion report yaz.
 
-## Suggested commits
+## Önerilen commit'ler
 1. test(architecture): finalize fitness rules
 2. test(e2e): add registration and listing flows
 3. test(e2e): add search projection flow
@@ -31,9 +31,9 @@ Backend'in mimari, functional ve operational bütünlüğünü final olarak doğ
 7. docs(runbook): finalize operational documentation
 8. docs: add backend completion report
 
-## Done
+## Tamamlanma durumu
 Architecture, contracts, critical workflows, security, failure handling ve docs birbiriyle uyumlu; backend fazı kapanmaya hazırdır.
 
-## Exact completion/file plan
+## Kesin completion/file planı
 
-Implementation source of truth: `docs/roadmap/day-26-exact-file-plan.md`
+Implementation için source of truth: `docs/roadmap/day-26-exact-file-plan.md`

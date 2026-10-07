@@ -4,7 +4,7 @@
 
 Day 8 kapsamında AgentService için MySQL persistence ve Clean Architecture implementation tamamlandı.
 
-- Implementation: Implemented
+- Implementation: Uygulandı
 - Verification: Full build/test execution ayrıca doğrulanmalıdır.
 
 ## Day 8 — AgentService / MySQL / Clean Architecture
@@ -22,9 +22,9 @@ Uygulanan kapsam:
 - Stable REST error contract
 - Optimistic locking
 - MySQL Testcontainers
-- Controller slice tests
+- Controller slice testleri
 - ArchUnit
-- Smoke tests
+- Smoke testleri
 
 ## Sonraki AgentService milestone'ları
 

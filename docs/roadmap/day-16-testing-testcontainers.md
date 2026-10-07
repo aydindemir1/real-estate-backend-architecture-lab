@@ -1,7 +1,7 @@
 # Day 16 — Unit + Integration + Testcontainers
 
-**Status:** Planned  
-**Implementation branch:** `day/16-testing`
+**Durum:** Planlandı  
+**Implementation branch'i:** `day/16-testing`
 
 ## Amaç
 

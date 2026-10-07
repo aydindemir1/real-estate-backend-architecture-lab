@@ -1,9 +1,9 @@
 # Day 20 — Advanced Resilience
 
-## Goal
+## Amaç
 Synchronous ve asynchronous dependency failure'larını bounded ve observable hale getirmek.
 
-## Tasks
+## Görevler
 1. dependency-by-dependency timeout matrix çıkar.
 2. retry ownership belirle.
 3. Circuit Breaker configs ekle.
@@ -19,7 +19,7 @@ Synchronous ve asynchronous dependency failure'larını bounded ve observable ha
 13. resilience metrics ekle.
 14. docs güncelle.
 
-## Suggested commits
+## Önerilen commit'ler
 1. docs(resilience): define timeout and retry ownership
 2. feat(resilience): add dependency circuit breakers
 3. feat(resilience): add time limiter and bulkheads
@@ -29,9 +29,9 @@ Synchronous ve asynchronous dependency failure'larını bounded ve observable ha
 7. feat(observability): expose resilience metrics
 8. docs(resilience): finalize failure policies
 
-## Done
+## Tamamlanma durumu
 Timeout/retry/circuit/bulkhead/rate limit policies bounded, tested ve dependency-specific olur.
 
-## Exact resilience/file plan
+## Kesin resilience/file planı
 
-Implementation source of truth: `docs/roadmap/day-20-exact-file-plan.md`
+Implementation için source of truth: `docs/roadmap/day-20-exact-file-plan.md`

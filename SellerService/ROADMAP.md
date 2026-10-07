@@ -27,7 +27,7 @@ Day 10 itibarıyla servis **Apache Cassandra + Onion Architecture** ile implemen
 - `PropertyDraftData`
 - `ListingSubmission`
 
-Seller status:
+Seller durumu:
 - ACTIVE
 - SUSPENDED
 - INACTIVE
@@ -41,7 +41,7 @@ Listing state model:
 - REJECTED
 - FAILED
 
-Day 10 runtime flow:
+Day 10 runtime akışı:
 - `CREATED -> SUBMITTED`
 
 ### Application
@@ -86,22 +86,22 @@ Global `userId` uniqueness Day 10'da Cassandra-safe LWT/ownership table ile enfo
 - `500 INTERNAL_SERVER_ERROR`
 
 ### Test ve doğrulama
-- domain unit tests
-- application tests
-- Cassandra Testcontainers integration tests
-- exact seller/month partition tests
-- newest-first clustering tests
-- paging tests
+- domain unit testleri
+- application testleri
+- Cassandra Testcontainers integration testleri
+- exact seller/month partition testleri
+- newest-first clustering testleri
+- paging testleri
 - query-design guard
-- REST controller tests
-- ArchUnit Onion Architecture tests
+- REST controller testleri
+- ArchUnit Onion Architecture testleri
 - GitHub Actions CI
 - Config Server
 - Eureka registration
 - gerçek Cassandra write/read
-- 6 success Postman scenario
-- 10 error Postman scenario
-- runtime defect -> fix -> retest evidence
+- 6 başarılı Postman senaryosu
+- 10 hata Postman senaryosu
+- runtime defect -> fix -> retest kanıtı
 
 Kanıtlar:
 - `docs/evidence/day-10/`

@@ -1,9 +1,9 @@
 # Redis
 
-**Category:** Technology  
-**Introduced:** Day 7  
-**Project status:** Infrastructure Ready  
-**Scope:** Ephemeral cache, rate limiting and acceleration layer
+**Kategori:** Technology  
+**İlk eklendiği gün:** Day 7  
+**Proje durumu:** Infrastructure hazır  
+**Kapsam:** Ephemeral cache, rate limiting ve acceleration layer  
 
 ## 1. Nedir?
 

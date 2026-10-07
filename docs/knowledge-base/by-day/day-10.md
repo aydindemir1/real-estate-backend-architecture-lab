@@ -1,16 +1,16 @@
-# Day 10 Knowledge Index
+# Day 10 Knowledge Indexi
 
 Day 10, SellerService'i Apache Cassandra persistence ve Onion Architecture ile application-level olarak implemente eder.
 
 ## Architecture
 
-- [Onion Architecture](../architectures/onion-architecture.md) — Implemented / Verified
+- [Onion Architecture](../architectures/onion-architecture.md) — Uygulandı / Doğrulandı
 
 ## Technology
 
-- [Apache Cassandra](../technologies/datastores/cassandra.md) — Implemented / Verified
+- [Apache Cassandra](../technologies/datastores/cassandra.md) — Uygulandı / Doğrulandı
 
-## Scope expansion
+## Kapsam genişlemesi
 
 Day 10 şu başlıkları derinleştirir:
 - wide-column / query-first data modeling
@@ -29,7 +29,7 @@ Day 10 şu başlıkları derinleştirir:
 - Eureka Client
 - REST acceptance testing
 
-## Project-specific links
+## Projeye özel bağlantılar
 
 - `SellerService/ROADMAP.md`
 - `SellerService/docs/DESIGN.md`
@@ -38,8 +38,8 @@ Day 10 şu başlıkları derinleştirir:
 - `docs/evidence/day-10/README.md`
 - `docs/collections/day-10/Day-10-SellerService.postman_collection.json`
 
-## State note
+## Durum notu
 
 Implementation, automated tests, CI ve lokal runtime/Postman acceptance doğrulanmıştır.
 
-Implementation, automated tests, CI, lokal runtime/Postman acceptance ve original PNG evidence repository sync tamamlanmıştır.
+Implementation, automated tests, CI, lokal runtime/Postman acceptance ve orijinal PNG evidence repository sync tamamlanmıştır.

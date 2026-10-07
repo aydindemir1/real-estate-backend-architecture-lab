@@ -1,4 +1,4 @@
-# Day 8 — AgentService / MySQL / Clean Architecture — Locked Decisions
+# Day 8 — AgentService / MySQL / Clean Architecture — Kesinleştirilmiş Kararlar
 
 ## Durum
 
@@ -9,7 +9,7 @@ Bu doküman Day 8 implementation öncesi bağlayıcı Pre-Day karar setidir.
 - Branch rule: her yeni Day branch'i bir önceki Day branch'inden türetilir; `main` baseline olarak korunur ve değiştirilmez.
 - Scope: yalnız AgentService.
 
-## 1. Scope
+## 1. Kapsam
 
 Day 8 hedefleri:
 

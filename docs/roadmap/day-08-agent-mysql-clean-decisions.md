@@ -6,8 +6,8 @@ Bu doküman Day 8 implementation öncesi bağlayıcı Pre-Day karar setidir.
 
 - Planning source: `docs/backend-roadmap-design`
 - Implementation branch: `day/08-agent-mysql-clean`
-- Branch rule: her yeni Day branch'i bir önceki Day branch'inden türetilir; `main` baseline olarak korunur ve değiştirilmez.
-- Scope: yalnız AgentService.
+- Branch kuralı: her yeni Day branch'i bir önceki Day branch'inden türetilir; `main` baseline olarak korunur ve değiştirilmez.
+- Kapsam: yalnız AgentService.
 
 ## 1. Kapsam
 

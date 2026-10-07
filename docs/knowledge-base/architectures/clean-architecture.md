@@ -1,9 +1,9 @@
 # Clean Architecture
 
-**Category:** Architecture  
-**Introduced:** Day 8  
-**Project status:** Implemented  
-**Scope:** AgentService
+**Kategori:** Architecture  
+**İlk eklendiği gün:** Day 8  
+**Proje durumu:** Uygulandı  
+**Kapsam:** AgentService
 
 ## Nedir?
 

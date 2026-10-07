@@ -12,7 +12,7 @@ Hedef:
 - ChangeAvailability
 - migration
 - REST API
-- unit + application + integration + architecture tests
+- unit + application + integration + architecture testleri
 
 Day 8 içinde Buyer/Seller/Property/Search implementation yapılmaz.
 
@@ -38,7 +38,7 @@ Hedef base package:
 
 Mevcut bootstrap class farklı package'taysa:
 - move/refactor yapılır
-- component scan root target package olur
+- component scan root, target package olur
 
 ## Commit
 
@@ -58,23 +58,23 @@ Mevcut bootstrap class farklı package'taysa:
 - Spring Cloud Eureka Client
 - Spring Cloud Config Client
 - Spring Boot Actuator
-- existing tracing baseline
+- mevcut tracing baseline
 - Spring Data JPA
 
 ## Ekle
 - MySQL JDBC driver
-- migration tool selected for relational schema
+- relational schema için seçilmiş migration tool
 - Testcontainers JUnit Jupiter
 - MySQL Testcontainers integration dependency where needed
-- ArchUnit test dependency if not already globally available
+- global olarak mevcut değilse ArchUnit test dependency
 
 ## Önemli
 Migration tool project genelinde tek bir seçim olmalıdır.
 
-If Flyway is selected:
+Flyway seçildiyse:
 - do not mix Liquibase in AgentService.
 
-If Liquibase is already established as project-wide baseline:
+Liquibase zaten project-wide baseline olarak belirlenmişse:
 - use Liquibase.
 
 Nihai tool seçimi implementation commit'inden önce kesinleştirilir.
@@ -90,20 +90,20 @@ Nihai tool seçimi implementation commit'inden önce kesinleştirilir.
 ## Değiştir
 `AgentService/src/main/resources/application.yml`
 
-Keep only bootstrap-level config:
+Yalnızca bootstrap-level config'i koru:
 - spring.application.name
 - configserver import
 - CONFIG_SERVER_URL fallback
 
 Buraya gerçek DB secret koyma.
 
-## Config Server target
+## Config Server hedefi
 
-Create/update AgentService external config in current Config Server source.
+Mevcut Config Server source içinde AgentService external config'ini oluştur/güncelle.
 
-Required non-secret config:
+Gerekli non-secret config:
 - datasource URL template
-- driver class if required
+- gerekliyse driver class
 - JPA ddl-auto = validate/none
 - JPA open-in-view = false
 - migration enablement
@@ -174,12 +174,12 @@ Yaklaşan görevler için gerekli olmadıkça boş placeholder class oluşturma.
 `domain/model/LicenseNumber.java`
 - immutable
 - non-blank
-- normalized if business-safe
+- business-safe ise normalize edilir
 
 `domain/model/AgencyInfo.java`
 - agencyName
-- registrationNumber optional if model allows
-- officePhone optional if model allows
+- model izin veriyorsa registrationNumber opsiyonel
+- model izin veriyorsa officePhone opsiyonel
 
 `domain/model/AgentStatus.java`
 - ACTIVE
@@ -209,7 +209,7 @@ Yaklaşan görevler için gerekli olmadıkça boş placeholder class oluşturma.
 
 `domain/model/Agent.java`
 
-Fields:
+Alanlar:
 - AgentId id
 - UserId userId
 - LicenseNumber licenseNumber
@@ -218,26 +218,26 @@ Fields:
 - AvailabilityStatus availability
 - Instant createdAt
 - Instant updatedAt
-- long/int version representation only if domain needs it
+- yalnızca domain ihtiyaç duyuyorsa long/int version representation
 
 ## Oluşturma
 
 Prefer static factory:
 `Agent.create(..., Clock clock)`
 
-or constructor/factory equivalent.
+veya eşdeğer constructor/factory.
 
 ## Davranış
 
 - changeAvailability(...)
 - changeStatus(...)
-- updateProfile(...) only if Day 8 endpoint needs it; otherwise defer
+- `updateProfile(...)` yalnız Day 8 endpoint'i ihtiyaç duyuyorsa eklenir; aksi halde ertelenir
 
 ## Invariant'lar
 
 - SUSPENDED agent cannot be AVAILABLE
 - INACTIVE agent cannot be AVAILABLE
-- required identity/license data cannot be null
+- zorunlu identity/license verisi null olamaz
 - state changed through behavior, not public setter
 
 ## Exception'lar
@@ -252,11 +252,11 @@ Create:
 `AgentTest.java`
 
 Scenarios:
-- create active agent
-- ACTIVE -> AVAILABLE allowed
-- SUSPENDED -> AVAILABLE rejected
-- INACTIVE -> AVAILABLE rejected
-- status change enforces availability semantics
+- active agent oluşturma
+- ACTIVE -> AVAILABLE izinli
+- SUSPENDED -> AVAILABLE reddedilir
+- INACTIVE -> AVAILABLE reddedilir
+- status değişikliği availability semantics'i enforce eder
 
 ## Commit
 
@@ -293,13 +293,13 @@ Do not expose:
 ## Oluştur commands
 
 `application/command/CreateAgentCommand.java`
-Fields:
+Alanlar:
 - userId
 - licenseNumber
-- agency info fields
+- agency info alanları
 
 `application/command/ChangeAvailabilityCommand.java`
-Fields:
+Alanlar:
 - agentId
 - availability
 
@@ -313,7 +313,7 @@ Use record where appropriate.
 
 `application/result/AgentResult.java`
 
-Do not return domain Agent directly from presentation.
+Presentation'dan domain Agent'i doğrudan döndürme.
 
 ## Commit
 
@@ -355,7 +355,7 @@ Implements:
 ### OluşturAgent
 1. validate duplicate license
 2. validate duplicate user
-3. create Aggregate
+3. Aggregate oluştur
 4. save
 5. return AgentResult
 
@@ -382,7 +382,7 @@ Physical Spring `@Transactional` placement follows agreed pragmatic Spring appro
 
 `AgentApplicationServiceTest.java`
 
-Mocks/fakes only repository boundary.
+Mock/fake yalnızca repository boundary için kullanılmalı.
 
 ## Commit
 
@@ -399,7 +399,7 @@ Mocks/fakes only repository boundary.
 Table:
 `agents`
 
-Fields:
+Alanlar:
 - UUID id
 - UUID userId
 - String licenseNumber
@@ -465,7 +465,7 @@ Mappings:
 ## Karar
 Project dependency policy destekliyorsa MapStruct kullanılabilir.
 
-However domain reconstruction must preserve invariants without accidentally calling create-new behavior that resets timestamps.
+Ancak domain reconstruction, timestamp'leri sıfırlayan create-new behavior'ı yanlışlıkla çağırmadan invariant'ları korumalıdır.
 
 Mapping semantics basit değilse magical generated mapping yerine explicit Java mapper tercih edilir.
 
@@ -489,7 +489,7 @@ Responsibilities:
 - map
 - translate persistence-specific behavior where necessary
 
-Add `@Repository` only infrastructure class.
+`@Repository` yalnızca infrastructure class'a eklenmelidir.
 
 ## Commit
 
@@ -501,10 +501,10 @@ Add `@Repository` only infrastructure class.
 
 ## Oluştur based on chosen tool
 
-Flyway candidate:
+Flyway adayı:
 `AgentService/src/main/resources/db/migration/V1__create_agents_table.sql`
 
-If Liquibase selected:
+Liquibase seçildiyse:
 equivalent changelog path.
 
 ## Schema
@@ -528,10 +528,10 @@ Constraints:
 - PK(id)
 - UNIQUE(user_id)
 - UNIQUE(license_number)
-- NOT NULL required fields
+- zorunlu alanlar NOT NULL
 
 Indexes:
-Only query-backed indexes.
+Yalnızca query-backed index'ler.
 
 Uniqueness/basic query gereksinimleri dışında speculative index ekleme.
 
@@ -557,7 +557,7 @@ Sırf ceremony için configuration class oluşturma.
 
 ## Commit
 
-Only if file/change exists:
+Yalnızca file/change varsa:
 `config(agent): configure MySQL persistence behavior`
 
 ---
@@ -568,7 +568,7 @@ Only if file/change exists:
 
 `presentation/rest/request/CreateAgentRequest.java`
 
-Fields:
+Alanlar:
 - userId
 - licenseNumber
 - agencyName
@@ -577,7 +577,7 @@ Fields:
 
 Jakarta validation:
 - @NotNull/@NotBlank
-- format constraints only if contract confirmed
+- yalnız contract doğrulanmışsa format constraint'leri
 
 `presentation/rest/request/ChangeAvailabilityRequest.java`
 
@@ -599,7 +599,7 @@ Entity/domain binding yapma.
 
 `presentation/rest/response/AgentResponse.java`
 
-Fields:
+Alanlar:
 - agentId
 - userId
 - licenseNumber
@@ -613,7 +613,7 @@ Do not expose JPA version unless public concurrency contract specifically requir
 
 ## Commit
 
-Can be grouped with request contract commit if small:
+Küçükse request contract commit'i ile birleştirilebilir:
 `feat(agent): add Agent REST contracts`
 
 ---
@@ -648,7 +648,7 @@ Endpoints:
 ### POST /agents
 - CreateAgent
 - 201 Created
-- Location header candidate
+- Location header adayı
 - response AgentResponse
 
 ### GET /agents/{agentId}
@@ -657,8 +657,8 @@ Endpoints:
 
 ### PATCH /agents/{agentId}/availability
 - ChangeAvailability
-- 200 or 204; project API standard must choose one consistently
-- recommended 200 if returning updated AgentResponse
+- 200 veya 204; project API standard bunlardan birini tutarlı şekilde seçmelidir
+- updated AgentResponse dönüyorsa önerilen 200
 
 ## Version
 Service-local path prefixsiz kalır; Gateway external prefix ayrı ele alınır.
@@ -676,13 +676,13 @@ Service-local path prefixsiz kalır; Gateway external prefix ayrı ele alınır.
 Agent-specific mappings:
 - AgentNotFoundException -> 404 AGENT_NOT_FOUND
 - DuplicateLicenseNumberException -> 409 DUPLICATE_LICENSE_NUMBER
-- duplicate user -> stable conflict code, add if needed
-- InvalidAgentStateException -> 409 INVALID_AGENT_STATE or 422 depending semantic classification
+- duplicate user -> stable conflict code; gerekiyorsa ekle
+- InvalidAgentStateException -> semantic classification'a göre 409 INVALID_AGENT_STATE veya 422
 
 Stable error code contract kullan.
 
 ## Exact class location
-Prefer service presentation/error package only if common existing exception handler is not shared.
+Common existing exception handler shared değilse service presentation/error package tercih et.
 
 Day 8'de cross-service shared error library oluşturma.
 
@@ -700,8 +700,8 @@ Day 8'de cross-service shared error library oluşturma.
 
 `LicenseNumberTest.java`
 
-Candidate cases:
-- valid create
+Aday senaryolar:
+- valid create senaryosu
 - blank license
 - suspended -> AVAILABLE rejected
 - inactive -> AVAILABLE rejected
@@ -719,14 +719,14 @@ Candidate cases:
 
 `src/test/java/com/aydindemir/agent/application/service/AgentApplicationServiceTest.java`
 
-Cases:
-- create success
+Senaryolar:
+- create başarılı
 - duplicate license
 - duplicate user
-- get success
+- get başarılı
 - not found
-- change availability success
-- invalid domain transition propagated
+- change availability başarılı
+- invalid domain transition propagate edilir
 
 Spring context gerekmez.
 
@@ -742,7 +742,7 @@ Spring context gerekmez.
 
 `src/test/java/com/aydindemir/agent/infrastructure/persistence/AgentMySqlContainerTestBase.java`
 
-Or project-standard shared test utility if already exists.
+Veya zaten varsa project-standard shared test utility kullan.
 
 Use:
 - MySQL container
@@ -764,7 +764,7 @@ Testler için hard-coded shared local MySQL kullanma.
 
 `AgentRepositoryAdapterIntegrationTest.java`
 
-Cases:
+Senaryolar:
 - save/load round-trip
 - unique license constraint
 - unique user constraint
@@ -780,23 +780,23 @@ Cases:
 
 # Görev 26 — Optimistic locking testi
 
-If version/concurrent write is in Day 8 scope:
+Version/concurrent write Day 8 scope içindeyse:
 
 Create:
 `AgentOptimisticLockingIntegrationTest.java`
 
-Scenario:
+Senaryo:
 1. load same entity twice
 2. update first
 3. update second
 4. expect optimistic conflict
 
-If Agent concurrency is not critical yet, this test may be deferred and version field simply established.
+Agent concurrency henüz kritik değilse bu test ertelenebilir ve yalnızca version field oluşturulabilir.
 
 Karar explicit olmalı, accidental olmamalıdır.
 
 ## Commit
-If implemented:
+Uygulanırsa:
 `test(agent): verify optimistic locking behavior`
 
 ---
@@ -808,10 +808,10 @@ If implemented:
 `presentation/rest/AgentControllerTest.java`
 
 Use:
-- @WebMvcTest or current Spring Boot equivalent
+- `@WebMvcTest` veya mevcut Spring Boot eşdeğeri
 - mock use-case boundary
 
-Cases:
+Senaryolar:
 - validation 400
 - create 201
 - get 200
@@ -831,12 +831,12 @@ Cases:
 `src/test/java/com/aydindemir/agent/architecture/AgentCleanArchitectureTest.java`
 
 Rules:
-- domain must not depend on application/infrastructure/presentation
-- application must not depend on infrastructure/presentation
-- presentation may depend on application, not persistence
-- infrastructure may depend on domain/application
-- domain package must not depend on Spring/JPA packages
-- no cycles among slices/layers
+- domain, application/infrastructure/presentation'a bağımlı olmamalı
+- application, infrastructure/presentation'a bağımlı olmamalı
+- presentation application'a bağımlı olabilir, persistence'a bağımlı olmamalı
+- infrastructure domain/application'a bağımlı olabilir
+- domain package Spring/JPA package'larına bağımlı olmamalı
+- slice/layer'lar arasında cycle olmamalı
 
 ## Commit
 
@@ -849,10 +849,10 @@ Rules:
 Run:
 - MySQL container/local MySQL
 - Config Server
-- Eureka if needed
+- gerekiyorsa Eureka
 - AgentService
 
-Verify:
+Doğrula:
 - startup
 - migration
 - registration
@@ -877,15 +877,15 @@ Fix gerekmedikçe commit gerekmez.
 - `docs/roadmap/day-08-agent-mysql-clean.md`
 
 ## Gerçek implementation ile güncelle
-- actual package names
-- actual migration tool
-- actual config keys
+- gerçek package adları
+- gerçek migration tool
+- gerçek config key'leri
 - exact test coverage
-- deviations from plan
-- completed status
+- plandan sapmalar
+- tamamlanma durumu
 
 ## Opsiyonel README
-If AgentService has a module README, update setup/run instructions.
+AgentService için module README varsa setup/run talimatlarını güncelle.
 
 ## Commit
 

@@ -1,9 +1,9 @@
 # HTTP
 
-**Category:** Protocol  
-**Introduced:** Day 1  
-**Project status:** Implemented / Verified  
-**Scope:** Request/response application protocol for REST APIs and internal service calls
+**Kategori:** Protocol  
+**İlk eklendiği gün:** Day 1  
+**Proje durumu:** Uygulandı / Doğrulandı  
+**Kapsam:** REST API'leri ve internal service call'ları için request/response application protocol  
 
 ## 1. Nedir?
 

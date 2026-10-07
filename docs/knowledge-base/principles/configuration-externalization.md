@@ -1,9 +1,9 @@
 # Configuration Externalization Principle
 
-**Category:** Principle  
-**Introduced:** Day 1  
-**Project status:** Implemented / Strengthened in Day 7  
-**Scope:** Keeping environment-specific runtime configuration outside source code
+**Kategori:** Principle  
+**İlk eklendiği gün:** Day 1  
+**Proje durumu:** Uygulandı / Day 7'de güçlendirildi  
+**Kapsam:** Environment-specific runtime configuration'ın source code dışında tutulması  
 
 ## 1. Nedir?
 

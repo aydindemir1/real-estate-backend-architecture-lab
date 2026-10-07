@@ -1,9 +1,9 @@
 # Asynchronous Messaging
 
 **Category:** Approach  
-**Introduced:** Day 6A  
-**Project status:** Implemented / Integrated / Verified  
-**Scope:** Message-based decoupled communication
+**İlk eklendiği gün:** Day 6A  
+**Proje durumu:** Uygulandı / Entegre edildi / Doğrulandı  
+**Kapsam:** Message-based decoupled communication
 
 ## 1. Nedir?
 

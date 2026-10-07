@@ -1,9 +1,9 @@
 # Day 23 — Contract + Failure-Path Testing
 
-## Goal
+## Amaç
 Cross-service contract ve sistematik negative-path güvenilirliğini doğrulamak.
 
-## Tasks
+## Görevler
 1. critical REST consumer/provider contracts seç.
 2. Spring Cloud Contract setup ekle.
 3. provider verification ekle.
@@ -18,7 +18,7 @@ Cross-service contract ve sistematik negative-path güvenilirliğini doğrulamak
 12. invalid config startup test.
 13. docs güncelle.
 
-## Suggested commits
+## Önerilen commit'ler
 1. build(contract): add Spring Cloud Contract setup
 2. test(contract): add critical REST contracts
 3. test(contract): add provider and stub verification
@@ -27,9 +27,9 @@ Cross-service contract ve sistematik negative-path güvenilirliğini doğrulamak
 6. test(failure): add poison and replay tests
 7. docs(test): document failure-path matrix
 
-## Done
+## Tamamlanma durumu
 Critical contracts breaking change'e karşı korunur; major failure paths automated olarak test edilir.
 
-## Exact contract/failure plan
+## Kesin contract/failure planı
 
-Implementation source of truth: `docs/roadmap/day-23-exact-file-plan.md`
+Implementation için source of truth: `docs/roadmap/day-23-exact-file-plan.md`

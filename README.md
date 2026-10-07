@@ -1022,7 +1022,7 @@ UserProfile veritabanında eşleşen kayıt:
 **Day 6C — Spring Cloud LoadBalancer tamamlandı ve test edildi.**
 
 
-## Day 7 — Build & Local Data Infrastructure Foundation
+## Day 7 — Build & Local Data Infrastructure Temeli
 
 Day 7 ile proje, sonraki persistence ve architecture çalışmalarına hazırlanmıştır.
 

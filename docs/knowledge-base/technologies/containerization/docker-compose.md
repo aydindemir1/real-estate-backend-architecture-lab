@@ -1,9 +1,9 @@
 # Docker Compose
 
-**Category:** Technology  
-**Introduced:** Day 7 infrastructure phase  
-**Project status:** Implemented / Verified  
-**Scope:** Local multi-container orchestration
+**Kategori:** Technology  
+**İlk eklendiği gün:** Day 7 infrastructure phase  
+**Proje durumu:** Uygulandı / Doğrulandı  
+**Kapsam:** Local multi-container orchestration  
 
 ## 1. Nedir?
 

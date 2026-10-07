@@ -61,7 +61,7 @@ domain ------------> hiçbir outer layer'a bağımlı değil
 
 ArchUnit bu yönü enforce eder.
 
-## Day 8 scope
+## Day 8 kapsamı
 
 Yalnız:
 - CreateAgent

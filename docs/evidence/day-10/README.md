@@ -1,4 +1,4 @@
-# Day 10 — SellerService Runtime Evidence
+# Day 10 — SellerService Runtime Kanıtları
 
 Bu klasör, `day/10-seller-cassandra-onion` branch'inde Day 10 SellerService çalışmalarının lokal runtime doğrulama kayıtlarını tutar.
 
@@ -68,7 +68,7 @@ Ham log:
 
 - `seller-service-startup-success.log`
 
-## Postman success acceptance
+## Postman başarılı kabul senaryoları
 
 Collection:
 
@@ -87,7 +87,7 @@ Başarılı senaryolar:
 
 Create/submit akışında `CREATED -> SUBMITTED` state transition runtime'da doğrulandı.
 
-## Postman error acceptance
+## Postman hata kabul senaryoları
 
 | # | Senaryo | Sonuç / code |
 |---|---|---|

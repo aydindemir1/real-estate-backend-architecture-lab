@@ -86,15 +86,15 @@ Global `userId` uniqueness Day 10'da Cassandra-safe LWT/ownership table ile enfo
 - `500 INTERNAL_SERVER_ERROR`
 
 ### Test ve doğrulama
-- domain unit tests
-- application tests
-- Cassandra Testcontainers integration tests
-- exact seller/month partition tests
-- newest-first clustering tests
-- paging tests
+- domain unit testleri
+- application testleri
+- Cassandra Testcontainers integration testleri
+- exact seller/month partition testleri
+- newest-first clustering testleri
+- paging testleri
 - query-design guard
-- REST controller tests
-- ArchUnit Onion Architecture tests
+- REST controller testleri
+- ArchUnit Onion Architecture testleri
 - GitHub Actions CI
 - Config Server
 - Eureka registration

@@ -1,9 +1,9 @@
 # Spring Cloud OpenFeign
 
-**Category:** Technology  
-**Introduced:** Day 3  
-**Project status:** Implemented / Integrated / Verified  
-**Scope:** Declarative synchronous HTTP client for service-to-service communication
+**Kategori:** Technology  
+**İlk eklendiği gün:** Day 3  
+**Proje durumu:** Uygulandı / Entegre edildi / Doğrulandı  
+**Kapsam:** Service-to-service communication için declarative synchronous HTTP client  
 
 ## 1. Nedir?
 

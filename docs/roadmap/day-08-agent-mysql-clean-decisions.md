@@ -1,6 +1,6 @@
 # Day 8 — AgentService / MySQL / Clean Architecture — Locked Decisions
 
-## Status
+## Durum
 
 Bu doküman Day 8 implementation öncesi bağlayıcı Pre-Day karar setidir.
 

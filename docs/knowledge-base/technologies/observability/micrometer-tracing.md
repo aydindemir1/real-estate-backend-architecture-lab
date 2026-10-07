@@ -1,9 +1,9 @@
 # Micrometer Tracing
 
-**Category:** Technology  
-**Introduced:** Day 5B  
-**Project status:** Implemented / Integrated / Verified  
-**Scope:** Tracing abstraction and observation integration
+**Kategori:** Technology  
+**İlk eklendiği gün:** Day 5B  
+**Proje durumu:** Uygulandı / Entegre edildi / Doğrulandı  
+**Kapsam:** Tracing abstraction ve observation integration  
 
 ## 1. Nedir?
 

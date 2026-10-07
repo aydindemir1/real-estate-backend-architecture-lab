@@ -1,34 +1,34 @@
-# Day 30 — Exact Prometheus + Grafana + Loki + Tempo Stack Plan
+# Day 30 — Kesin Prometheus + Grafana + Loki + Tempo Stack Planı
 
-## Scope
+## Kapsam
 - Prometheus
 - Grafana
 - Loki
 - Tempo
 - supported log shipper
-- provisioned datasources/dashboards
-- sample actionable alerts
-- optional observability Compose profile
+- provisioned datasource/dashboard'lar
+- sample actionable alert'ler
+- opsiyonel observability Compose profile
 
-## Tasks
-1. Add Tempo with explicit image version and local config.
-2. Add Prometheus with explicit scrape config for Gateway and all services.
-3. Add Loki with explicit local config.
-4. Choose a currently supported log shipper at implementation time; prefer Grafana Alloy if appropriate.
-5. Add Grafana with provisioned Prometheus, Tempo and Loki datasources.
-6. Add Compose `observability` profile so unit/integration tests do not require stack.
-7. Add service overview dashboard: traffic, errors, p95/p99, JVM, CPU, threads/connections.
-8. Add messaging dashboard: Kafka lag/errors, RabbitMQ queue depth, DLT/DLQ, outbox backlog.
-9. Add Offer Saga dashboard: outcomes, hold conflicts, intermediate/stuck states/duration candidates.
-10. Add Search dashboard: query latency/errors, Elasticsearch failures, projection freshness.
-11. Add sample Prometheus alert rules for sustained 5xx, p99, lag, DLT/DLQ, outbox backlog, freshness and pool saturation.
-12. Every alert contains actionable summary and runbook link.
-13. Verify Grafana datasources healthy, Prometheus targets UP, Tempo receives traces, Loki receives logs.
-14. Verify traceId can be used to navigate from logs to traces where supported.
-15. Test Loki/Tempo/Prometheus unavailability does not affect application correctness.
-16. Add reasonable local resource/memory guidance.
+## Task'ler
+1. Explicit image version ve local config ile Tempo ekle.
+2. Gateway ve tüm service'ler için explicit scrape config ile Prometheus ekle.
+3. Explicit local config ile Loki ekle.
+4. Implementation sırasında güncel olarak desteklenen log shipper seç; uygunsa Grafana Alloy tercih et.
+5. Provisioned Prometheus, Tempo ve Loki datasource'larıyla Grafana ekle.
+6. Unit/integration testlerin stack'e ihtiyaç duymaması için Compose `observability` profile ekle.
+7. Service overview dashboard ekle: traffic, errors, p95/p99, JVM, CPU, threads/connections.
+8. Messaging dashboard ekle: Kafka lag/errors, RabbitMQ queue depth, DLT/DLQ, outbox backlog.
+9. Offer Saga dashboard ekle: outcomes, hold conflicts, intermediate/stuck states/duration candidate'ları.
+10. Search dashboard ekle: query latency/errors, Elasticsearch failure'ları, projection freshness.
+11. Sustained 5xx, p99, lag, DLT/DLQ, outbox backlog, freshness ve pool saturation için sample Prometheus alert rule'ları ekle.
+12. Her alert actionable summary ve runbook link içersin.
+13. Grafana datasource'larının healthy, Prometheus target'ların UP, Tempo'nun trace ve Loki'nin log aldığını doğrula.
+14. Destekleniyorsa traceId ile log'dan trace'e navigation doğrula.
+15. Loki/Tempo/Prometheus unavailable olsa bile application correctness'in etkilenmediğini test et.
+16. Uygun local resource/memory guidance ekle.
 
-## Commit sequence
+## Commit sırası
 1. `infra(observability): add Tempo`
 2. `infra(observability): add Prometheus`
 3. `infra(observability): add Loki and supported log pipeline`
@@ -41,9 +41,9 @@
 10. `docs(observability): finalize local observability guide`
 
 ## Final gate
-- three datasources provisioned
-- services scraped
-- logs/traces visible
-- dashboards load
-- alerts are actionable, not noise-only
-- observability backend outage never breaks business flow
+- üç datasource provisioned
+- service'ler scraped
+- log/trace'ler görünür
+- dashboard'lar yükleniyor
+- alert'ler actionable, yalnız noise üretmiyor
+- observability backend outage business flow'u bozmuyor

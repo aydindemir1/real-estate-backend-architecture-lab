@@ -1,9 +1,9 @@
 # Day 12 — SearchService: Elasticsearch + CQRS Query Side Foundation
 
-## Goal
+## Amaç
 SearchService'i bağımsız query-side module olarak ayağa kaldırmak.
 
-## Tasks
+## Görevler
 1. SearchService build/application bootstrap oluştur.
 2. Elasticsearch dependency/config ekle.
 3. service name/config/eureka/actuator baseline ekle.
@@ -24,7 +24,7 @@ SearchService'i bağımsız query-side module olarak ayağa kaldırmak.
 18. Mongo/write-side dependency olmadığını doğrula.
 19. docs güncelle.
 
-## Suggested commits
+## Önerilen commit'ler
 1. build(search): add SearchService module runtime foundation
 2. feat(search): add Elasticsearch document and mapping
 3. feat(search): add Elasticsearch persistence adapter
@@ -34,7 +34,7 @@ SearchService'i bağımsız query-side module olarak ayağa kaldırmak.
 7. test(search): enforce CQRS query-side boundaries
 8. docs(search): finalize Day 12 design
 
-## Verification
+## Doğrulama
 - module starts/registers
 - document indexed
 - text query works
@@ -43,9 +43,9 @@ SearchService'i bağımsız query-side module olarak ayağa kaldırmak.
 - pagination bounded
 - no canonical Property write model
 
-## Done
+## Tamamlanma durumu
 SearchService standalone Elasticsearch query-side foundation olarak çalışır.
 
-## Exact file/class plan
+## Kesin file/class planı
 
-Implementation source of truth: `docs/roadmap/day-12-exact-file-plan.md`
+Implementation için source of truth: `docs/roadmap/day-12-exact-file-plan.md`

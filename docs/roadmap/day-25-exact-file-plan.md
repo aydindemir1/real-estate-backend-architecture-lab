@@ -1,30 +1,30 @@
-# Day 25 — Exact Spring Cloud Bus Plan
+# Day 25 — Kesin Spring Cloud Bus Planı
 
-## Scope
-- Spring Cloud Bus over RabbitMQ
+## Kapsam
+- RabbitMQ üzerinden Spring Cloud Bus
 - refresh-safe property inventory
 - targeted RefreshScope
 - protected distributed refresh
-- Bus outage tests
+- Bus outage testleri
 - control-plane separation
 
-## Tasks
-1. Add Spring Cloud Bus AMQP dependency where needed.
-2. Use RabbitMQ as Bus transport; keep Bus destination separate from business exchanges.
-3. Load Bus broker credential from Vault.
-4. Create `docs/config/refreshable-properties.md`.
-5. Classify runtime-refresh-safe vs restart-required properties.
-6. Add `@RefreshScope` only to beans that genuinely support safe refresh.
-7. Implement controlled Config Server change → busrefresh → service refresh flow.
-8. Protect refresh/bus actuator endpoints with admin/ops authorization.
-9. Add deterministic Bus refresh integration test.
-10. Add test proving non-refresh-safe critical infrastructure config does not silently mutate.
-11. Test RabbitMQ/Bus outage: current service behavior continues with existing config.
-12. Enforce control-plane separation: Bus events are not domain/business events.
-13. Add `docs/runbooks/config-refresh.md`.
-14. Document Config Server outage vs Bus outage differences.
+## Task'ler
+1. Gereken yerlere Spring Cloud Bus AMQP dependency ekle.
+2. Bus transport olarak RabbitMQ kullan; Bus destination'ı business exchange'lerden ayrı tut.
+3. Bus broker credential'ını Vault'tan yükle.
+4. `docs/config/refreshable-properties.md` oluştur.
+5. Runtime-refresh-safe ve restart-required property'leri sınıflandır.
+6. `@RefreshScope` yalnızca gerçekten safe refresh destekleyen bean'lere ekle.
+7. Controlled Config Server change → busrefresh → service refresh flow implemente et.
+8. Refresh/bus actuator endpoint'lerini admin/ops authorization ile koru.
+9. Deterministic Bus refresh integration testi ekle.
+10. Non-refresh-safe critical infrastructure config'in sessizce mutate olmadığını kanıtlayan test ekle.
+11. RabbitMQ/Bus outage test et: mevcut service behavior var olan config ile devam etsin.
+12. Control-plane separation uygula: Bus event'leri domain/business event değildir.
+13. `docs/runbooks/config-refresh.md` ekle.
+14. Config Server outage ile Bus outage arasındaki farkları dokümante et.
 
-## Commit sequence
+## Commit sırası
 1. `build(bus): add Spring Cloud Bus over RabbitMQ`
 2. `config(bus): add distributed config refresh channel`
 3. `docs(config): classify refresh-safe properties`
@@ -36,8 +36,8 @@
 9. `docs(config): add config refresh runbook`
 
 ## Final gate
-- Bus is separate control plane
-- approved properties refresh live
-- unsafe infrastructure settings remain restart-bound
-- busrefresh endpoint protected
-- broker outage does not break steady-state requests
+- Bus ayrı bir control plane'dir
+- approved property'ler live refresh olur
+- unsafe infrastructure setting'leri restart-bound kalır
+- busrefresh endpoint korunur
+- broker outage steady-state request'leri bozmaz

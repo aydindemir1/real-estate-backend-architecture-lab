@@ -1,9 +1,9 @@
 # Distributed Tracing
 
 **Category:** Approach  
-**Introduced:** Day 5B  
-**Project status:** Implemented / Integrated / Verified  
-**Scope:** End-to-end request visibility across distributed components
+**İlk eklendiği gün:** Day 5B  
+**Proje durumu:** Uygulandı / Entegre edildi / Doğrulandı  
+**Kapsam:** End-to-end request visibility across distributed components
 
 ## 1. Nedir?
 

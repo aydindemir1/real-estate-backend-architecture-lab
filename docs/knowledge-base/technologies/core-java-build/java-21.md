@@ -1,9 +1,9 @@
 # Java 21
 
-**Category:** Technology  
-**Introduced:** Day 1  
-**Project status:** Implemented / Verified  
-**Scope:** Primary programming language and JVM runtime baseline
+**Kategori:** Technology  
+**İlk eklendiği gün:** Day 1  
+**Proje durumu:** Uygulandı / Doğrulandı  
+**Kapsam:** Primary programming language ve JVM runtime baseline  
 
 ## 1. Nedir?
 

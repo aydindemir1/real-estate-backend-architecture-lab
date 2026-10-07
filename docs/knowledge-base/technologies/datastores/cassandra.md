@@ -219,7 +219,7 @@ Probleme göre:
 
 değerlendirilebilir.
 
-## 19. Production considerations
+## 19. Production değerlendirmeleri
 
 - partition cardinality/size
 - replication factor

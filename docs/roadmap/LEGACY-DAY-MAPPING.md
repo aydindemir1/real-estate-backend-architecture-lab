@@ -1,6 +1,6 @@
 # Legacy Day 15–26 Mapping
 
-Pre-audit Day 15–26 semantic numbering is superseded.
+Audit öncesindeki Day 15–26 semantic numaralandırması artık geçerli değildir.
 
 | Eski milestone | Final milestone |
 |---|---|
@@ -17,11 +17,11 @@ Pre-audit Day 15–26 semantic numbering is superseded.
 | Day 25 — Cloud Task | Day 31 |
 | Day 26 — Backend Completion | Day 32 — Architecture Audit; Day 33 — E2E/Completion |
 
-## Canonical exact plans
+## Canonical exact plan'lar
 
-Implementation source of truth is now:
+Implementation için source of truth artık şunlardır:
 - `day-15-exact-file-plan.md`
 - ...
 - `day-33-exact-file-plan.md`
 
-Root `ROADMAP.md`, `docs/MASTER-ENGINEERING-PLAN.md`, and `docs/roadmap/MASTER-AUDIT.md` take precedence over older summary documents if any wording conflicts.
+Herhangi bir ifade çakışması olması durumunda root `ROADMAP.md`, `docs/MASTER-ENGINEERING-PLAN.md` ve `docs/roadmap/MASTER-AUDIT.md`, eski summary dokümanlarına göre önceliklidir.

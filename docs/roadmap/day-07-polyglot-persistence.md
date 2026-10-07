@@ -1,7 +1,7 @@
-# Day 7 — Build & Local Data Infrastructure Foundation
+# Day 7 — Build & Local Data Infrastructure Temeli
 
-**Status:** Planned  
-**Implementation branch:** `day/07-build-data-infra`
+**Durum:** Planlandı  
+**Implementation branch'i:** `day/07-build-data-infra`
 
 ## Amaç
 
@@ -9,7 +9,7 @@ Day 8–13 service/datastore milestone'ları için ortak build ve local infrastr
 
 Bu Day içinde business service implementation yapılmaz.
 
-## Scope
+## Kapsam
 
 - Gradle datastore dependency alias'ları
 - SearchService module registration foundation
@@ -24,7 +24,7 @@ Bu Day içinde business service implementation yapılmaz.
 - eski Agent/Buyer/Seller/Property temporary PostgreSQL container'larının kaldırılması
 - Auth/UserProfile PostgreSQL ve RabbitMQ baseline'ının korunması
 
-## Explicitly out of scope
+## Açıkça kapsam dışı
 
 - Agent domain/use-case implementation -> Day 8
 - Buyer implementation -> Day 9
@@ -33,11 +33,11 @@ Bu Day içinde business service implementation yapılmaz.
 - Search query implementation -> Day 12
 - Redis business capability -> Day 13+
 
-## Small commit policy
+## Küçük commit politikası
 
 Day 7 de tek devasa commit olmayacaktır.
 
-Candidate commits:
+Aday commit'ler:
 
 1. `build: add polyglot datastore dependency aliases`
 2. `build: register SearchService module foundation`
@@ -48,7 +48,7 @@ Candidate commits:
 7. `infra: remove temporary service PostgreSQL containers`
 8. `docs: update Day 7 infrastructure documentation`
 
-## Definition of Done
+## Tamamlanma kriterleri
 
 - Gradle Wrapper build halen çalışıyor
 - Java 21 toolchain korunuyor

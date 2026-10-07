@@ -2,15 +2,15 @@
 
 Relational, document, wide-column, search ve in-memory data teknolojileri.
 
-## Current state
+## Mevcut durum
 
-- [PostgreSQL](postgresql.md) — Implemented / Verified
-- [MySQL](mysql.md) — Implemented
-- [MongoDB](mongodb.md) — Infrastructure Ready
-- [Couchbase](couchbase.md) — Implemented / Verified
-- [Apache Cassandra](cassandra.md) — Implemented / Verified
-- [Elasticsearch](elasticsearch.md) — Infrastructure Ready
-- [Redis](redis.md) — Infrastructure Ready
+- [PostgreSQL](postgresql.md) — Uygulandı / Doğrulandı
+- [MySQL](mysql.md) — Uygulandı
+- [MongoDB](mongodb.md) — Infrastructure hazır
+- [Couchbase](couchbase.md) — Uygulandı / Doğrulandı
+- [Apache Cassandra](cassandra.md) — Uygulandı / Doğrulandı
+- [Elasticsearch](elasticsearch.md) — Infrastructure hazır
+- [Redis](redis.md) — Infrastructure hazır
 
 ## Ownership
 

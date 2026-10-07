@@ -164,7 +164,7 @@ Repository:
 
 Day 9'da secondary index eklenmemiştir; mevcut use-case'ler direct key access ile karşılanmaktadır.
 
-## 8. Configuration
+## 8. Konfigürasyon
 
 BuyerService bootstrap config:
 - `BuyerService/src/main/resources/application.yml`
@@ -213,16 +213,16 @@ Secondary index:
 
 ## 10. Test stratejisi
 
-### Domain tests
+### Domain testleri
 - range invariant'ları
 - defensive collection behavior
 - saved search behavior
 
-### Application tests
+### Application testleri
 - in-memory fake persistence port
 - update/get/add saved search flow'ları
 
-### Persistence integration
+### Persistence integration testleri
 - Couchbase Testcontainers
 - save/load
 - deterministic key
@@ -231,13 +231,13 @@ Secondary index:
 - saved search round-trip
 - missing document
 
-### REST tests
+### REST testleri
 - success
 - not-found
 - validation
 - malformed/invalid request
 
-### Architecture tests
+### Architecture testleri
 ArchUnit ile:
 - domain framework independent
 - domain application/adapter bağımsız

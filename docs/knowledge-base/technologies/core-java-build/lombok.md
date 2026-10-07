@@ -1,9 +1,9 @@
 # Lombok
 
-**Category:** Technology  
-**Introduced:** Day 1  
-**Project status:** Implemented  
-**Scope:** Java boilerplate reduction through annotation processing
+**Kategori:** Technology  
+**İlk eklendiği gün:** Day 1  
+**Proje durumu:** Uygulandı  
+**Kapsam:** Annotation processing ile Java boilerplate azaltma  
 
 ## 1. Nedir?
 

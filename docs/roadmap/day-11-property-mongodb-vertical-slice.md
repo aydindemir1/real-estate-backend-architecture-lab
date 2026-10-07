@@ -1,9 +1,9 @@
 # Day 11 — PropertyService: MongoDB + Vertical Slice Architecture
 
-## Goal
+## Amaç
 Canonical Property Aggregate'i MongoDB ve Vertical Slice Architecture ile kurmak.
 
-## Tasks
+## Görevler
 1. JPA/PostgreSQL dependency'lerini kaldır.
 2. MongoDB dependency/config ekle.
 3. shared/domain model oluştur.
@@ -24,7 +24,7 @@ Canonical Property Aggregate'i MongoDB ve Vertical Slice Architecture ile kurmak
 18. slice-to-slice dependency ArchUnit rule yaz.
 19. docs güncelle.
 
-## Suggested commits
+## Önerilen commit'ler
 1. build(property): switch persistence to MongoDB
 2. refactor(property): establish Vertical Slice foundation
 3. feat(property): add Property aggregate and value objects
@@ -36,7 +36,7 @@ Canonical Property Aggregate'i MongoDB ve Vertical Slice Architecture ile kurmak
 9. test(property): enforce vertical slice boundaries
 10. docs(property): finalize Day 11 design
 
-## Verification
+## Doğrulama
 - DRAFT persisted
 - GET works
 - DRAFT -> PUBLISHED works
@@ -44,9 +44,9 @@ Canonical Property Aggregate'i MongoDB ve Vertical Slice Architecture ile kurmak
 - version conflict detected
 - no public fake POST /properties introduced
 
-## Done
+## Tamamlanma durumu
 Property canonical model MongoDB üzerinde çalışır ve Vertical Slice boundary korunur.
 
-## Exact file/class plan
+## Kesin file/class planı
 
-Implementation source of truth: `docs/roadmap/day-11-exact-file-plan.md`
+Implementation için source of truth: `docs/roadmap/day-11-exact-file-plan.md`

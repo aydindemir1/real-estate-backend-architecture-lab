@@ -1,10 +1,10 @@
-# Local Data Services
+# Yerel Veri Servisleri
 
 Bu doküman local development sırasında kullanılan veri ve messaging container'larının kısa operasyonel referansıdır.
 
-## Service matrix
+## Servis matrisi
 
-| Profile | Docker service | Container | Image | Host port(s) | Purpose |
+| Profile | Docker servisi | Container | Image | Host port(lar) | Amaç |
 |---|---|---|---|---|---|
 | core | postgres | real-estate-auth-postgres | postgres:18.6 | 5433 | Auth canonical PostgreSQL |
 | core | user-profile-postgres | real-estate-user-profile-postgres | postgres:18.6 | 5434 | UserProfile canonical PostgreSQL |
@@ -17,7 +17,7 @@ Bu doküman local development sırasında kullanılan veri ve messaging containe
 | search | elasticsearch | real-estate-elasticsearch | docker.elastic.co/elasticsearch/elasticsearch:9.5.4 | 9200 | Search CQRS projection |
 | redis | redis | real-estate-redis | redis:8.2.1 | 6379 | Ephemeral cache/idempotency/rate limiting |
 
-## Resource strategy
+## Kaynak stratejisi
 
 Bütün datastore'ları aynı anda çalıştırmak local development standardı değildir. İlgili use case veya integration test için gereken minimum profile set'i açılır.
 
@@ -38,7 +38,7 @@ docker compose --profile seller stop
 
 Stopped container'lar CPU/RAM tüketmez; image ve volume'lar disk üzerinde kalır.
 
-## Configuration
+## Konfigürasyon
 
 Credential ve local secret değerleri repository'ye commit edilmez. `.env.example` template olarak kullanılır:
 
@@ -48,7 +48,7 @@ Copy-Item .env.example .env
 
 Ardından local `.env` değerleri doldurulur.
 
-## Validation
+## Doğrulama
 
 Bir profile'ın service resolution'ını kontrol etmek için:
 
@@ -70,11 +70,11 @@ docker compose ps agent-mysql
 docker compose ps property-mongodb
 ```
 
-## Data ownership rule
+## Data Ownership kuralı
 
 Redis canonical datastore değildir. Elasticsearch de Property aggregate'ın source of truth'u değildir; SearchService için derived query projection'dır.
 
-Canonical target ownership:
+Canonical target ownership dağılımı:
 
 - Auth -> PostgreSQL
 - UserProfile -> PostgreSQL

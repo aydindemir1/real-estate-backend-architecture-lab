@@ -1,12 +1,12 @@
 # Day 8 — AgentService / MySQL / Clean Architecture
 
-## Status
+## Durum
 
-- Implementation: Implemented
-- Verification: Verified
+- Implementation: Uygulandı
+- Verification: Doğrulandı
 - Branch: `day/08-agent-mysql-clean`
 
-## Scope
+## Kapsam
 
 Day 8 yalnız AgentService içindir.
 

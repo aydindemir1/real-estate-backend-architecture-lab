@@ -1,10 +1,10 @@
-# Local Data Services — Yerel Veri Servisleri
+# Yerel Veri Servisleri
 
 Bu doküman local development sırasında kullanılan veri ve messaging container'larının kısa operasyonel referansıdır.
 
-## Service matrisi
+## Servis matrisi
 
-| Profile | Docker service | Container | Image | Host port(lar) | Amaç |
+| Profile | Docker servisi | Container | Image | Host port(lar) | Amaç |
 |---|---|---|---|---|---|
 | core | postgres | real-estate-auth-postgres | postgres:18.6 | 5433 | Auth canonical PostgreSQL |
 | core | user-profile-postgres | real-estate-user-profile-postgres | postgres:18.6 | 5434 | UserProfile canonical PostgreSQL |
@@ -16,7 +16,7 @@ Bu doküman local development sırasında kullanılan veri ve messaging containe
 | search | elasticsearch | real-estate-elasticsearch | docker.elastic.co/elasticsearch/elasticsearch:9.5.4 | 9200 | Search CQRS projection |
 | redis | redis | real-estate-redis | redis:8.2.1 | 6379 | Ephemeral cache/idempotency/rate limiting |
 
-## Resource stratejisi
+## Kaynak stratejisi
 
 Bütün datastore'ları aynı anda çalıştırmak local development standardı değildir. İlgili use case veya integration test için gereken minimum profile set'i açılır.
 

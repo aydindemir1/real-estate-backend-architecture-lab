@@ -1,9 +1,9 @@
 # Day 21 — Spring Cloud Bus + Vault
 
-## Goal
+## Amaç
 Config ve secret lifecycle'ını ayırmak ve kontrollü config propagation eklemek.
 
-## Tasks
+## Görevler
 1. Vault local setup ekle.
 2. secret taxonomy çıkar.
 3. DB/broker/client secret'ları Vault'a taşı.
@@ -17,7 +17,7 @@ Config ve secret lifecycle'ını ayırmak ve kontrollü config propagation eklem
 11. security/config tests yaz.
 12. docs/runbook güncelle.
 
-## Suggested commits
+## Önerilen commit'ler
 1. infra(vault): add local Vault setup
 2. feat(secrets): migrate service secrets to Vault
 3. refactor(config): keep Config Server non-secret only
@@ -26,9 +26,9 @@ Config ve secret lifecycle'ını ayırmak ve kontrollü config propagation eklem
 6. test(config): add secret and refresh tests
 7. docs(config): add Vault/Bus runbooks
 
-## Done
+## Tamamlanma durumu
 Secrets Vault'ta, normal config Config Server'da; refresh sadece güvenli property'lerde çalışır.
 
-## Exact Vault/Bus plan
+## Kesin Vault/Bus planı
 
-Implementation source of truth: `docs/roadmap/day-21-exact-file-plan.md`
+Implementation için source of truth: `docs/roadmap/day-21-exact-file-plan.md`

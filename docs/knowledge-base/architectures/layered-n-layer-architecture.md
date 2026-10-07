@@ -1,9 +1,9 @@
 # Layered / N-Layer Architecture
 
 **Category:** Architecture  
-**Introduced:** Day 1  
-**Project status:** Implemented / Verified  
-**Scope:** Service-internal organization for early project baseline
+**İlk eklendiği gün:** Day 1  
+**Proje durumu:** Uygulandı / Doğrulandı  
+**Kapsam:** Service-internal organization for early project baseline
 
 ## 1. Nedir?
 

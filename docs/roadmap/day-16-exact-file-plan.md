@@ -1,46 +1,46 @@
-# Day 16 — Exact GraphQL Read API Plan
+# Day 16 — Kesin GraphQL Read API Planı
 
-## Scope
+## Kapsam
 
 - SearchService GraphQL schema
-- resolver over SearchPropertiesHandler
+- SearchPropertiesHandler üzerinde resolver
 - authorization
 - bounded query cost
-- GraphQL tests and REST parity
+- GraphQL testleri ve REST parity
 
-## Task 1 — GraphQL dependency setup
+## Task 1 — GraphQL dependency kurulumu
 
-Modify SearchService/build.gradle
+SearchService/build.gradle dosyasını değiştir.
 
-Add:
+Ekle:
 - spring-boot-starter-graphql
 
-Do not add GraphQL to all services.
+GraphQL'i bütün service'lere ekleme.
 
 Commit: build(search): add GraphQL support
 
 ## Task 2 — GraphQL schema
 
-Create:
+Oluştur:
 - SearchService/src/main/resources/graphql/search.graphqls
 
-Initial schema:
+İlk schema:
 - Query.searchProperties
-- Query.property optional only if read use-case exists
+- yalnızca read use-case mevcutsa opsiyonel Query.property
 
-Types:
+Type'lar:
 - PropertySearchResult
 - PropertySearchItem
 - SearchPageInfo
 - SearchFilterInput
 
-Do not expose Elasticsearch DSL.
+Elasticsearch DSL'i expose etme.
 
 Commit: feat(search): add GraphQL search schema
 
 ## Task 3 — GraphQL input design
 
-SearchFilterInput candidate fields:
+SearchFilterInput candidate alanları:
 - text
 - status
 - propertyType
@@ -51,116 +51,116 @@ SearchFilterInput candidate fields:
 - page
 - size
 
-Reuse existing SearchPropertiesQuery application model via mapper.
+Mevcut SearchPropertiesQuery application modelini mapper üzerinden yeniden kullan.
 
 ## Task 4 — GraphQL resolver/controller
 
-Create:
+Oluştur:
 - graphql/SearchQueryController.java
 
-Use @QueryMapping or supported annotation.
+@QueryMapping veya desteklenen annotation'ı kullan.
 
-Responsibilities:
-- map GraphQL input -> SearchPropertiesQuery
-- call existing SearchPropertiesHandler
-- map result
+Sorumluluklar:
+- GraphQL input -> SearchPropertiesQuery mapping
+- mevcut SearchPropertiesHandler'ı çağırma
+- result mapping
 
-No duplicate Elasticsearch query logic.
+Duplicate Elasticsearch query logic oluşturma.
 
 Commit: feat(search): add GraphQL search resolver
 
-## Task 5 — GraphQL response models
+## Task 5 — GraphQL response model'leri
 
-Create only if needed:
+Yalnızca gerekliyse oluştur:
 - graphql/PropertySearchGraphQlResponse.java
 - graphql/SearchPageInfo.java
 
-Can reuse application result if transport coupling remains acceptable only at adapter mapping boundary; prefer transport model for clarity.
+Transport coupling yalnızca adapter mapping boundary'de kabul edilebilir kalıyorsa application result yeniden kullanılabilir; açıklık için transport model tercih edilir.
 
-Commit can group with resolver.
+Commit resolver ile birleştirilebilir.
 
 ## Task 6 — GraphQL authorization
 
-Apply Search read role/scope policy from Day 14.
+Day 14'teki Search read role/scope policy'sini uygula.
 
-Do not rely on resolver being hidden behind Gateway only.
+Resolver'ın yalnızca Gateway arkasında gizli olmasına güvenme.
 
 Commit: feat(search): secure GraphQL search queries
 
 ## Task 7 — GraphQL query complexity/depth
 
-Set bounded policy.
+Bounded policy belirle.
 
-Since initial schema is shallow, keep config simple.
+İlk schema shallow olduğu için config'i basit tut.
 
-Do not add third-party complexity framework unless needed.
+Gerekmedikçe third-party complexity framework ekleme.
 
-At minimum:
+En az:
 - bounded page size
-- no recursive schema
-- disable/limit expensive unbounded query shapes
+- recursive schema yok
+- expensive unbounded query shape'lerini disable/limit et
 
 Commit: config(search): bound GraphQL query cost
 
 ## Task 8 — N+1 review
 
-Initial Search GraphQL should call one search handler returning a batch result, so N+1 should not arise.
+İlk Search GraphQL, batch result döndüren tek bir search handler çağırmalıdır; bu nedenle N+1 oluşmamalıdır.
 
-Do not add DataLoader unless nested resolver pattern actually creates N+1.
+Nested resolver pattern gerçekten N+1 üretmiyorsa DataLoader ekleme.
 
-Document decision.
+Kararı dokümante et.
 
 ## Task 9 — GraphQL error mapping
 
-Map:
-- validation -> GraphQL error with stable extension code
+Map et:
+- validation -> stable extension code içeren GraphQL error
 - forbidden -> security error
 - downstream unavailable -> stable error extension
 
-Do not expose stack trace/Elasticsearch exception.
+Stack trace/Elasticsearch exception expose etme.
 
-Create:
-- graphql/GraphQlExceptionResolver.java if needed
+Gerekirse oluştur:
+- graphql/GraphQlExceptionResolver.java
 
 Commit: feat(search): standardize GraphQL error mapping
 
-## Task 10 — GraphQL tests
+## Task 10 — GraphQL testleri
 
-Create:
+Oluştur:
 - graphql/SearchGraphQlTest.java
 
-Cases:
+Senaryolar:
 - search query success
 - filters
 - empty result
 - invalid page/price range
 - unauthorized/forbidden
 
-Use GraphQlTester.
+GraphQlTester kullan.
 
 Commit: test(graphql): add SearchService GraphQL tests
 
-## Task 11 — REST parity test
+## Task 11 — REST parity testi
 
-Verify REST and GraphQL call the same application handler and produce semantically consistent results.
+REST ve GraphQL'in aynı application handler'ı çağırdığını ve semantic olarak tutarlı sonuçlar ürettiğini doğrula.
 
-Do not duplicate business query logic.
+Duplicate business query logic oluşturma.
 
-Create optional:
+Opsiyonel olarak oluştur:
 - SearchProtocolParityTest.java
 
-Commit only if useful:
+Yalnızca faydalıysa commit:
 test(search): verify REST and GraphQL query parity
 
 ## Task 12 — Contract documentation
 
-Update:
+Güncelle:
 - docs/contracts/grpc-contract.md
 - docs/contracts/graphql-schema.md
 - docs/architecture/communication-architecture.md
 - docs/roadmap/day-15-grpc-graphql.md
 
-Record actual:
+Gerçekte kullanılanları kaydet:
 - proto package/version
 - gRPC deadline
 - auth mode
@@ -171,7 +171,7 @@ Record actual:
 
 Commit: docs(protocol): finalize gRPC and GraphQL contracts
 
-## Recommended Commit Sequence
+## Önerilen Commit Sırası
 
 1. docs(protocol): confirm REST gRPC GraphQL boundaries
 2. build(grpc): add protobuf and gRPC support
@@ -197,11 +197,11 @@ Commit: docs(protocol): finalize gRPC and GraphQL contracts
 22. test(graphql): add SearchService GraphQL tests
 23. docs(protocol): finalize gRPC and GraphQL contracts
 
-Adjacent technical commits may be merged if cohesive; gRPC and GraphQL should remain reviewable as separate protocol capabilities.
+Bitişik teknik commit'ler cohesive ise birleştirilebilir; gRPC ve GraphQL ayrı protocol capability'ler olarak review edilebilir kalmalıdır.
 
-## Explicitly Deferred from Day 15
+## Day 15'ten Açıkça Ertelenenler
 
-Do not implement:
+Implement etme:
 - GraphQL mutation
 - GraphQL subscriptions
 - full viewing scheduler
@@ -213,42 +213,42 @@ Do not implement:
 - Saga
 - custom GraphQL federation
 
-## Critical Design Note — REST remains primary
+## Kritik Tasarım Notu — REST primary olarak kalır
 
-gRPC and GraphQL are specialized additions, not replacements for all REST endpoints.
+gRPC ve GraphQL özel amaçlı eklemelerdir; tüm REST endpoint'lerinin replacement'ı değildir.
 
-## Critical Design Note — No duplicate business logic
+## Kritik Tasarım Notu — Duplicate business logic yok
 
-REST and GraphQL must call the same application query/use-case layer.
+REST ve GraphQL aynı application query/use-case layer'ını çağırmalıdır.
 
-gRPC adapter must call Agent application use-case rather than persistence directly.
+gRPC adapter persistence'a doğrudan erişmek yerine Agent application use-case'i çağırmalıdır.
 
-## Critical Design Note — Deadlines
+## Kritik Tasarım Notu — Deadlines
 
-Every gRPC client call has an explicit deadline.
+Her gRPC client call explicit deadline'a sahiptir.
 
-Timeout ownership is service-client level; later Day 20 resilience policies build on this baseline.
+Timeout ownership service-client seviyesindedir; sonraki Day 20 resilience policy'leri bu baseline üzerine kurulur.
 
 ## Day 15 Final Gate
 
-Day 15 closes only if:
-- proto contract is versioned and generated reproducibly
-- AgentService exposes gRPC availability through application use case
-- BuyerService calls Agent via outbound port + gRPC adapter
-- explicit deadline exists
-- auth/service identity is applied
-- gRPC errors map to semantic statuses
-- integration test proves client/server compatibility
-- SearchService GraphQL schema is explicit
-- GraphQL resolver reuses existing search handler
-- GraphQL read authorization works
-- query/page cost is bounded
-- GraphQL errors do not leak internals
-- REST still works
-- no business logic duplicated between REST/GraphQL/gRPC adapters
-- no Kafka/Saga/mTLS/streaming scope leaks into Day 15
-- docs match actual implementation
+Day 15 yalnızca aşağıdakiler sağlanırsa kapanır:
+- proto contract version-controlled ve reproducible şekilde generate ediliyor
+- AgentService application use-case üzerinden gRPC availability expose ediyor
+- BuyerService outbound port + gRPC adapter üzerinden Agent'i çağırıyor
+- explicit deadline mevcut
+- auth/service identity uygulanmış
+- gRPC error'ları semantic status'lara map ediliyor
+- integration test client/server compatibility'yi kanıtlıyor
+- SearchService GraphQL schema explicit
+- GraphQL resolver mevcut search handler'ı yeniden kullanıyor
+- GraphQL read authorization çalışıyor
+- query/page cost bounded
+- GraphQL error'ları internal detayları sızdırmıyor
+- REST hâlâ çalışıyor
+- REST/GraphQL/gRPC adapter'ları arasında business logic duplicate edilmemiş
+- Kafka/Saga/mTLS/streaming scope Day 15'e sızmıyor
+- docs gerçek implementation ile eşleşiyor
 
-## Source-of-truth note
+## Source-of-truth notu
 
-This file follows the final Day 15–33 roadmap. Earlier combined Day numbering is superseded by `docs/roadmap/LEGACY-DAY-MAPPING.md`.
+Bu dosya final Day 15–33 roadmap'i izler. Önceki birleşik Day numaralandırması `docs/roadmap/LEGACY-DAY-MAPPING.md` ile superseded edilmiştir.

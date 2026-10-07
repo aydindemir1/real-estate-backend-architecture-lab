@@ -28,7 +28,7 @@ Eski Kafka foundation planı Offer Aggregate oluşmadan Offer publisher/producer
 ### Düzeltme
 - Day 17 Kafka/Stream/Function yalnız event-streaming foundation kurar.
 - Offer event publication Day 22 gerçek Offer workflow ile aktive edilir.
-- Critical business publish reliability layer'ı bypass edemez.
+- Critical business publish reliability layer'ını bypass edemez.
 
 ## 3. BuyerService Offer idempotency correctness gap
 
@@ -54,16 +54,16 @@ Property/Mongo Outbox ve Seller/Cassandra pending dispatch tasarlanmıştı; fak
 ### Düzeltme
 Day 18 reliable-messaging milestone'ında Couchbase için reliable-publication strategy design kararı zorunludur. Implementation Day 22 Offer workflow'da bu stratejiyi kullanır.
 
-Acceptable solution must guarantee that committed Offer state cannot silently lose its required outbound event.
+Kabul edilebilir çözüm, commit edilmiş Offer state'in gerekli outbound event'ini sessizce kaybedemeyeceğini garanti etmelidir.
 
 ## 5. Seller/Cassandra outbound reliability scope too narrow
 
-Eski plan Cassandra reliability'yi yalnız Seller -> RabbitMQ listing command için ele alıyordu. Fakat Day 22'de SellerAccepted/SellerRejected Kafka event'leri de critical outbound messages.
+Eski plan Cassandra reliability'yi yalnız Seller -> RabbitMQ listing command için ele alıyordu. Fakat Day 22'de SellerAccepted/SellerRejected Kafka event'leri de critical outbound message'lardır.
 
 ### Düzeltme
 Day 20 Cassandra reliable outbound foundation generic outbound-message semantics'e genişletildi:
 - RabbitMQ listing commands
-- later Kafka Seller decision events
+- sonraki Kafka Seller decision event'leri
 
 Destination/type broker-specific adapter'da ayrılır; Cassandra durable pending state broker API bilmez.
 
@@ -102,42 +102,42 @@ Güncel roadmap mandatory Spring Cloud learning kapsamını koruyor:
 - Spring Cloud Kubernetes (backend sonrası)
 - Eureka vs Consul vs ZooKeeper comparison
 
-Spring Cloud Bus resmi güncel dokümantasyonda RabbitMQ veya Kafka binder ile çalışabiliyor ve `/actuator/busrefresh` endpoint'i mevcut; bu nedenle RabbitMQ control-plane seçimi geçerlidir. Spring Cloud Vault güncel olarak KV secrets, fail-fast ve çeşitli secret backends'i destekliyor. Spring Cloud Contract da provider/stub tabanlı contract testing için güncel olarak mevcut.
+Spring Cloud Bus resmi güncel dokümantasyonda RabbitMQ veya Kafka binder ile çalışabiliyor ve `/actuator/busrefresh` endpoint'i mevcut; bu nedenle RabbitMQ control-plane seçimi geçerlidir. Spring Cloud Vault güncel olarak KV secrets, fail-fast ve çeşitli secret backend'leri destekliyor. Spring Cloud Contract da provider/stub tabanlı contract testing için güncel olarak mevcut.
 
 ## 8. Architecture consistency
 
-Final ordering:
-- datastore/architecture foundations first
-- identity/security before specialized internal protocols
-- event streaming before reliability
-- reliability before CQRS/Saga
-- Saga before resilience hardening
-- Vault/Bus after core runtime behavior
-- test/contract/failure hardening before final observability/recovery completion
-- architecture audit before final E2E completion
+Final sıralama:
+- önce datastore/architecture foundation
+- specialized internal protocol'lerden önce identity/security
+- reliability'den önce event streaming
+- CQRS/Saga'dan önce reliability
+- resilience hardening'den önce Saga
+- core runtime behavior sonrasında Vault/Bus
+- final observability/recovery completion öncesinde test/contract/failure hardening
+- final E2E completion öncesinde architecture audit
 
 Bu sıra dependency açısından tutarlıdır.
 
-## 9. Remaining implementation-time decisions
+## 9. Implementation sırasında netleştirilecek kararlar
 
 Bunlar blocker değildir fakat ilgili Day başlamadan finalize edilmelidir:
 
-- exact Spring Boot/Spring Cloud-compatible dependency versions
-- MySQL migration tool choice
+- exact Spring Boot/Spring Cloud-compatible dependency version'ları
+- MySQL migration tool seçimi
 - Couchbase durable idempotency/reliable publication mechanics
 - Cassandra pending outbound partition strategy
-- exact Vault auth method for local vs production-like documentation
-- supported Loki log shipper at implementation time
-- numeric resilience thresholds after local measurement
+- local vs production-like dokümantasyonu için exact Vault auth method
+- implementation sırasında desteklenen Loki log shipper
+- local measurement sonrasında numeric resilience threshold'ları
 
-## 10. Final verdict
+## 10. Final karar
 
 Day 7 implementation'a geçmeden önce master architecture açısından blocker kalmamıştır.
 
 Yeni source of truth:
 1. root `ROADMAP.md`
 2. `docs/MASTER-ENGINEERING-PLAN.md`
-3. this audit
-4. per-topic exact plans, which must follow the new Day 15–33 numbering when implemented.
+3. bu audit
+4. implementation sırasında yeni Day 15–33 numaralandırmasını izlemesi gereken per-topic exact plan'lar
 
-Old Day 15–26 numbering is superseded by the Day 15–33 sequence.
+Eski Day 15–26 numaralandırması, Day 15–33 sıralamasıyla superseded edilmiştir.

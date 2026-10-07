@@ -1,9 +1,9 @@
 # JWT
 
-**Category:** Token Format / Standard  
-**Introduced:** Day 2  
-**Project status:** Implemented / Verified  
-**Scope:** Signed authentication token format in current baseline
+**Kategori:** Token Format / Standard  
+**İlk eklendiği gün:** Day 2  
+**Proje durumu:** Uygulandı / Doğrulandı  
+**Kapsam:** Mevcut baseline'da signed authentication token formatı  
 
 ## 1. Nedir?
 

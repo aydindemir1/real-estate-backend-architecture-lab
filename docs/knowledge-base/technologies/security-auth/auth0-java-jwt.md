@@ -1,9 +1,9 @@
 # Auth0 java-jwt
 
-**Category:** Technology  
-**Introduced:** Day 2  
-**Project status:** Implemented / Verified  
-**Scope:** Java library for JWT creation and verification
+**Kategori:** Technology  
+**İlk eklendiği gün:** Day 2  
+**Proje durumu:** Uygulandı / Doğrulandı  
+**Kapsam:** JWT oluşturma ve doğrulama için Java library  
 
 ## 1. Nedir?
 

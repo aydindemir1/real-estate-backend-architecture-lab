@@ -20,7 +20,7 @@ Day 7'nin amacı business implementation yapmak değil; sonraki service günleri
 
 ### Polyglot local data infrastructure
 
-| Owner service | Technology | Docker service | Host port | Rol |
+| Sahip servis | Technology | Docker servisi | Host port | Rol |
 |---|---|---|---:|---|
 | AuthService | PostgreSQL 18.6 | `postgres` | 5433 | Canonical |
 | UserProfileService | PostgreSQL 18.6 | `user-profile-postgres` | 5434 | Canonical |
@@ -38,7 +38,7 @@ Agent, Buyer, Seller ve Property için Day 1–6'dan kalan geçici PostgreSQL Co
 
 Local makinede Cassandra, Couchbase ve Elasticsearch gibi ağır servislerin gereksiz yere aynı anda çalışmasını önlemek için profile tabanlı çalışma modeli kullanılır.
 
-| Profile | Service'ler |
+| Profile | Servisler |
 |---|---|
 | `core` | Auth PostgreSQL, UserProfile PostgreSQL, RabbitMQ |
 | `agent` | MySQL |

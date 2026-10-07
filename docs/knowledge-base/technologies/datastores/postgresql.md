@@ -1,9 +1,9 @@
 # PostgreSQL
 
-**Category:** Technology  
-**Introduced:** Day 1  
-**Project status:** Implemented / Integrated / Verified  
-**Scope:** Relational source-of-truth datastore for AuthService and UserProfileService
+**Kategori:** Technology  
+**İlk eklendiği gün:** Day 1  
+**Proje durumu:** Uygulandı / Entegre edildi / Doğrulandı  
+**Kapsam:** AuthService ve UserProfileService için relational source-of-truth datastore  
 
 ## 1. Nedir?
 

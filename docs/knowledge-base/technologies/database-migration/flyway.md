@@ -1,9 +1,9 @@
 # Flyway
 
-**Category:** Technology  
-**Introduced:** Day 8  
-**Project status:** Implemented  
-**Scope:** Relational schema migration standard; AgentService first application
+**Kategori:** Technology  
+**İlk eklendiği gün:** Day 8  
+**Proje durumu:** Uygulandı  
+**Kapsam:** Relational schema migration standard; AgentService first application
 
 ## Nedir?
 

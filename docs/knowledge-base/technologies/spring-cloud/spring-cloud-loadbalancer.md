@@ -1,9 +1,9 @@
 # Spring Cloud LoadBalancer
 
-**Category:** Technology  
-**Introduced:** Day 6C  
-**Project status:** Implemented / Integrated / Verified  
-**Scope:** Client-side service instance selection
+**Kategori:** Technology  
+**İlk eklendiği gün:** Day 6C  
+**Proje durumu:** Uygulandı / Entegre edildi / Doğrulandı  
+**Kapsam:** Client-side service instance selection  
 
 ## 1. Nedir?
 

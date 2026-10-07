@@ -63,18 +63,18 @@ Migration:
 - Keycloak/RBAC Day 14'e bırakıldı.
 - Synchronous UserProfile existence check eklenmedi.
 
-## Test coverage added
+## Eklenen test coverage
 
-- Domain Unit Tests
-- Application Unit Tests
+- Domain Unit Testleri
+- Application Unit Testleri
 - MySQL Testcontainers
 - Flyway/schema integration
 - repository round-trip
 - unique constraints
 - optimistic locking
-- Controller slice tests
+- Controller slice testleri
 - ArchUnit
-- smoke tests
+- smoke testleri
 
 ## Completion state
 
@@ -93,6 +93,6 @@ Doğrulanan kabul kriterleri:
 - MySQL üzerinde kalıcı Agent kaydı doğrulandı
 - runtime/Postman kanıtları `docs/day-08/evidence/` altında saklandı
 
-Day 8 durumu: **Completed / Verified**.
+Day 8 durumu: **Tamamlandı / Doğrulandı**.
 
-Knowledge Base impact reviewed and updated.
+Knowledge Base etkisi gözden geçirildi ve güncellendi.

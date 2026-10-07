@@ -4,7 +4,7 @@
 
 Day 8 kapsamında AgentService için MySQL persistence ve Clean Architecture implementation tamamlandı.
 
-- Implementation: Implemented
+- Implementation: Uygulandı
 - Verification: Full build/test execution ayrıca doğrulanmalıdır.
 
 ## Day 8 — AgentService / MySQL / Clean Architecture

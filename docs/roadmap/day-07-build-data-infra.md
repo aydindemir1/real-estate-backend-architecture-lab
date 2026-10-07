@@ -1,4 +1,4 @@
-# Day 7 — Build & Local Data Infrastructure Foundation
+# Day 7 — Build & Local Data Infrastructure Temeli
 
 Day 7'nin amacı business implementation yapmak değil; sonraki service günleri için build ownership, polyglot persistence altyapısı ve kontrollü local development ortamını hazırlamaktır.
 
@@ -20,7 +20,7 @@ Day 7'nin amacı business implementation yapmak değil; sonraki service günleri
 
 ### Polyglot local data infrastructure
 
-| Owning service | Technology | Docker service | Host port | Role |
+| Owner service | Technology | Docker service | Host port | Rol |
 |---|---|---|---:|---|
 | AuthService | PostgreSQL 18.6 | `postgres` | 5433 | Canonical |
 | UserProfileService | PostgreSQL 18.6 | `user-profile-postgres` | 5434 | Canonical |
@@ -34,11 +34,11 @@ Day 7'nin amacı business implementation yapmak değil; sonraki service günleri
 
 Agent, Buyer, Seller ve Property için Day 1–6'dan kalan geçici PostgreSQL Compose servisleri kaldırıldı. Application-level persistence migration'ları Day 8–11 arasında service service yapılacaktır.
 
-## Docker Compose profiles
+## Docker Compose profilleri
 
 Local makinede Cassandra, Couchbase ve Elasticsearch gibi ağır servislerin gereksiz yere aynı anda çalışmasını önlemek için profile tabanlı çalışma modeli kullanılır.
 
-| Profile | Services |
+| Profile | Service'ler |
 |---|---|
 | `core` | Auth PostgreSQL, UserProfile PostgreSQL, RabbitMQ |
 | `agent` | MySQL |
@@ -64,7 +64,7 @@ Tüm profile configuration'larını doğrulamak için:
 docker compose --profile core --profile agent --profile buyer --profile seller --profile property --profile search --profile redis config
 ```
 
-## Day 7 validation
+## Day 7 doğrulaması
 
 Aşağıdaki datastore container'ları ayrı ayrı başarıyla başlatılıp healthcheck ile doğrulandı:
 

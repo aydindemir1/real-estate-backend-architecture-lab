@@ -1,9 +1,9 @@
 # Service Autonomy
 
-**Category:** Principle  
-**Introduced:** Day 3  
-**Project status:** Implemented as target principle / Incrementally strengthened  
-**Scope:** Independent service ownership and lifecycle
+**Kategori:** Principle  
+**İlk eklendiği gün:** Day 3  
+**Proje durumu:** Hedef Principle olarak uygulandı / Kademeli olarak güçlendirildi  
+**Kapsam:** Bağımsız service ownership ve lifecycle  
 
 ## 1. Nedir?
 

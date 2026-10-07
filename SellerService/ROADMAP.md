@@ -27,7 +27,7 @@ Day 10 itibarıyla servis **Apache Cassandra + Onion Architecture** ile implemen
 - `PropertyDraftData`
 - `ListingSubmission`
 
-Seller status:
+Seller durumu:
 - ACTIVE
 - SUSPENDED
 - INACTIVE
@@ -41,7 +41,7 @@ Listing state model:
 - REJECTED
 - FAILED
 
-Day 10 runtime flow:
+Day 10 runtime akışı:
 - `CREATED -> SUBMITTED`
 
 ### Application
@@ -99,9 +99,9 @@ Global `userId` uniqueness Day 10'da Cassandra-safe LWT/ownership table ile enfo
 - Config Server
 - Eureka registration
 - gerçek Cassandra write/read
-- 6 success Postman scenario
-- 10 error Postman scenario
-- runtime defect -> fix -> retest evidence
+- 6 başarılı Postman senaryosu
+- 10 hata Postman senaryosu
+- runtime defect -> fix -> retest kanıtı
 
 Kanıtlar:
 - `docs/evidence/day-10/`

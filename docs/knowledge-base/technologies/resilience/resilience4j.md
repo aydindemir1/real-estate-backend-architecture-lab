@@ -1,9 +1,9 @@
 # Resilience4j
 
-**Category:** Technology  
-**Introduced:** Day 5A  
-**Project status:** Implemented / Verified  
-**Scope:** Fault tolerance and resilience library for Java applications
+**Kategori:** Technology  
+**İlk eklendiği gün:** Day 5A  
+**Proje durumu:** Uygulandı / Doğrulandı  
+**Kapsam:** Java application'ları için fault tolerance ve resilience library  
 
 ## 1. Nedir?
 

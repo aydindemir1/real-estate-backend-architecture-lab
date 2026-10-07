@@ -120,7 +120,7 @@ Mapping:
 - `SellerCassandraMapper`
 - `ListingSubmissionCassandraMapper`
 
-## Cassandra query shape
+## Cassandra query yapısı
 
 Listing list query:
 ```text

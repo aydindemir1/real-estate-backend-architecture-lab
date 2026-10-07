@@ -1,37 +1,37 @@
-# Day 28 — Exact Failure-Path Testing Plan
+# Day 28 — Kesin Failure-Path Testing Planı
 
-## Scope
+## Kapsam
 - dependency outage matrix
-- datastore/broker/config/Vault failures
-- HTTP/gRPC failures
-- poison messages
+- datastore/broker/config/Vault failure'ları
+- HTTP/gRPC failure'ları
+- poison message'lar
 - DLT/DLQ replay safety
 - invalid config/migration failure
 - stable negative API behavior
 
-## Tasks
-1. Create `docs/testing/failure-path-matrix.md`.
-2. Add representative MySQL/Mongo/Cassandra/Couchbase/Elasticsearch outage tests.
-3. Verify raw driver errors never leak.
-4. Test Redis outage for Offer-idempotency accelerator and Gateway rate-limit policies.
-5. Test Kafka outage: local transaction/outbox remains durable and pending.
-6. Test RabbitMQ outage: Seller pending outbound message remains durable and later succeeds.
-7. Test Config Server startup/runtime semantics.
-8. Test Vault critical-secret startup fail-fast.
-9. Test downstream HTTP 503 through timeout/circuit/retry mapping.
-10. Test slow Agent gRPC deadline and absence of nested retries.
-11. Test Elasticsearch outage: Search returns explicit unavailable semantics, never fake empty success.
-12. Test Kafka malformed/unsupported event → DLT and partition continues.
-13. Test RabbitMQ malformed command → DLQ and no hot loop.
-14. Test Kafka DLT replay after root-cause fix.
-15. Test RabbitMQ DLQ replay and duplicate-safe command consumer.
-16. Test same message id + different payload conflict policy where enabled.
-17. Test invalid critical config fails early.
-18. Test relational migration/checksum failure blocks startup.
-19. Assert negative scenarios also have no harmful side effects.
-20. Create separate `failureTest` execution/report and link runbooks.
+## Task'ler
+1. `docs/testing/failure-path-matrix.md` oluştur.
+2. Representative MySQL/Mongo/Cassandra/Couchbase/Elasticsearch outage testleri ekle.
+3. Raw driver error'larının hiçbir zaman dışarı sızmadığını doğrula.
+4. Offer-idempotency accelerator ve Gateway rate-limit policy'leri için Redis outage test et.
+5. Kafka outage test et: local transaction/outbox durable ve pending kalmalı.
+6. RabbitMQ outage test et: Seller pending outbound message durable kalmalı ve daha sonra başarıyla gönderilmeli.
+7. Config Server startup/runtime semantics'i test et.
+8. Vault critical-secret startup fail-fast davranışını test et.
+9. Downstream HTTP 503'ü timeout/circuit/retry mapping üzerinden test et.
+10. Slow Agent gRPC deadline ve nested retry olmadığını test et.
+11. Elasticsearch outage test et: Search explicit unavailable semantics döndürmeli, fake empty success dönmemeli.
+12. Kafka malformed/unsupported event → DLT ve partition processing devam etsin.
+13. RabbitMQ malformed command → DLQ ve hot loop olmasın.
+14. Root-cause düzeltildikten sonra Kafka DLT replay test et.
+15. RabbitMQ DLQ replay ve duplicate-safe command consumer test et.
+16. Aktifse aynı message id + farklı payload conflict policy'sini test et.
+17. Invalid critical config'in erken fail ettiğini test et.
+18. Relational migration/checksum failure'ın startup'ı engellediğini test et.
+19. Negative scenario'ların harmful side effect üretmediğini de assert et.
+20. Ayrı `failureTest` execution/report oluştur ve runbook'lara link ver.
 
-## Commit sequence
+## Commit sırası
 1. `docs(test): define failure-path matrix`
 2. `test(failure): add datastore outage scenarios`
 3. `test(failure): verify Redis Kafka and RabbitMQ outage behavior`
@@ -43,8 +43,8 @@
 9. `build(test): add failure test task and report`
 
 ## Final gate
-- all key failure domains have an explicit expected behavior
-- outage tests are bounded
-- poison messages cannot block indefinitely
-- replay is safe
-- failed scenarios do not create hidden harmful side effects
+- bütün temel failure domain'leri için explicit expected behavior var
+- outage testleri bounded
+- poison message'lar süresiz bloklayamaz
+- replay güvenli
+- failed scenario'lar hidden harmful side effect üretmiyor

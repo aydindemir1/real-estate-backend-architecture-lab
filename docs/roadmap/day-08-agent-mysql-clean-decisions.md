@@ -1,6 +1,6 @@
-# Day 8 — AgentService / MySQL / Clean Architecture — Locked Decisions
+# Day 8 — AgentService / MySQL / Clean Architecture — Kesinleştirilmiş Kararlar
 
-## Status
+## Durum
 
 Bu doküman Day 8 implementation öncesi bağlayıcı Pre-Day karar setidir.
 
@@ -9,7 +9,7 @@ Bu doküman Day 8 implementation öncesi bağlayıcı Pre-Day karar setidir.
 - Branch rule: her yeni Day branch'i bir önceki Day branch'inden türetilir; `main` baseline olarak korunur ve değiştirilmez.
 - Scope: yalnız AgentService.
 
-## 1. Scope
+## 1. Kapsam
 
 Day 8 hedefleri:
 
@@ -135,7 +135,7 @@ Day 43 Multi-Tenancy milestone'ındaki gerçek `Agency` tenant/domain entity'si 
 
 ## 8. CreateAgent
 
-Flow:
+Akış:
 
 1. request/command structural validation
 2. duplicate userId pre-check
@@ -278,7 +278,7 @@ Service-local endpoints:
 - `GET /agents/{agentId}`
 - `PATCH /agents/{agentId}/availability`
 
-Create:
+Oluştur:
 
 - 201 Created
 - `Location: /agents/{agentId}`
@@ -318,9 +318,9 @@ Aşağıdakiler client'a sızmaz:
 - Hibernate exception adı
 - stack trace
 
-## 16. Test strategy
+## 16. Test stratejisi
 
-### Domain Unit Tests
+### Domain Unit Testleri
 
 - create -> ACTIVE + OFFLINE
 - invalid LicenseNumber
@@ -334,9 +334,9 @@ Aşağıdakiler client'a sızmaz:
 - `reconstitute()` invalid persisted state rejection
 - updatedAt change/no-op semantics
 
-### Application Unit Tests
+### Application Unit Testleri
 
-- create success
+- create başarılı
 - duplicate user
 - duplicate license
 - get success
@@ -345,7 +345,7 @@ Aşağıdakiler client'a sızmaz:
 - invalid state propagation
 - repository boundary interaction
 
-### MySQL Testcontainers Integration Tests
+### MySQL Testcontainers Integration Testleri
 
 - Flyway V1 migration
 - save/load round-trip
@@ -357,7 +357,7 @@ Aşağıdakiler client'a sızmaz:
 - optimistic locking conflict
 - Hibernate validate against real schema
 
-### REST Slice Tests
+### REST Slice Testleri
 
 - POST -> 201 + Location
 - GET -> 200
@@ -383,14 +383,14 @@ ArchUnit rules:
 
 ### Integration Smoke
 
-Verify:
+Doğrula:
 
 - AgentService startup
 - Flyway migration
 - Config Client baseline
 - Eureka Client baseline
 - Actuator baseline
-- POST -> GET -> PATCH real flow
+- POST -> GET -> PATCH gerçek flow
 
 Manual/Postman check tek başına acceptance değildir.
 
@@ -416,5 +416,5 @@ Day 8 ancak şu koşullarda kapanır:
 - Unit/Application/REST/Testcontainers/ArchUnit testleri green
 - Buyer/Seller/Property/Search implementation Day 8'e sızmamış
 - docs actual implementation ile güncellenmiş
-- Knowledge Base impact reviewed and updated
+- Knowledge Base etkisi gözden geçirildi ve güncellendi
 - build green

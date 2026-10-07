@@ -1,9 +1,9 @@
 # Spring Cloud Netflix Eureka
 
-**Category:** Technology  
-**Introduced:** Day 6B  
-**Project status:** Implemented / Integrated / Verified  
-**Scope:** Service Registry and discovery infrastructure
+**Kategori:** Technology  
+**İlk eklendiği gün:** Day 6B  
+**Proje durumu:** Uygulandı / Entegre edildi / Doğrulandı  
+**Kapsam:** Service Registry ve discovery infrastructure  
 
 ## 1. Nedir?
 

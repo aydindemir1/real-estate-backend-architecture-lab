@@ -1,9 +1,9 @@
 # MapStruct
 
-**Category:** Technology  
-**Introduced:** Day 3  
-**Project status:** Implemented  
-**Scope:** Compile-time object mapping
+**Kategori:** Technology  
+**İlk eklendiği gün:** Day 3  
+**Proje durumu:** Uygulandı  
+**Kapsam:** Compile-time object mapping  
 
 ## 1. Nedir?
 

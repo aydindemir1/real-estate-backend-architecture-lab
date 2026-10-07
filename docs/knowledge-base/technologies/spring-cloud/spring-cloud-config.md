@@ -1,9 +1,9 @@
 # Spring Cloud Config
 
-**Category:** Technology  
-**Introduced:** Day 4  
-**Project status:** Implemented / Integrated / Verified  
-**Scope:** Centralized external configuration for distributed applications
+**Kategori:** Technology  
+**İlk eklendiği gün:** Day 4  
+**Proje durumu:** Uygulandı / Entegre edildi / Doğrulandı  
+**Kapsam:** Distributed application'lar için centralized external configuration  
 
 ## 1. Nedir?
 

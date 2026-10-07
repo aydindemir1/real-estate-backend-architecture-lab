@@ -1,9 +1,9 @@
 # Separation of Concerns
 
-**Category:** Principle  
-**Introduced:** Day 1  
-**Project status:** Implemented / Ongoing  
-**Scope:** Responsibility separation across classes, layers, services and infrastructure
+**Kategori:** Principle  
+**İlk eklendiği gün:** Day 1  
+**Proje durumu:** Uygulandı / Devam ediyor  
+**Kapsam:** Class, layer, service ve infrastructure arasında sorumlulukların ayrılması  
 
 ## 1. Nedir?
 

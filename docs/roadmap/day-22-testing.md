@@ -1,9 +1,9 @@
 # Day 22 — Unit + Integration + Testcontainers Hardening
 
-## Goal
+## Amaç
 Önceki Day'lerde yazılan testleri sistematik hale getirip coverage boşluklarını kapatmak.
 
-## Tasks
+## Görevler
 1. test inventory çıkar.
 2. domain critical invariant gaps bul.
 3. application orchestration gaps kapat.
@@ -18,7 +18,7 @@
 12. CI-ready test task'ları oluştur.
 13. docs güncelle.
 
-## Suggested commits
+## Önerilen commit'ler
 1. test: audit and classify test suites
 2. test(domain): close invariant coverage gaps
 3. test(integration): harden datastore coverage
@@ -28,9 +28,9 @@
 7. build(test): separate test tasks and tags
 8. docs(test): finalize testing matrix
 
-## Done
+## Tamamlanma durumu
 Critical behaviors happy/failure/concurrency/security paths ile güvence altındadır.
 
-## Exact testing/file plan
+## Kesin testing/file planı
 
-Implementation source of truth: `docs/roadmap/day-22-exact-file-plan.md`
+Implementation için source of truth: `docs/roadmap/day-22-exact-file-plan.md`

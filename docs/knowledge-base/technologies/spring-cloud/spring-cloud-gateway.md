@@ -1,9 +1,9 @@
 # Spring Cloud Gateway
 
-**Category:** Technology  
-**Introduced:** Day 5A  
-**Project status:** Implemented / Integrated / Verified  
-**Scope:** API Gateway implementation
+**Kategori:** Technology  
+**İlk eklendiği gün:** Day 5A  
+**Proje durumu:** Uygulandı / Entegre edildi / Doğrulandı  
+**Kapsam:** API Gateway implementation  
 
 ## 1. Nedir?
 

@@ -1115,7 +1115,7 @@ Doğrulanan noktalar:
 - 400 / 404 / 409 hata senaryoları
 - MySQL üzerinde kalıcı Agent kaydı
 
-Day 8 durumu: **Completed / Verified**
+Day 8 durumu: **Tamamlandı / Doğrulandı**
 
 Detaylı plan, kararlar ve kanıtlar:
 
@@ -1313,7 +1313,7 @@ Bu konular ilgili sonraki Day çalışmalarında ele alınacaktır.
 
 ### Day 9 durumu
 
-**Day 9 — BuyerService + Couchbase + Hexagonal Architecture: Completed / Verified**
+**Day 9 — BuyerService + Couchbase + Hexagonal Architecture: Tamamlandı / Doğrulandı**
 
 Detaylı plan, tasarım, Knowledge Base ve runtime kanıtları:
 
@@ -1397,7 +1397,7 @@ Cassandra :9042
 EurekaServer :8761
 ```
 
-Day 10 durumu: **Completed / Verified**
+Day 10 durumu: **Tamamlandı / Doğrulandı**
 
 Detaylı dokümanlar:
 

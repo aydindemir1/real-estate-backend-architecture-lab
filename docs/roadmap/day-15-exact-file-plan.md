@@ -1,85 +1,85 @@
-# Day 15 — Exact gRPC Internal Communication Plan
+# Day 15 — Kesin gRPC Internal Communication Planı
 
-## Scope
+## Kapsam
 
 - AgentAvailability protobuf contract
 - AgentService gRPC server adapter
-- BuyerService outbound port and client adapter
+- BuyerService outbound port ve client adapter
 - deadline/auth/status mapping
-- unit and integration tests
+- unit ve integration testleri
 
-## Task 1 — Protocol boundary audit
+## Task 1 — Protocol boundary denetimi
 
-Confirm:
-- REST public/business API remains baseline
-- gRPC only for internal Agent availability use-case
-- GraphQL only for flexible read/search use-case
+Doğrula:
+- REST public/business API baseline olarak kalır
+- gRPC yalnızca internal Agent availability use-case için kullanılır
+- GraphQL yalnızca flexible read/search use-case için kullanılır
 
-Document rationale in communication architecture if needed.
+Gerekirse gerekçeyi communication architecture dokümanına ekle.
 
 Commit: docs(protocol): confirm REST gRPC GraphQL boundaries
 
-## Task 2 — gRPC build support
+## Task 2 — gRPC build desteği
 
-Modify root/dependency governance only if needed.
+Yalnızca gerekliyse root/dependency governance'ı değiştir.
 
-Add to relevant modules:
+İlgili module'lere ekle:
 - protobuf plugin
 - protobuf-java
 - grpc-stub
 - grpc-protobuf
-- grpc-spring integration library only if chosen and compatible
+- yalnızca seçilmiş ve compatible ise grpc-spring integration library
 
-Modules:
+Module'ler:
 - AgentService
 - BuyerService
 
-Do not add gRPC dependency globally to every service.
+gRPC dependency'sini global olarak bütün service'lere ekleme.
 
 Commit: build(grpc): add protobuf and gRPC support
 
-## Task 3 — Proto source layout
+## Task 3 — Proto source yerleşimi
 
-Create shared contract location candidate:
+Shared contract location adayı oluştur:
 - contracts/grpc/agent-availability.proto
 
-or module-owned contract if repository convention prefers provider ownership.
+veya repository convention provider ownership tercih ediyorsa module-owned contract kullan.
 
-Recommended package:
+Önerilen package:
 - realestate.agent.v1
 
-Java package option:
+Java package seçeneği:
 - com.aydindemir.contract.agent.v1
 
 ## Task 4 — AgentAvailabilityService proto
 
-Define:
+Tanımla:
 - service AgentAvailabilityService
 - rpc CheckAvailability(CheckAvailabilityRequest) returns (CheckAvailabilityResponse)
 
-Request fields:
+Request alanları:
 - string agent_id
-- optional requested_time only if current business use-case truly needs it
+- yalnızca mevcut business use-case gerçekten gerektiriyorsa optional requested_time
 
-Response fields:
+Response alanları:
 - bool available
 - string status
 - optional reason_code
 
-Compatibility rules:
-- field numbers never reused
-- additive changes preferred
-- no domain entity dump
+Compatibility kuralları:
+- field number'lar asla yeniden kullanılmaz
+- additive change tercih edilir
+- domain entity dump yapılmaz
 
 Commit: feat(contract): add AgentAvailability gRPC contract
 
 ## Task 5 — Proto generation configuration
 
-Configure generated source directories.
+Generated source directory'lerini configure et.
 
-Ensure generated code is build output, not manually edited.
+Generated code'un build output olduğundan ve manuel olarak düzenlenmediğinden emin ol.
 
-Verify:
+Doğrula:
 - AgentService compile
 - BuyerService compile
 
@@ -87,169 +87,170 @@ Commit: build(grpc): configure protobuf code generation
 
 ## Task 6 — AgentService application query/use-case
 
-Create if not already represented:
+Henüz temsil edilmiyorsa oluştur:
 - application/query/CheckAgentAvailabilityQuery.java
 - application/result/AgentAvailabilityResult.java
 - application/usecase/CheckAgentAvailabilityUseCase.java
 
-Implementation may reuse AgentApplicationService or a focused query service.
+Implementation, AgentApplicationService'i yeniden kullanabilir veya focused query service kullanabilir.
 
-Rule:
-gRPC adapter must not query persistence directly.
+Kural:
+gRPC adapter persistence'a doğrudan query atamaz.
 
 Commit: feat(agent): add availability query use case
 
 ## Task 7 — AgentService gRPC server adapter
 
-Create package:
-- infrastructure/grpc/ or presentation/grpc/ depending existing Clean Architecture convention
+Mevcut Clean Architecture convention'a göre package oluştur:
+- infrastructure/grpc/ veya presentation/grpc/
 
-Preferred:
+Tercih edilen:
 - presentation/grpc/AgentAvailabilityGrpcService.java
 
-Responsibilities:
-- map protobuf request -> application query
-- call use case
-- map result -> protobuf response
-- map application exceptions -> gRPC status
+Sorumluluklar:
+- protobuf request -> application query mapping
+- use-case çağırma
+- result -> protobuf response mapping
+- application exception -> gRPC status mapping
 
-No business rules in adapter.
+Adapter içinde business rule bulunmaz.
 
 Commit: feat(agent): expose availability gRPC service
 
 ## Task 8 — gRPC status mapping
 
-Map:
+Map et:
 - invalid id/input -> INVALID_ARGUMENT
 - agent not found -> NOT_FOUND
 - auth missing -> UNAUTHENTICATED
 - forbidden -> PERMISSION_DENIED
 - invalid/precondition state -> FAILED_PRECONDITION
-- timeout -> DEADLINE_EXCEEDED where applicable
+- timeout -> uygun olduğunda DEADLINE_EXCEEDED
 - temporary dependency failure -> UNAVAILABLE
 
-Create:
-- AgentGrpcExceptionMapper.java if useful
+Yararlıysa oluştur:
+- AgentGrpcExceptionMapper.java
 
 Commit: feat(agent): standardize gRPC error mapping
 
 ## Task 9 — gRPC server configuration
 
-Configure:
-- port separate from HTTP if library requires
-- max message size bounded
-- reflection only local/dev if used
-- interceptors for auth/tracing
+Configure et:
+- library gerektiriyorsa HTTP'den ayrı port
+- bounded max message size
+- kullanılıyorsa reflection yalnızca local/dev
+- auth/tracing interceptor'ları
 
-No unlimited defaults without review.
+Review edilmemiş unlimited default kullanma.
 
 Commit: config(agent): configure gRPC server
 
 ## Task 10 — BuyerService outbound port
 
-Create:
+Oluştur:
 - application/port/out/AgentAvailabilityPort.java
 
 Method:
 - AgentAvailabilityResult checkAvailability(AgentId or external id abstraction)
 
-Do not expose protobuf types.
+Protobuf type'larını expose etme.
 
 Commit: feat(buyer): add AgentAvailability outbound port
 
 ## Task 11 — BuyerService gRPC client adapter
 
-Create:
+Oluştur:
 - adapter/out/grpc/GrpcAgentAvailabilityAdapter.java
 
-Responsibilities:
-- build protobuf request
-- apply deadline
-- call stub
-- map response
-- translate gRPC status to application semantic
+Sorumluluklar:
+- protobuf request oluşturma
+- deadline uygulama
+- stub çağırma
+- response mapping
+- gRPC status'u application semantic'e çevirme
 
 Commit: feat(buyer): add AgentAvailability gRPC adapter
 
 ## Task 12 — gRPC client configuration
 
-Create/configure:
-- AgentGrpcClientProperties.java if custom typed config needed
-- GrpcClientConfiguration.java only if library auto-config insufficient
+Gerekirse oluştur/configure et:
+- AgentGrpcClientProperties.java
+- yalnızca library auto-config yetersizse GrpcClientConfiguration.java
 
 External config:
 - logical target/service name
 - port
 - deadline Duration
 
-Prefer service discovery integration if supported cleanly; otherwise explicit local target for learning environment.
+Temiz şekilde destekleniyorsa service discovery integration tercih et; aksi halde learning environment için explicit local target kullan.
 
 Commit: config(buyer): configure Agent gRPC client
 
 ## Task 13 — gRPC deadline
 
-Every call uses explicit deadline.
+Her call explicit deadline kullanır.
 
-Do not rely on infinite default.
+Infinite default'a güvenme.
 
-Example target is configured, not hard-coded in adapter.
+Örnek target adapter içinde hard-code edilmez; configuration üzerinden alınır.
 
-Commit can group with client adapter/config.
+Commit client adapter/config ile birleştirilebilir.
 
 ## Task 14 — gRPC authentication
 
-Day 14 Keycloak foundation reused.
+Day 14 Keycloak foundation yeniden kullanılır.
 
-Decide internal call mode:
-- propagated user token if user context is needed
-- service Client Credentials if machine identity is appropriate
+Internal call mode'a karar ver:
+- user context gerekiyorsa propagated user token
+- machine identity uygunsa service Client Credentials
 
-For availability lookup, service identity + required scope is preferred unless business authorization requires end-user context.
+Availability lookup için business authorization end-user context gerektirmiyorsa service identity + gerekli scope tercih edilir.
 
-Create client interceptor/token supplier only if framework support does not already cover it.
+Yalnızca framework desteği bunu zaten karşılamıyorsa client interceptor/token supplier oluştur.
 
 Commit: feat(grpc): secure Agent availability calls
 
 ## Task 15 — gRPC tracing/context propagation
 
-Ensure:
-- trace context propagated
-- correlationId propagated if supported via metadata
+Şunlardan emin ol:
+- trace context propagate edilir
+- metadata üzerinden destekleniyorsa correlationId propagate edilir
 
-Do not build custom tracing stack; use existing Micrometer/OTel-compatible hooks.
+Custom tracing stack oluşturma; mevcut Micrometer/OTel-compatible hook'ları kullan.
 
-Commit if code needed: feat(grpc): propagate tracing context
+Kod gerekiyorsa commit:
+feat(grpc): propagate tracing context
 
 ## Task 16 — Buyer application integration
 
-Add minimal use-case that exercises port only if a current Buyer flow needs it.
+Yalnızca mevcut bir Buyer flow buna ihtiyaç duyuyorsa port'u kullanan minimal use-case ekle.
 
-Candidate:
+Aday:
 - CheckAssignedAgentAvailability
 
-Do not invent full viewing scheduler.
+Tam viewing scheduler uydurma.
 
-Create:
+Gerekirse oluştur:
 - application/port/in/CheckAssignedAgentAvailabilityUseCase.java
-- corresponding command/query/result only if not already present
+- corresponding command/query/result
 
 Commit: feat(buyer): add agent availability application flow
 
-## Task 17 — gRPC unit tests
+## Task 17 — gRPC unit testleri
 
-Agent side:
+Agent tarafı:
 - AgentAvailabilityGrpcServiceTest.java
 
-Cases:
+Senaryolar:
 - available
 - unavailable
 - not found mapping
 - invalid request mapping
 
-Buyer side:
+Buyer tarafı:
 - GrpcAgentAvailabilityAdapterTest.java
 
-Cases:
+Senaryolar:
 - success mapping
 - DEADLINE_EXCEEDED translation
 - NOT_FOUND translation
@@ -259,19 +260,19 @@ Commit: test(grpc): add adapter unit tests
 
 ## Task 18 — gRPC integration test
 
-Create:
+Oluştur:
 - AgentAvailabilityGrpcIntegrationTest.java
 
-Run real in-process or containerized/local server depending test framework.
+Test framework'e göre gerçek in-process veya containerized/local server çalıştır.
 
-Verify:
+Doğrula:
 - protobuf serialization
 - server/client compatibility
 - deadline
-- auth metadata if practical
+- uygunsa auth metadata
 
 Commit: test(grpc): add availability integration test
 
-## Source-of-truth note
+## Source-of-truth notu
 
-This file follows the final Day 15–33 roadmap. Earlier combined Day numbering is superseded by `docs/roadmap/LEGACY-DAY-MAPPING.md`.
+Bu dosya final Day 15–33 roadmap'i izler. Önceki birleşik Day numaralandırması `docs/roadmap/LEGACY-DAY-MAPPING.md` ile superseded edilmiştir.

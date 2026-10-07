@@ -1,9 +1,9 @@
 # Gradle
 
-**Category:** Technology  
-**Introduced:** Day 1  
-**Project status:** Implemented / Verified  
-**Scope:** Build automation, dependency management and multi-module project orchestration
+**Kategori:** Technology  
+**İlk eklendiği gün:** Day 1  
+**Proje durumu:** Uygulandı / Doğrulandı  
+**Kapsam:** Build automation, dependency management ve multi-module project orchestration  
 
 ## 1. Nedir?
 

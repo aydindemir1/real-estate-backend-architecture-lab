@@ -1,9 +1,9 @@
 # RabbitMQ
 
-**Category:** Technology  
-**Introduced:** Day 6A  
-**Project status:** Implemented / Integrated / Verified  
-**Scope:** Message broker for command/work queue communication
+**Kategori:** Technology  
+**İlk eklendiği gün:** Day 6A  
+**Proje durumu:** Uygulandı / Entegre edildi / Doğrulandı  
+**Kapsam:** Command/work queue communication için message broker  
 
 ## 1. Nedir?
 

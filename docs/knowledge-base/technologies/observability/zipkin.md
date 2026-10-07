@@ -1,9 +1,9 @@
 # Zipkin
 
-**Category:** Technology  
-**Introduced:** Day 5B  
-**Project status:** Implemented / Verified  
-**Scope:** Distributed tracing backend and visualization
+**Kategori:** Technology  
+**İlk eklendiği gün:** Day 5B  
+**Proje durumu:** Uygulandı / Doğrulandı  
+**Kapsam:** Distributed tracing backend ve visualization  
 
 ## 1. Nedir?
 

@@ -1,9 +1,9 @@
 # Day 14 — Spring Security + OAuth2/OIDC + Keycloak
 
-## Goal
+## Amaç
 Identity ve authorization modelini Keycloak tabanlı hale getirmek.
 
-## Tasks
+## Görevler
 1. Keycloak local infrastructure ekle.
 2. realm/client/role design'i netleştir.
 3. Keycloak subject -> UserProfile -> role-specific profile identity mapping'i finalize et.
@@ -19,7 +19,7 @@ Identity ve authorization modelini Keycloak tabanlı hale getirmek.
 13. audit-sensitive operation hooks foundation ekle.
 14. docs/ADR güncelle.
 
-## Suggested commits
+## Önerilen commit'ler
 1. infra(security): add Keycloak local setup
 2. docs(security): finalize identity and role model
 3. feat(gateway): add OAuth2 resource server security
@@ -30,9 +30,9 @@ Identity ve authorization modelini Keycloak tabanlı hale getirmek.
 8. test(security): add authentication and authorization tests
 9. docs(security): finalize Keycloak integration
 
-## Done
+## Tamamlanma durumu
 Authentication/authorization Gateway + downstream defense-in-depth ile çalışır; ownership test edilmiştir.
 
-## Exact security/file plan
+## Kesin security/file planı
 
-Implementation source of truth: `docs/roadmap/day-14-exact-file-plan.md`
+Implementation için source of truth: `docs/roadmap/day-14-exact-file-plan.md`

@@ -1,9 +1,9 @@
 # MySQL
 
-**Category:** Technology  
-**Introduced:** Day 7  
-**Project status:** Implemented  
-**Scope:** AgentService relational datastore
+**Kategori:** Technology  
+**İlk eklendiği gün:** Day 7  
+**Proje durumu:** Uygulandı  
+**Kapsam:** AgentService relational datastore  
 
 ## Nedir?
 

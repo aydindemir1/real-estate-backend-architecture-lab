@@ -1,9 +1,9 @@
 # AMQP
 
-**Category:** Messaging Protocol / Model  
-**Introduced:** Day 6A  
-**Project status:** Implemented through RabbitMQ / Spring AMQP  
-**Scope:** Broker-oriented messaging semantics
+**Kategori:** Messaging Protocol / Model  
+**İlk eklendiği gün:** Day 6A  
+**Proje durumu:** RabbitMQ / Spring AMQP üzerinden uygulandı  
+**Kapsam:** Broker-oriented messaging semantics  
 
 ## 1. Nedir?
 

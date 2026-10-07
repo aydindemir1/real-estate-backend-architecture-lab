@@ -22,6 +22,11 @@ Audit öncesindeki Day 15–26 semantic numaralandırması artık geçerli deği
 Implementation için source of truth artık şunlardır:
 - `day-15-exact-file-plan.md`
 - ...
-- `day-33-exact-file-plan.md`
+- `day-45-exact-file-plan.md`
 
 Herhangi bir ifade çakışması olması durumunda root `ROADMAP.md`, `docs/MASTER-ENGINEERING-PLAN.md` ve `docs/roadmap/MASTER-AUDIT.md`, eski summary dokümanlarına göre önceliklidir.
+
+
+## Güncel kapsam ve belge erişimi
+
+Eski summary dosyalarındaki Day 15–26 numaraları tarihsel eşlemedir; dosya adına bakarak gün seçilmez. Day 15–45 için ilgili `day-NN-exact-file-plan.md` esas alınır. Day 34–45 konu özetleri de güncel numaraları taşır. [Plan dizini](README.md) bütün canonical gün belgelerini listeler. Bu güncelleme geçmiş implementation durumunu değiştirmez.

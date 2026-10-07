@@ -31,7 +31,7 @@
 19. `docker compose config` ve gerekli profile health validation çalıştır.
 20. `docs/BACKEND-COMPLETION-REPORT.md` oluştur.
 21. Root README'yi yalnızca completed capability'leri içerecek şekilde güncelle; Kubernetes/CI/CD future phase'i açıkça ayır.
-22. Backend roadmap phase'i complete olarak işaretle.
+22. Day 7–33 temel backend baseline’ını yalnız doğrulanmış kanıtlarla kapat; Day 34–45 extended mimari kapsamını future/planlı olarak ayrı tut.
 23. Opsiyonel learning outcomes dokümanı.
 24. Opsiyonel milestone tag yalnızca main merge + green verification sonrasında.
 
@@ -57,3 +57,38 @@
 - completion report mevcut
 - README unimplemented claim içermiyor
 - sonraki Docker/Kubernetes/Spring Cloud Kubernetes/Jenkins/SonarQube/Nexus/Harbor/Argo CD phase açıkça ayrılmış
+
+## Commit sırası
+1. docs(recovery): canonical backup envanterini ve restore planını tanımla
+2. docs(e2e): temel backend doğrulama sözleşmesini tanımla
+3. test(e2e): kritik iş akışlarını ve service identityyi doğrula
+4. test(recovery): broker kesintisi sonrası toparlanmayı doğrula
+5. test(recovery): Search rebuild ve kontrollü replay doğrula
+6. test(recovery): izole Mongo backup ve restore tatbikatını ekle
+7. test(recovery): restore sonrası state Outbox ve replay güvenliğini doğrula
+8. docs(recovery): ölçülen RPO RTO ve kapsam sınırlarını kaydet
+9. docs(completion): temel backend raporunu ve gerçek durumunu kaydet
+
+Küçük ve aynı sorumluluğa ait komşu commit’ler birleştirilebilir; karar, uygulama ve doğrulama ayrı incelenebilir kalır.
+
+## Onaylanan system design ek kapsamı — Canonical datastore backup/restore doğrulaması
+
+Durum: **Planlandı**. Bu bölüm günün mevcut temel görevlerine eklenir; tamamlanmış implementation iddiası değildir. Ek görevler foundation kurulduktan sonra ve günün dokümantasyon/kapanış adımından önce uygulanır. Yukarıdaki commit sırası bu kapsamı içerir.
+
+### Ek görevler ve çıktı belgeleri
+
+1. Canonical ve derived veriyi ayıran backup/restore envanteri oluştur: Auth/UserProfile PostgreSQL, Agent MySQL, Buyer Couchbase, Seller Cassandra ve Property MongoDB; Elasticsearch rebuild, Redis yeniden üretilebilir state rolündedir.
+2. Mevcut canonical PropertyService/MongoDB üzerinde sınırlı gerçek backup/restore tatbikatı seç; tutarlı snapshot/backup önkoşullarını kullanılan runtime/topology için doğrula. Tek datastore kanıtı bütün datastore’ların restore kanıtı değildir.
+3. Day 18 Outbox ile Property state birlikte ele alınır: backup sırasında yazmaları durdurma/quiesce sınırı veya desteklenen tutarlı yöntem açıkça seçilir; broker/inbox/idempotency/replay sınırları belgelenir.
+4. Backup checksum/metadata ve restore hedefini kaydet; aktif developer DB’yi silmek yerine izole hedefe restore et. Kaynak/veri miktarı ve Mongo version/config uyumluluğunu doğrula.
+5. Restore sonrası record count/kimlik/version/domain state ve pending Outbox ilişkisini test et; isolated broker/consumer testinde kritik event kaybı ve duplicate uygulama olmadığını doğrula.
+6. RPO/RTO hedeflerini varsayım olarak, ölçülen veri kaybı/zamanı ayrı raporla; düzenli scheduler, multi-node failover ve platform backup otomasyonunu bu güne ekleme.
+7. docs/runbooks/canonical-backup-restore.md ve baseline completion raporuna kapsam/kanıt/sınırlamaları ekle; Day 33 temel backend kapanışı, Day 45 extended kapanışıdır.
+
+### Ek kabul ölçütleri
+
+- Bir canonical datastore gerçek izole restore ile doğrulanmış.
+- Property/Outbox ilişkisi ve replay correctness korunmuş.
+- Diğer store’ların doğrulama durumu ayrı; Day 45 işi Day 33 completed sayılmamış.
+
+Kapanışta ilgili service ROADMAP/DESIGN belgeleri ve Knowledge Base gerçek implementation/kanıtlarla güncellenir. Önce ilgili GitHub CI başarılı olur; ardından local runtime/API doğrulaması yapılır. Bir Day bir milestone’dır; kapsam gerektiğinde birden fazla takvim gününde tamamlanabilir.

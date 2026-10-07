@@ -248,10 +248,10 @@ Critical broker publication cannot be a best-effort `save -> send` sequence.
 Exact guarantees are documented in the relevant reliability Days; relational Transactional Outbox semantics are not blindly forced onto Cassandra/Couchbase.
 
 ### 7.2 Identity mapping
-Keycloak subject -> UserProfile -> Buyer/Seller/Agent identity mapping açık bir design olarak Day 8 öncesi finalize edilmelidir.
+Keycloak subject -> UserProfile -> Buyer/Seller/Agent identity mapping açık bir design olarak Day 14 öncesi finalize edilmelidir.
 
 ### 7.3 Event schema governance
-JSON başlangıç formatıdır. Avro/Protobuf/Schema Registry yalnızca gerçek evolution ihtiyacı ortaya çıkarsa değerlendirilecektir.
+JSON başlangıç formatıdır; Day 44 gerçek evolution senaryosunda Avro + Schema Registry uygulanır. Protobuf Day 15 gRPC sözleşmelerinde kullanılır. Ayrıntılı karar 7.13 bölümündedir.
 
 ### 7.4 Search projection rebuild
 
@@ -417,7 +417,7 @@ Final audit sonrası implementation cadence yeniden düzenlenmiştir:
 
 - Bir Day mümkün olduğunca tek service veya tek ana infrastructure konusu içerir.
 - Eski Day 7 içinde planlanan beş service tek milestone'da uygulanmayacaktır.
-- Backend roadmap final audit sonrası Day 33'e kadar genişletilmiştir.
+- Temel backend baseline Day 33’te kapanır; mevcut genişletilmiş mimari kapsam Day 34–45 olarak devam eder. Ayrıntılı gün planları docs/roadmap altında tutulur.
 - İçerik azaltılmamış, yalnız daha küçük milestone'lara ayrılmıştır.
 - Küçük ve anlamlı commit'ler zorunlu çalışma prensibidir.
 
@@ -465,3 +465,23 @@ Her Day Definition of Done maddelerine şu kontrol eklenmiştir:
 Detaylı standard: `docs/standards/knowledge-base.md`.
 
 Knowledge Base ilk olarak Day 1–7 kapsamı ile başlatılmıştır ve sonraki her Day sonunda büyütülecektir.
+
+
+## 14. Onaylanan backend system design eklemeleri
+
+Ana 45 milestone sırası ve Day 34–45 konu kararları korunur. Eklemeler yalnız aşağıdaki mevcut günlere bağlanır; her ek konu kavramsal açıklama, projeye ilişkin karar ve kapsam uygunsa gerçek uygulama/test çıktısı içerir.
+
+| Gün | Ek kapsam | Güncel kesin plan |
+|---|---|---|
+| Day 12 | Veri seçimi, arama API tasarımı ve latency/throughput | [Plan](roadmap/day-12-exact-file-plan.md) |
+| Day 13 | Redis cache stratejileri ve bir read use-case | [Plan](roadmap/day-13-exact-file-plan.md) |
+| Day 14 | Secure API Design ve şifreleme sorumlulukları | [Plan](roadmap/day-14-exact-file-plan.md) |
+| Day 21 | CAP ve consistency modellerinin proje üzerinden öğrenilmesi | [Plan](roadmap/day-21-exact-file-plan.md) |
+| Day 23 | Load balancing algoritmaları ve abuse prevention | [Plan](roadmap/day-23-exact-file-plan.md) |
+| Day 28 | Sınırlı chaos engineering deneyi | [Plan](roadmap/day-28-exact-file-plan.md) |
+| Day 32 | System design süreci ve mimari trade-off değerlendirmesi | [Plan](roadmap/day-32-exact-file-plan.md) |
+| Day 33 | Canonical datastore backup/restore doğrulaması | [Plan](roadmap/day-33-exact-file-plan.md) |
+
+Day 13 artık seçilmiş mevcut read use-case üzerinde cache-aside uygulamasını kapsar. Redis canonical veri veya Offer idempotency correctness sahibi değildir. At-rest encryption ve scaling karşılaştırmalarında tasarım ile uygulanmış capability ayrı işaretlenir. Day 33’te bir canonical datastore için gerçek izole restore tatbikatı vardır; bütün datastore’lar doğrulandı iddiası yapılmaz.
+
+Day 34–45’in ayrıntılı planları ve canonical belge sırası [plan dizininde](roadmap/README.md) yer alır. Her yeni capability yalnız gerçek iş senaryosu tanımlandığında etkinleşir. DevOps programı bu eklemenin kapsamında değildir.

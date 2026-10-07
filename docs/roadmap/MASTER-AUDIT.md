@@ -141,3 +141,18 @@ Yeni source of truth:
 4. implementation sırasında yeni Day 15–33 numaralandırmasını izlemesi gereken per-topic exact plan'lar
 
 Eski Day 15–26 numaralandırması, Day 15–33 sıralamasıyla superseded edilmiştir.
+
+
+## 11. Plan kapsamı güncellemesi — Day 7–45
+
+Önceki Day 7–33 denetimi temel backend baseline için geçerlidir; mevcut Day 34–45 genişletilmiş mimari kararları korunur. Bu doküman geçmişte yapılan tasarım denetimini anlatır; yeni planların uygulandığı veya doğrulandığı anlamına gelmez.
+
+- Day 12/13/14/21/23/28/32/33 system design ek kapsamları ilgili kesin planlarda görev/commit/kabul ölçütleri olarak tanımlandı.
+- Day 13’ün eski yalnız foundation/cache dışarıda sınırı, seçilen mevcut read cache use-case’ini içerecek şekilde güncellendi. Offer idempotency ve rate limiting ayrı günlerde kalır.
+- Day 34–45 için ayrıntılı Türkçe özet ve kesin plan belgeleri oluşturuldu.
+- Day 33 baseline kapanışı ile Day 45 extended kapanışı ayrıdır.
+- Sharding/Partitioning Design Only; Strangler Fig ve snapshot koşullu capability olarak kalır.
+- Yeni gün planları Planlandı durumundadır; build/runtime/test kanıtı olmadan Verified değildir.
+- DevOps milestone’ları genişletilmedi.
+
+Güncel planlara erişim: [Day 7–45 plan dizini](README.md). Mevcut standard’lardaki API/security/NFR konuları yeniden kopyalanmak yerine ilgili günün uygulama ve doğrulama görevleriyle ilişkilendirilir.

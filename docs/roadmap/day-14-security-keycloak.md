@@ -36,3 +36,14 @@ Authentication/authorization Gateway + downstream defense-in-depth ile çalış�
 ## Kesin security/file planı
 
 Implementation için source of truth: `docs/roadmap/day-14-exact-file-plan.md`
+
+## Onaylanan ek öğrenme ve uygulama kapsamı
+
+- docs/standards/api-design.md ve security.md kapsamını endpoint authorization matrisiyle birleştir; mevcut RBAC/ownership/CORS/CSRF/validation kurallarını çoğaltmadan Secure API Design checklist’i oluştur.
+- Input/body/page sınırları, alan bazlı response minimization, hassas hata redaction ve actuator erişimini mevcut endpoint’lere uygula; başka kullanıcının resource ID’siyle IDOR testlerini genişlet.
+- Encryption in transit ile at rest arasındaki farkı ve sorumluluk matrisini yaz: HTTP/gRPC, broker/datastore bağlantıları, disk/volume/backup, certificate/key ownership. JWT imzası şifreleme değildir; Vault secret yönetimi at-rest encryption’ın tamamı değildir.
+- Mevcut HTTP endpoint üzerinde izole local/test TLS handshake doğrulaması planla: doğru CA/hostname kabulü, untrusted certificate veya hostname uyuşmazlığında reddetme. Sertifika doğrulamasını kapatıp başarı gösterme; gerçek private key repository’ye koyma.
+- At-rest için mevcut datastore/disk/backup seçeneklerini tasarım seviyesinde karşılaştır; uygulama kanıtı yoksa Design Only olarak işaretle. Production certificate yönetimi, mTLS ve platform deployment bu güne eklenmez.
+- Day 23 abuse prevention ve Day 24 Vault secret rotation sınırlarına bağlantı ver; docs/security/secure-api-checklist.md, docs/security/encryption-responsibilities.md ve Knowledge Base etkisini güncelle.
+
+Güncel görevler, commit sırası ve ek kabul ölçütleri [kesin planda](day-14-exact-file-plan.md) yer alır. Bu ek kapsam **planlıdır**; doğrulama kanıtı oluşmadan tamamlandı olarak işaretlenmez.

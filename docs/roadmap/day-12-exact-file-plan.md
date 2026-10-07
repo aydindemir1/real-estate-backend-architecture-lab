@@ -1,4 +1,4 @@
-# Day 12 — Exact File / Class / Commit Plan
+# Day 12 — Kesin dosya, sınıf ve commit planı
 
 ## 0. Scope
 
@@ -476,37 +476,40 @@ Record actual:
 - supported query params
 - pagination limit
 - current analyzers
-- Kafka projection deferred to Day 18
-- GraphQL deferred to Day 15
-- reindex deferred to Day 25
+- Kafka projection deferred to Day 21
+- GraphQL deferred to Day 16
+- reindex deferred to Day 31
 
 Commit: docs(search): finalize Elasticsearch CQRS query-side foundation
 
 ## Recommended Commit Sequence
+1. docs(data): SQL NoSQL seçim matrisini ve arama API kararlarını tanımla
+2. build(search): add Elasticsearch query-side dependencies
+3. config(search): add Elasticsearch connection configuration
+4. refactor(search): establish CQRS query-side package boundaries
+5. feat(search): add PropertySearchDocument
+6. db(search): add explicit Elasticsearch index mapping
+7. feat(search): add controlled index bootstrap
+8. feat(search): add search repository contract
+9. feat(search): add Spring Data Elasticsearch repository
+10. feat(search): add search query model
+11. feat(search): add Elasticsearch search adapter
+12. feat(search): add SearchProperties handler
+13. feat(search): add search REST query contract
+14. feat(search): expose property search API
+15. feat(search): map search failures to API errors
+16. test(search): add query handler tests
+17. test(search): add Elasticsearch Testcontainers foundation
+18. test(search): verify index mapping
+19. test(search): add Elasticsearch query integration tests
+20. test(search): add search REST adapter tests
+21. test(search): enforce CQRS query-side boundaries
+22. test(search): API sınırlarını ve hata sözleşmesini doğrula
+23. test(performance): arama latency ve throughput baseline ölçümünü ekle
+24. docs(search): veri seçimi ve ölçüm sonuçlarını kaydet
+25. docs(search): finalize Elasticsearch CQRS query-side foundation
 
-1. build(search): add Elasticsearch query-side dependencies
-2. config(search): add Elasticsearch connection configuration
-3. refactor(search): establish CQRS query-side package boundaries
-4. feat(search): add PropertySearchDocument
-5. db(search): add explicit Elasticsearch index mapping
-6. feat(search): add controlled index bootstrap
-7. feat(search): add search repository contract
-8. feat(search): add Spring Data Elasticsearch repository
-9. feat(search): add search query model
-10. feat(search): add Elasticsearch search adapter
-11. feat(search): add SearchProperties handler
-12. feat(search): add search REST query contract
-13. feat(search): expose property search API
-14. feat(search): map search failures to API errors
-15. test(search): add query handler tests
-16. test(search): add Elasticsearch Testcontainers foundation
-17. test(search): verify index mapping
-18. test(search): add Elasticsearch query integration tests
-19. test(search): add search REST adapter tests
-20. test(search): enforce CQRS query-side boundaries
-21. docs(search): finalize Elasticsearch CQRS query-side foundation
-
-Adjacent tiny commits can be combined if they remain cohesive. Index/mapping, query implementation and tests should stay independently reviewable.
+Küçük ve aynı sorumluluğa ait komşu commit’ler birleştirilebilir; karar, uygulama ve doğrulama ayrı incelenebilir kalır.
 
 ## Explicitly Deferred from Day 12
 
@@ -561,3 +564,24 @@ Day 12 closes only if:
 - Config/Eureka/Actuator baseline works
 - no Kafka/GraphQL/reindex implementation leaks into Day 12
 - docs match actual implementation
+
+## Onaylanan system design ek kapsamı — Veri seçimi, arama API tasarımı ve latency/throughput
+
+Durum: **Planlandı**. Bu bölüm günün mevcut temel görevlerine eklenir; tamamlanmış implementation iddiası değildir. Ek görevler foundation kurulduktan sonra ve günün dokümantasyon/kapanış adımından önce uygulanır. Yukarıdaki commit sırası bu kapsamı içerir.
+
+### Ek görevler ve çıktı belgeleri
+
+1. SQL/NoSQL seçim matrisini hazırla: transaction/invariant, sorgu biçimi, indeks, consistency, veri sahipliği ve operasyonel maliyet. MySQL/PostgreSQL, MongoDB/Couchbase/Cassandra ve Elasticsearch rollerini karşılaştır; Elasticsearch’ü canonical store olarak seçme.
+2. Latency ile throughput farkını aynı SearchProperties use-case üzerinden açıkla. Test verisi, warm-up, concurrency, süre, hata oranı ve p50/p95/p99 ölçüm koşullarını belirle; yapay scale gereksinimi üretme.
+3. Mevcut API Design standardını arama sözleşmesine uygula: resource/HTTP semantics, bounded pagination, filtre/sort whitelist, validation, kararlı error code, versioning kararı ve OpenAPI örnekleri.
+4. Mevcut handler/controller testlerine max size, negatif page, invalid range, izin verilmeyen sort ve dependency unavailable senaryolarını ekle; zaten bulunan testi tekrar yazma.
+5. Yerel sınırlı ölçümde latency/throughput ve kaynak kullanımını raporla; sonuçları production kapasite garantisi olarak sunma.
+6. docs/architecture/datastore-selection.md ve docs/testing/search-performance-baseline.md belgelerine seçim gerekçesini/ölçüm koşullarını kaydet; SearchService DESIGN/ROADMAP ve Knowledge Base etkisini güncelle.
+
+### Ek kabul ölçütleri
+
+- SQL/NoSQL seçim gerekçesi proje sahiplikleriyle tutarlı.
+- Pagination/filter/sort ve hata sınırları doğrulanmış.
+- Latency/throughput ölçümü tekrarlanabilir koşullar içeriyor; scale iddiası yok.
+
+Kapanışta ilgili service ROADMAP/DESIGN belgeleri ve Knowledge Base gerçek implementation/kanıtlarla güncellenir. Önce ilgili GitHub CI başarılı olur; ardından local runtime/API doğrulaması yapılır. Bir Day bir milestone’dır; kapsam gerektiğinde birden fazla takvim gününde tamamlanabilir.

@@ -38,18 +38,24 @@
 20. ArchUnit rule ekle: Search projection, projection oluşturmak için PropertyService'i synchronous olarak çağırmaz.
 
 ## Commit sırası
-1. `docs(cqrs): finalize Search-relevant Property events`
-2. `feat(property): publish lifecycle events through outbox`
-3. `feat(search): add Property projection consumer`
-4. `feat(search): add projection handlers`
-5. `feat(search): make projection consumers idempotent`
-6. `feat(search): guard projection against stale events`
-7. `feat(search): track projection freshness metadata`
-8. `feat(search): enforce searchable property statuses`
-9. `test(cqrs): add projection integration tests`
-10. `test(cqrs): add Property-to-Search E2E flow`
-11. `test(cqrs): verify replay and stale-event safety`
-12. `docs(cqrs): document eventual consistency`
+1. docs(consistency): CAP ve projection consistency sözleşmesini tanımla
+2. `docs(cqrs): finalize Search-relevant Property events`
+3. `feat(property): publish lifecycle events through outbox`
+4. `feat(search): add Property projection consumer`
+5. `feat(search): add projection handlers`
+6. `feat(search): make projection consumers idempotent`
+7. `feat(search): guard projection against stale events`
+8. `feat(search): track projection freshness metadata`
+9. `feat(search): enforce searchable property statuses`
+10. `test(cqrs): add projection integration tests`
+11. `test(cqrs): add Property-to-Search E2E flow`
+12. `test(cqrs): verify replay and stale-event safety`
+13. `docs(cqrs): document eventual consistency`
+14. test(cqrs): stale read ve read-your-writes beklentisini doğrula
+15. test(cqrs): consumer kesintisi sonrası catch-up davranışını doğrula
+16. docs(consistency): ölçülen freshness ve garanti sınırlarını kaydet
+
+Küçük ve aynı sorumluluğa ait komşu commit’ler birleştirilebilir; karar, uygulama ve doğrulama ayrı incelenebilir kalır.
 
 ## Final gate
 - MongoDB source of truth olarak kalır
@@ -59,3 +65,23 @@
 - terminal state'ler normal search'ten çıkarılır
 - E2E event projection çalışır
 - failure bounded retry sonrasında DLT'ye yönlenir
+
+## Onaylanan system design ek kapsamı — CAP ve consistency modellerinin proje üzerinden öğrenilmesi
+
+Durum: **Planlandı**. Bu bölüm günün mevcut temel görevlerine eklenir; tamamlanmış implementation iddiası değildir. Ek görevler foundation kurulduktan sonra ve günün dokümantasyon/kapanış adımından önce uygulanır. Yukarıdaki commit sırası bu kapsamı içerir.
+
+### Ek görevler ve çıktı belgeleri
+
+1. CAP’i network partition koşulunda consistency/availability tercihi olarak açıkla; her ortamda rastgele iki özellik seçimi gibi anlatma. Consistency garantisini operation bazında canonical write ve derived Search read için ayır.
+2. Strong/eventual consistency ile read-your-writes beklentisini karşılaştır; Mongo commit, reliable event delivery ve Elasticsearch refresh/projection gecikmesinin farklı aşamalar olduğunu belgeleyerek kullanıcı sözleşmesini tanımla.
+3. Property update sonrası geçici stale Search sonucunu kontrollü entegrasyon testiyle göster; süre/sürüm sınırlarını ölç ve Search sourceVersion guard ile hizala.
+4. Consumer durması/yeniden başlaması ve bağlantı kesintisi altında canonical state korunumu, projection catch-up ve duplicate/stale event güvenliğini test et. Test yalnız latency üretiyorsa gerçek network partition doğrulandı iddiasında bulunma.
+5. docs/architecture/consistency-models.md ve ilgili ADR’de görünürlük/freshness sınırını kaydet; Knowledge Base kavramlarını güncelle.
+
+### Ek kabul ölçütleri
+
+- CAP açıklaması partition bağlamında doğru.
+- Canonical write ile Search visibility ayrılmış.
+- Stale read/catch-up davranışı ve ölçüm koşulları kanıtlı.
+
+Kapanışta ilgili service ROADMAP/DESIGN belgeleri ve Knowledge Base gerçek implementation/kanıtlarla güncellenir. Önce ilgili GitHub CI başarılı olur; ardından local runtime/API doğrulaması yapılır. Bir Day bir milestone’dır; kapsam gerektiğinde birden fazla takvim gününde tamamlanabilir.

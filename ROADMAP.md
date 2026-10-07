@@ -12,6 +12,12 @@ Day 7 sonrası çalışma ilkesi:
 - Her Day build + test + docs ile kapanır.
 - Önkoşul tamamlanmadan sonraki Day'e geçilmez.
 
+## Plan belgeleri ve süre ilkesi
+
+[Day 7–45 ayrıntılı plan dizini](docs/roadmap/README.md) güncel kesin planlara bağlantı verir. Day 1–6 mevcut stabil baseline olarak korunur. Day 34–45 için ana konular önceden tanımlanmıştır; ayrıntılı dosya/adapter, görev, commit ve doğrulama planları artık `docs/roadmap` altında bulunur.
+
+45 Day, 45 milestone anlamındadır; tek milestone gerektiğinde birden fazla takvim gününde tamamlanabilir. Ek kapsam ilgili güne bağlanır; başka bir ihtiyacı karşılayan mevcut teknoloji sırf görseldeki alternatif araç için değiştirilmez. Bu güncelleme backend kapsamındadır; DevOps programı ayrıca ele alınır.
+
 ## Day 7–33
 
 ### Day 7 — Build & Local Data Infrastructure Foundation
@@ -56,6 +62,8 @@ Branch: `day/11-property-mongodb-vertical-slice`
 
 ### Day 12 — SearchService: Elasticsearch + CQRS Query Side Foundation
 Branch: `day/12-search-elasticsearch-cqrs`
+- Ek öğrenme/uygulama: Veri seçimi, arama API tasarımı ve latency/throughput.
+- Ayrıntılı ek görevler, commit sırası ve kabul ölçütleri: [Day 12 kesin planı](docs/roadmap/day-12-exact-file-plan.md).
 - explicit mapping
 - SearchProperties
 - text/filter/range
@@ -64,6 +72,8 @@ Branch: `day/12-search-elasticsearch-cqrs`
 
 ### Day 13 — Redis Infrastructure Foundation
 Branch: `day/13-redis-foundation`
+- Ek öğrenme/uygulama: Redis cache stratejileri ve bir read use-case.
+- Ayrıntılı ek görevler, commit sırası ve kabul ölçütleri: [Day 13 kesin planı](docs/roadmap/day-13-exact-file-plan.md).
 - typed config
 - serializer
 - key/TTL conventions
@@ -72,6 +82,8 @@ Branch: `day/13-redis-foundation`
 
 ### Day 14 — Spring Security + OAuth2/OIDC + Keycloak
 Branch: `day/14-security-keycloak`
+- Ek öğrenme/uygulama: Secure API Design ve şifreleme sorumlulukları.
+- Ayrıntılı ek görevler, commit sırası ve kabul ölçütleri: [Day 14 kesin planı](docs/roadmap/day-14-exact-file-plan.md).
 - Keycloak realm/client/roles/scopes
 - Gateway + downstream Resource Server
 - ownership
@@ -138,6 +150,8 @@ Branch: `day/20-cassandra-reliable-outbound`
 
 ### Day 21 — CQRS + Elasticsearch Event Projection
 Branch: `day/21-cqrs-search-projection`
+- Ek öğrenme/uygulama: CAP ve consistency modellerinin proje üzerinden öğrenilmesi.
+- Ayrıntılı ek görevler, commit sırası ve kabul ölçütleri: [Day 21 kesin planı](docs/roadmap/day-21-exact-file-plan.md).
 - Property lifecycle events via reliable publication path
 - Search consumer group
 - idempotent projection
@@ -161,6 +175,8 @@ Branch: `day/22-saga-offer-reservation`
 
 ### Day 23 — Advanced Resilience
 Branch: `day/23-resilience`
+- Ek öğrenme/uygulama: Load balancing algoritmaları ve abuse prevention.
+- Ayrıntılı ek görevler, commit sırası ve kabul ölçütleri: [Day 23 kesin planı](docs/roadmap/day-23-exact-file-plan.md).
 - timeout budget
 - retry ownership
 - Circuit Breaker
@@ -207,6 +223,8 @@ Branch: `day/27-contract-testing`
 
 ### Day 28 — Failure-Path Testing
 Branch: `day/28-failure-path-testing`
+- Ek öğrenme/uygulama: Sınırlı chaos engineering deneyi.
+- Ayrıntılı ek görevler, commit sırası ve kabul ölçütleri: [Day 28 kesin planı](docs/roadmap/day-28-exact-file-plan.md).
 - datastore/broker/config/Vault/downstream outages
 - poison messages
 - DLT/DLQ replay safety
@@ -245,6 +263,8 @@ Branch: `day/31-cloud-task`
 
 ### Day 32 — Architecture Fitness + Documentation Audit
 Branch: `day/32-architecture-audit`
+- Ek öğrenme/uygulama: System design süreci ve mimari trade-off değerlendirmesi.
+- Ayrıntılı ek görevler, commit sırası ve kabul ölçütleri: [Day 32 kesin planı](docs/roadmap/day-32-exact-file-plan.md).
 - ArchUnit consolidation
 - dependency cycles/drift
 - build/config/contract/persistence drift
@@ -254,6 +274,8 @@ Branch: `day/32-architecture-audit`
 
 ### Day 33 — E2E + Recovery + Backend Completion
 Branch: `day/33-backend-completion`
+- Ek öğrenme/uygulama: Canonical datastore backup/restore doğrulaması.
+- Ayrıntılı ek görevler, commit sırası ve kabul ölçütleri: [Day 33 kesin planı](docs/roadmap/day-33-exact-file-plan.md).
 - Registration/Profile E2E
 - Seller Listing E2E
 - Property→Search E2E

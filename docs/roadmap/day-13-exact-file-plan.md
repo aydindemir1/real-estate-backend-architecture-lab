@@ -1,4 +1,4 @@
-# Day 13 — Exact File / Class / Commit Plan
+# Day 13 — Kesin dosya, sınıf ve commit planı
 
 ## 0. Scope
 
@@ -17,7 +17,7 @@ Hedef:
 Day 13 içinde:
 - Offer idempotency yok
 - RateLimiter business implementation yok
-- cache-aside business flow yok
+- seçilen mevcut read use-case üzerinde sınırlı cache-aside akışı vardır
 - Saga state yok
 - canonical business state yok
 
@@ -28,10 +28,10 @@ Review:
 - current root/common dependency policy
 - config ownership
 
-Initial consumers later:
-- BuyerService -> idempotency
-- ApiGatewayService/resilience layer -> rate limiting
-- selected read path -> cache candidate
+Kullanım zamanlaması:
+- Day 13 seçilen mevcut read path → cache-aside
+- Day 22 BuyerService → durable idempotency üzerinde yalnız Redis accelerator
+- Day 23 ApiGatewayService → rate limiting
 
 Day 13'te shared cross-service Redis library oluşturulmaz.
 
@@ -127,7 +127,7 @@ Candidate namespaces:
 - idempotency:offer:{key}
 - rate-limit:{subject}:{route}:{window}
 
-Day 13 actual executable key should be neutral/test-only, for example:
+Foundation smoke anahtarı test-only olabilir; gerçek cache use-case kendi namespace’ini kullanır. Örnek smoke anahtarı:
 - lab:redis:smoke:{id}
 
 Do not create future business keys in production code unless corresponding feature exists.
@@ -290,7 +290,7 @@ Commit: test(redis): enforce non-canonical Redis role
 
 ## Task 18 — Metrics/observability baseline
 
-Day 24 owns full metrics.
+Day 29–30 tam telemetry kapsamını sahiplenir.
 
 Day 13 only ensure:
 - connection failures visible in logs
@@ -310,7 +310,7 @@ Verify:
 - write/read
 - TTL expiry
 
-No cache/idempotency/rate-limit endpoint added.
+Mevcut read endpoint cache-aside ile çalışabilir; yeni idempotency/rate-limit endpoint eklenmez.
 
 ## Task 20 — Documentation
 
@@ -333,22 +333,27 @@ Document:
 Commit: docs(redis): document Redis infrastructure conventions
 
 ## Recommended Commit Sequence
+1. docs(cache): strateji karşılaştırmasını ve read use-case kararını tanımla
+2. build(redis): add Redis dependency catalog — only if missing
+3. config(redis): add typed Redis configuration
+4. feat(redis): define serialization strategy
+5. feat(redis): add Redis key naming foundation
+6. feat(redis): add TTL convention
+7. feat(redis): add minimal ephemeral key-value port
+8. feat(redis): add Redis ephemeral adapter
+9. config(redis): add external Redis settings
+10. test(redis): add connectivity integration test
+11. test(redis): verify TTL behavior
+12. test(redis): verify serialization behavior
+13. test(redis): enforce non-canonical Redis role
+14. feat(buyer): seçilen read akışına cache-aside adapterı ekle
+15. feat(cache): başarılı mutation sonrası invalidation politikasını bağla
+16. test(cache): hit miss stale refill ve Redis loss davranışını doğrula
+17. test(redis): izole eviction ve TTL farkını doğrula
+18. docs(cache): doğruluk sahiplik ve staleness sınırlarını kaydet
+19. docs(redis): document Redis infrastructure conventions
 
-1. build(redis): add Redis dependency catalog — only if missing
-2. config(redis): add typed Redis configuration
-3. feat(redis): define serialization strategy
-4. feat(redis): add Redis key naming foundation
-5. feat(redis): add TTL convention
-6. feat(redis): add minimal ephemeral key-value port
-7. feat(redis): add Redis ephemeral adapter
-8. config(redis): add external Redis settings
-9. test(redis): add connectivity integration test
-10. test(redis): verify TTL behavior
-11. test(redis): verify serialization behavior
-12. test(redis): enforce non-canonical Redis role
-13. docs(redis): document Redis infrastructure conventions
-
-Adjacent technical commits may be merged when small and cohesive.
+Küçük ve aynı sorumluluğa ait komşu commit’ler birleştirilebilir; karar, uygulama ve doğrulama ayrı incelenebilir kalır.
 
 ## Explicitly Deferred from Day 13
 
@@ -356,8 +361,6 @@ Do not implement:
 - Offer idempotency store
 - Idempotency-Key workflow
 - Gateway rate limiting
-- Property cache
-- Seller cache
 - Saga state
 - distributed lock
 - session storage
@@ -391,5 +394,30 @@ Day 13 closes only if:
 - serialization round-trip is verified
 - Redis errors do not leak raw client details
 - no business Aggregate repository is moved to Redis
-- no idempotency/rate-limit/cache feature leaks into Day 13
+- Offer idempotency, rate limiting ve Saga kapsamı bu güne taşınmaz; seçilen read cache açıkça kapsam içindedir
 - docs match actual implementation
+
+## Onaylanan system design ek kapsamı — Redis cache stratejileri ve bir read use-case
+
+Durum: **Planlandı**. Bu bölüm günün mevcut temel görevlerine eklenir; tamamlanmış implementation iddiası değildir. Ek görevler foundation kurulduktan sonra ve günün dokümantasyon/kapanış adımından önce uygulanır. Yukarıdaki commit sırası bu kapsamı içerir.
+
+### Ek görevler ve çıktı belgeleri
+
+1. Cache-aside, write-through ve write-around stratejilerini karşılaştır; cache invalidation, TTL/eviction ayrımı ve cache hierarchy konularını Redis üzerinde öğren. CDN ve platform cache dağıtımı bu backend gününde kurulmaz.
+2. Day 9’da mevcut GetBuyerPreferences read use-case’ini aday olarak değerlendir; gerçek endpoint adı implementation envanterinden doğrulanır. Seçilirse BuyerService kendi cache adapter/config’ini sahiplenir; uygun değilse mevcut bir read use-case ADR ile seçilir. Yeni domain veya RedisService oluşturma.
+3. Cache port/adapter ve namespace’i dar tut: ortam + capability + owner/resource + payload version; token/secret anahtara yazma. Day 14 ownership kontrollerinden önce başka kullanıcı verisini paylaşan ortak anahtar kullanma; Day 43 tenant-scoped kaynaklarda tenant namespace eklenir.
+4. Cache-aside akışını uygula: hit → derived response; miss → canonical datastore read → TTL ile cache. Redis başarısızsa canonical datastore’a bounded fallback yap; datastore hatasını sahte cache success/empty response ile gizleme.
+5. Mevcut preferences update use-case’iyle invalidation bağlantısını kur: başarılı durable commit sonrasında key silme/version stratejisi. Update yoksa TTL staleness sınırını açıkça belgeleyip invalidation uygulandı iddiasında bulunma.
+6. Concurrent read/update → stale refill penceresini değerlendir; version/conditional write ya da kabul edilen bounded-staleness politikasını açıkça seç. Cache doğruluğu business invariant/Offer idempotency yerine geçmez.
+7. Eviction için maxmemory ve seçilen politika etkisini izole test config’inde incele; eviction ile TTL expiration farklıdır. Çok katmanlı cache yalnız karşılaştırma/tasarım; sırf göstermek için L1 ürün ekleme.
+8. Hit/miss/TTL expiry, mutation sonrası invalidation, Redis restart/loss, canonical store failure, serializer ve ownership-key isolation entegrasyon testlerini ekle. Eviction testi paylaşılan developer Redis konfigürasyonunu değiştirmez.
+9. docs/infrastructure/redis-conventions.md ve docs/architecture/cache-strategy.md içinde staleness/failure/ownership sınırlarını yaz; service DESIGN/ROADMAP ve Knowledge Base’i güncelle.
+
+### Ek kabul ölçütleri
+
+- Bir mevcut read use-case cache ile çalışıyor; canonical datastore korunuyor.
+- Hit/miss/expiry ve Redis loss güvenli; mevcut mutation varsa invalidation testli.
+- Write-through/write-around/hierarchy öğrenme karşılaştırması yapılmış; uygulanmayan stratejiler açık.
+- Offer idempotency/rate limiting/Saga/distributed lock bu güne taşınmamış.
+
+Kapanışta ilgili service ROADMAP/DESIGN belgeleri ve Knowledge Base gerçek implementation/kanıtlarla güncellenir. Önce ilgili GitHub CI başarılı olur; ardından local runtime/API doğrulaması yapılır. Bir Day bir milestone’dır; kapsam gerektiğinde birden fazla takvim gününde tamamlanabilir.

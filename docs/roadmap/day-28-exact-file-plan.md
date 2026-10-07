@@ -32,15 +32,21 @@
 20. Ayrı `failureTest` execution/report oluştur ve runbook'lara link ver.
 
 ## Commit sırası
-1. `docs(test): define failure-path matrix`
-2. `test(failure): add datastore outage scenarios`
-3. `test(failure): verify Redis Kafka and RabbitMQ outage behavior`
-4. `test(failure): verify Config Vault HTTP and gRPC failures`
-5. `test(failure): verify Elasticsearch outage`
-6. `test(failure): add poison-message scenarios`
-7. `test(failure): verify DLT and DLQ replay safety`
-8. `test(config): verify fail-fast configuration and migration failures`
-9. `build(test): add failure test task and report`
+1. docs(chaos): hipotez steady-state ve abort ölçütlerini tanımla
+2. `docs(test): define failure-path matrix`
+3. `test(failure): add datastore outage scenarios`
+4. `test(failure): verify Redis Kafka and RabbitMQ outage behavior`
+5. `test(failure): verify Config Vault HTTP and gRPC failures`
+6. `test(failure): verify Elasticsearch outage`
+7. `test(failure): add poison-message scenarios`
+8. `test(failure): verify DLT and DLQ replay safety`
+9. `test(config): verify fail-fast configuration and migration failures`
+10. `build(test): add failure test task and report`
+11. test(chaos): izole kontrollü hata enjeksiyonu ekle
+12. test(chaos): recovery backlog ve duplicate güvenliğini doğrula
+13. docs(chaos): deney sonucunu ve temizlik kanıtını kaydet
+
+Küçük ve aynı sorumluluğa ait komşu commit’ler birleştirilebilir; karar, uygulama ve doğrulama ayrı incelenebilir kalır.
 
 ## Final gate
 - bütün temel failure domain'leri için explicit expected behavior var
@@ -48,3 +54,24 @@
 - poison message'lar süresiz bloklayamaz
 - replay güvenli
 - failed scenario'lar hidden harmful side effect üretmiyor
+
+## Onaylanan system design ek kapsamı — Sınırlı chaos engineering deneyi
+
+Durum: **Planlandı**. Bu bölüm günün mevcut temel görevlerine eklenir; tamamlanmış implementation iddiası değildir. Ek görevler foundation kurulduktan sonra ve günün dokümantasyon/kapanış adımından önce uygulanır. Yukarıdaki commit sırası bu kapsamı içerir.
+
+### Ek görevler ve çıktı belgeleri
+
+1. Day 28 failure matrix’inden bir gerçek akışı seç: örneğin Kafka bağlantısı kesilince commit edilmiş Property ve pending Outbox kaybolmaz; bağlantı düzeldikten sonra Search catch-up yapar.
+2. Hipotez, steady-state ölçütü, süre/büyüklük sınırı, durdurma koşulu ve temizlik prosedürünü deney başlamadan yaz.
+3. İzole local/Testcontainers ortamında kontrollü hata enjeksiyonu uygula; container stop veya scoped network fault seçimini açıkla. Yeni chaos platformu kurma.
+4. Day 29–30 telemetry henüz hazır olmadığı için mevcut test assertion’ları/structured logs/pending count/final state ile ölç; Day 30’da dashboard kanıtı eklenebileceğini belirt.
+5. Recovery sonrasında duplicate side-effect olmadığını, doğru backlog drain ve eventual projection convergence davranışını doğrula; deterministik CI failure testinden ayrı opt-in experiment tutulabilir.
+6. docs/testing/chaos-experiment.md içine önce/sonra evidence, sonuç, beklenmeyen davranış ve takip görevini kaydet; chaos engineering kapsamının bu sınırlı deney olduğunu belirt.
+
+### Ek kabul ölçütleri
+
+- Hipotez/steady-state/abort/cleanup tanımlı.
+- Deney izole ve süre sınırlı; durable state ve recovery testli.
+- Sınırlı deney production chaos programı olarak sunulmuyor.
+
+Kapanışta ilgili service ROADMAP/DESIGN belgeleri ve Knowledge Base gerçek implementation/kanıtlarla güncellenir. Önce ilgili GitHub CI başarılı olur; ardından local runtime/API doğrulaması yapılır. Bir Day bir milestone’dır; kapsam gerektiğinde birden fazla takvim gününde tamamlanabilir.

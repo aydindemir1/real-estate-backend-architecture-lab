@@ -1,4 +1,4 @@
-# Day 14 — Exact File / Class / Commit Plan
+# Day 14 — Kesin dosya, sınıf ve commit planı
 
 ## 0. Scope
 
@@ -530,14 +530,13 @@ Document:
 Commit: docs(security): finalize Keycloak identity and authorization model
 
 ## Recommended Commit Sequence
-
-1. docs(security): record current auth baseline and migration intent
-2. infra(security): add local Keycloak service
-3. feat(security): add Keycloak realm baseline
-4. feat(security): add Keycloak client configuration
-5. feat(security): add application role model
-6. feat(security): add API scope model
-7. docs(security): finalize identity mapping model
+1. docs(security): secure API ve şifreleme sorumluluklarını tanımla
+2. docs(security): record current auth baseline and migration intent
+3. infra(security): add local Keycloak service
+4. feat(security): add Keycloak realm baseline
+5. feat(security): add Keycloak client configuration
+6. feat(security): add application role model
+7. feat(security): add API scope model
 8. feat(security): add Keycloak authority mapping
 9. feat(gateway): add OAuth2 resource server security
 10. feat(gateway): propagate authenticated bearer token downstream — if needed
@@ -566,9 +565,14 @@ Commit: docs(security): finalize Keycloak identity and authorization model
 33. test(security): verify service-to-service client credentials
 34. test(security): verify Keycloak realm bootstrap
 35. docs(auth): document Keycloak migration boundary
-36. docs(security): finalize Keycloak identity and authorization model
+36. feat(security): mevcut API input response ve exposure sınırlarını tamamla
+37. test(security): IDOR redaction ve sınır kontrollerini doğrula
+38. test(tls): izole sertifika trust ve hostname doğrulamasını ekle
+39. docs(security): transit at-rest ve uygulanmayan kapsamı kaydet
+40. docs(security): finalize identity mapping model
+41. docs(security): finalize Keycloak identity and authorization model
 
-Adjacent service-security commits may be combined only if review remains clear. Do not collapse realm, Gateway, ownership and tests into one giant security commit.
+Küçük ve aynı sorumluluğa ait komşu commit’ler birleştirilebilir; karar, uygulama ve doğrulama ayrı incelenebilir kalır.
 
 ## Explicitly Deferred from Day 14
 
@@ -625,3 +629,24 @@ Day 14 closes only if:
 - legacy custom JWT boundary is documented
 - no Vault/mTLS/audit-pipeline/rate-limit scope leaks into Day 14
 - docs match actual implementation
+
+## Onaylanan system design ek kapsamı — Secure API Design ve şifreleme sorumlulukları
+
+Durum: **Planlandı**. Bu bölüm günün mevcut temel görevlerine eklenir; tamamlanmış implementation iddiası değildir. Ek görevler foundation kurulduktan sonra ve günün dokümantasyon/kapanış adımından önce uygulanır. Yukarıdaki commit sırası bu kapsamı içerir.
+
+### Ek görevler ve çıktı belgeleri
+
+1. docs/standards/api-design.md ve security.md kapsamını endpoint authorization matrisiyle birleştir; mevcut RBAC/ownership/CORS/CSRF/validation kurallarını çoğaltmadan Secure API Design checklist’i oluştur.
+2. Input/body/page sınırları, alan bazlı response minimization, hassas hata redaction ve actuator erişimini mevcut endpoint’lere uygula; başka kullanıcının resource ID’siyle IDOR testlerini genişlet.
+3. Encryption in transit ile at rest arasındaki farkı ve sorumluluk matrisini yaz: HTTP/gRPC, broker/datastore bağlantıları, disk/volume/backup, certificate/key ownership. JWT imzası şifreleme değildir; Vault secret yönetimi at-rest encryption’ın tamamı değildir.
+4. Mevcut HTTP endpoint üzerinde izole local/test TLS handshake doğrulaması planla: doğru CA/hostname kabulü, untrusted certificate veya hostname uyuşmazlığında reddetme. Sertifika doğrulamasını kapatıp başarı gösterme; gerçek private key repository’ye koyma.
+5. At-rest için mevcut datastore/disk/backup seçeneklerini tasarım seviyesinde karşılaştır; uygulama kanıtı yoksa Design Only olarak işaretle. Production certificate yönetimi, mTLS ve platform deployment bu güne eklenmez.
+6. Day 23 abuse prevention ve Day 24 Vault secret rotation sınırlarına bağlantı ver; docs/security/secure-api-checklist.md, docs/security/encryption-responsibilities.md ve Knowledge Base etkisini güncelle.
+
+### Ek kabul ölçütleri
+
+- Secure API checklist mevcut authorization matrisiyle uyumlu.
+- TLS trust/hostname kontrolü testli; at-rest durumu kanıta göre ayrı belirtilmiş.
+- Production cert management/mTLS/Vault/rate-limit bu güne taşınmamış.
+
+Kapanışta ilgili service ROADMAP/DESIGN belgeleri ve Knowledge Base gerçek implementation/kanıtlarla güncellenir. Önce ilgili GitHub CI başarılı olur; ardından local runtime/API doğrulaması yapılır. Bir Day bir milestone’dır; kapsam gerektiğinde birden fazla takvim gününde tamamlanabilir.

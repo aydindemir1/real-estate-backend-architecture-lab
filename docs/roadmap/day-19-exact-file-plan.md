@@ -1,36 +1,36 @@
-# Day 19 — Exact Retry + DLT/DLQ + Replay Safety Plan
+# Day 19 — Kesin Retry + DLT/DLQ + Replay Safety Planı
 
-## Scope
+## Kapsam
 - retryable/non-retryable classification
 - Kafka bounded retry + DLT
 - RabbitMQ DLX/DLQ
 - poison-message handling
 - replay metadata/runbook
-- replay-safety tests
+- replay-safety testleri
 
-## Tasks
+## Task'ler
 
-1. Define `RetryableMessagingException` and `NonRetryableMessagingException`.
-2. Classify transient network/timeout/unavailable as retryable; malformed payload, unsupported schema and permanent validation as non-retryable.
-3. Configure Kafka retry policy with bounded attempts/backoff.
-4. Add `property.events.retry`, `property.events.dlt`, `offer.events.retry`, `offer.events.dlt` only where active.
-5. Preserve original topic, message/event id, correlationId, type, attempt count and failure metadata.
-6. Configure deserialization/poison-message handling so a bad record cannot block a partition indefinitely.
-7. Configure RabbitMQ DLX/DLQ for listing commands:
+1. `RetryableMessagingException` ve `NonRetryableMessagingException` tanımla.
+2. Transient network/timeout/unavailable hatalarını retryable; malformed payload, unsupported schema ve permanent validation hatalarını non-retryable olarak sınıflandır.
+3. Kafka retry policy'yi bounded attempts/backoff ile configure et.
+4. Yalnızca aktif oldukları yerde `property.events.retry`, `property.events.dlt`, `offer.events.retry`, `offer.events.dlt` ekle.
+5. Original topic, message/event id, correlationId, type, attempt count ve failure metadata'yı koru.
+6. Bad record'ın partition'ı süresiz bloklamaması için deserialization/poison-message handling configure et.
+7. Listing command'ları için RabbitMQ DLX/DLQ configure et:
    - `real-estate.listing.dlx`
    - `property.listing.submit.dlq`
    - routing `property.listing.submit.dead`
-8. Prevent hot requeue/infinite redelivery.
-9. Enable publisher confirms/returns where direct RabbitMQ publisher reliability uses them.
-10. Add external retry config using `Duration`: max attempts, initial delay, multiplier, max delay and jitter if supported.
-11. Add Kafka retry/DLT integration tests.
-12. Add RabbitMQ DLQ integration tests.
-13. Add poison-message tests for Kafka and RabbitMQ.
-14. Add replay-safety test: fail → DLT/DLQ → fix → controlled replay → exactly one business effect.
-15. Add `docs/runbooks/messaging-replay.md`.
-16. Update messaging topology and command/event catalog.
+8. Hot requeue/infinite redelivery'yi engelle.
+9. Direct RabbitMQ publisher reliability bunları kullanıyorsa publisher confirms/returns aktif et.
+10. `Duration` kullanarak external retry config ekle: max attempts, initial delay, multiplier, max delay ve destekleniyorsa jitter.
+11. Kafka retry/DLT integration testleri ekle.
+12. RabbitMQ DLQ integration testleri ekle.
+13. Kafka ve RabbitMQ için poison-message testleri ekle.
+14. Replay-safety testi ekle: fail → DLT/DLQ → düzelt → controlled replay → tam olarak bir business effect.
+15. `docs/runbooks/messaging-replay.md` ekle.
+16. Messaging topology ve command/event catalog'u güncelle.
 
-## Commit sequence
+## Commit sırası
 1. `feat(messaging): classify retryable messaging failures`
 2. `feat(kafka): add bounded retry and DLT policy`
 3. `feat(rabbitmq): add DLQ topology and failure policy`
@@ -43,9 +43,9 @@
 10. `docs(messaging): add replay runbook`
 
 ## Final gate
-- no infinite retry/requeue
+- infinite retry/requeue yok
 - retry classification explicit
-- DLT/DLQ metadata preserved
-- poison messages do not block processing
-- replay is controlled and idempotent
-- raw broker errors do not leak into business/API layers
+- DLT/DLQ metadata korunuyor
+- poison message'lar processing'i bloklamıyor
+- replay kontrollü ve idempotent
+- raw broker error'ları business/API layer'larına sızmıyor

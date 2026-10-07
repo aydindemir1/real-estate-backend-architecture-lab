@@ -1,9 +1,9 @@
 # Brave
 
-**Category:** Technology  
-**Introduced:** Day 5B  
-**Project status:** Implemented / Integrated / Verified  
-**Scope:** Concrete distributed tracing implementation used through Micrometer bridge
+**Kategori:** Technology  
+**İlk eklendiği gün:** Day 5B  
+**Proje durumu:** Uygulandı / Entegre edildi / Doğrulandı  
+**Kapsam:** Micrometer bridge üzerinden kullanılan concrete distributed tracing implementation  
 
 ## 1. Nedir?
 

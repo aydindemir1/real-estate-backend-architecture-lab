@@ -1,4 +1,4 @@
-# BuyerService — Package / Class-Level Design
+# BuyerService — Package / Class-Level Tasarım
 
 ## Architecture
 

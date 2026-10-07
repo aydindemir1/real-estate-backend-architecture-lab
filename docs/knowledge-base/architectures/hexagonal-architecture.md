@@ -1,9 +1,9 @@
 # Hexagonal Architecture
 
 **Category:** Architecture  
-**Introduced:** Day 9  
-**Project status:** Implemented / Verified  
-**Scope:** BuyerService
+**İlk eklendiği gün:** Day 9  
+**Proje durumu:** Uygulandı / Doğrulandı  
+**Kapsam:** BuyerService
 
 ## Nedir?
 

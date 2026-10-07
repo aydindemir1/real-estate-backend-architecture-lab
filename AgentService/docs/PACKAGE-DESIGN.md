@@ -4,7 +4,7 @@
 
 Clean Architecture
 
-## Actual Day 8 package structure
+## Gerçek Day 8 package yapısı
 
 ```text
 com.aydindemir.agent
